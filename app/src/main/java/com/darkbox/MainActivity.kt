@@ -1,5 +1,6 @@
 package com.darkbox
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -23,16 +24,20 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             DarkBoxTheme {
-                MainScreen()
+                MainScreen { navigateToInventory() }
             }
         }
+    }
+
+    private fun navigateToInventory() {
+        val intent = Intent(this, InventoryActivity::class.java)
+        startActivity(intent)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen() {
-    val scope = rememberCoroutineScope()
+fun MainScreen(onInventoryClick: () -> Unit) {
     var expanded by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -44,7 +49,6 @@ fun MainScreen() {
                     IconButton(onClick = { expanded = true }) {
                         Icon(Icons.Filled.Menu, contentDescription = "Open menu")
                     }
-                    // Dropdown Menu
                     DropdownMenu(
                         expanded = expanded,
                         onDismissRequest = { expanded = false }
@@ -53,9 +57,7 @@ fun MainScreen() {
                             text = { Text("Inventario") },
                             onClick = {
                                 expanded = false
-                                // Acción cuando se selecciona la opción "Inventario"
-                                println("Inventario seleccionado")
-                                // Aquí puedes agregar la navegación a la pantalla de Inventario
+                                onInventoryClick()
                             }
                         )
                     }
@@ -88,6 +90,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     DarkBoxTheme {
-        MainScreen()
+        MainScreen(onInventoryClick = {})
     }
 }

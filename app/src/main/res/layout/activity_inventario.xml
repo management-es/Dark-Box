@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/label_serial"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Serial:" />
+
+    <TextView
+        android:id="@+id/value_serial"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="1234567890123456789012345678901234567890" />
+
+    <TextView
+        android:id="@+id/label_tecnologia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tecnología:" />
+
+    <TextView
+        android:id="@+id/value_tecnologia"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="Nombre de la tecnología" />
+
+    <TextView
+        android:id="@+id/label_modelo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Modelo:" />
+
+    <TextView
+        android:id="@+id/value_modelo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="Nombre del modelo" />
+
+    <TextView
+        android:id="@+id/label_estado"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Estado:" />
+
+    <TextView
+        android:id="@+id/value_estado"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Estado del dispositivo" />
+
+</LinearLayout>
