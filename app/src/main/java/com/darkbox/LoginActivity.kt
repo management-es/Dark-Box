@@ -1,6 +1,6 @@
 package com.darkbox
 
-
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -26,8 +26,13 @@ class LoginActivity : AppCompatActivity() {
             val password = etPassword.text.toString()
 
             if (email.isNotEmpty() && password.isNotEmpty()) {
-                // Aquí puedes agregar la lógica de autenticación
-                Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show()
+                if (email == "edison.serrano@darkbox.com" && password == "12345") {
+                    // Navegar a MainActivity
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
+                } else {
+                    Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT).show()
+                }
             } else {
                 Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show()
             }
