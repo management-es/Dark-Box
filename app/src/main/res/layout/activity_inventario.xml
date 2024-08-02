@@ -56,4 +56,36 @@
         android:layout_height="wrap_content"
         android:text="Estado del dispositivo" />
 
+    <!-- Nuevo campo para el cliente -->
+    <TextView
+        android:id="@+id/label_cliente"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cliente:" />
+
+    <TextView
+        android:id="@+id/value_cliente"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="Nombre del cliente" />
+
+    <!-- Nuevo campo para ingresar el cliente -->
+    <EditText
+        android:id="@+id/input_cliente"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Ingrese el nombre del cliente"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Botón para guardar los datos -->
+    <Button
+        android:id="@+id/button_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Guardar"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center_horizontal" />
+
+
 </LinearLayout>

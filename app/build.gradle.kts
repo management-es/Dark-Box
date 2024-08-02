@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -58,8 +59,10 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.androidx.appcompat) // Añadir esta línea
-    implementation(libs.androidx.material) // Añadir esta línea
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.material)
+    implementation("com.google.firebase:firebase-database-ktx:20.0.3")
+    implementation("com.google.firebase:firebase-database-ktx:20.0.5")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -67,4 +70,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
 }
+
+apply(plugin = "com.google.gms.google-services")
