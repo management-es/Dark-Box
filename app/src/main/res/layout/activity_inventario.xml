@@ -1,91 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/label_serial"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Serial:" />
-
-    <TextView
-        android:id="@+id/value_serial"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:text="1234567890123456789012345678901234567890" />
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <TextView
-        android:id="@+id/label_tecnologia"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tecnología:" />
+        <!-- Button to show input fields for entering new equipment -->
+        <Button
+            android:id="@+id/button_ingresar_equipo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ingresar Equipo" />
 
-    <TextView
-        android:id="@+id/value_tecnologia"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:text="Nombre de la tecnología" />
+        <!-- Hidden layout for input fields -->
+        <LinearLayout
+            android:id="@+id/equipment_input_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:layout_marginTop="16dp">
 
-    <TextView
-        android:id="@+id/label_modelo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Modelo:" />
+            <TextView
+                android:id="@+id/label_equipo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Equipo:" />
 
-    <TextView
-        android:id="@+id/value_modelo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:text="Nombre del modelo" />
+            <Spinner
+                android:id="@+id/input_equipo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp" />
 
-    <TextView
-        android:id="@+id/label_estado"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Estado:" />
+            <TextView
+                android:id="@+id/label_serial"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Serial:" />
 
-    <TextView
-        android:id="@+id/value_estado"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Estado del dispositivo" />
+            <EditText
+                android:id="@+id/input_serial"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp" />
 
-    <!-- Nuevo campo para el cliente -->
-    <TextView
-        android:id="@+id/label_cliente"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Cliente:" />
+            <TextView
+                android:id="@+id/label_tecnologia"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tecnología:" />
 
-    <TextView
-        android:id="@+id/value_cliente"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:text="Nombre del cliente" />
+            <EditText
+                android:id="@+id/input_tecnologia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp" />
 
-    <!-- Nuevo campo para ingresar el cliente -->
-    <EditText
-        android:id="@+id/input_cliente"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Ingrese el nombre del cliente"
-        android:layout_marginBottom="16dp" />
+            <TextView
+                android:id="@+id/label_modelo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Modelo:" />
 
-    <!-- Botón para guardar los datos -->
-    <Button
-        android:id="@+id/button_save"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Guardar"
-        android:layout_marginTop="16dp"
-        android:layout_gravity="center_horizontal" />
+            <EditText
+                android:id="@+id/input_modelo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp" />
 
+            <TextView
+                android:id="@+id/label_estado"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Estado:" />
 
-</LinearLayout>
+            <Spinner
+                android:id="@+id/input_estado"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/label_observaciones"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Observaciones:" />
+
+            <EditText
+                android:id="@+id/input_observaciones"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Save button for new equipment -->
+            <Button
+                android:id="@+id/button_save_equipment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Guardar" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

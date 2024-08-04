@@ -26,7 +26,7 @@ class LoginActivity : AppCompatActivity() {
             val password = etPassword.text.toString()
 
             if (email.isNotEmpty() && password.isNotEmpty()) {
-                if (email == "edison.serrano@darkbox.com" && password == "12345") {
+                if (email == "edison.serrano" && password == "12345") {
                     // Navegar a MainActivity
                     val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)

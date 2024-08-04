@@ -1,14 +1,12 @@
 package com.darkbox
 
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
+import android.view.View
+import android.widget.*
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
+import androidx.appcompat.app.AlertDialog
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.darkbox.ui.theme.DarkBoxTheme
 
 class InventoryActivity : ComponentActivity() {
 
@@ -21,63 +19,91 @@ class InventoryActivity : ComponentActivity() {
         // Inicializa la referencia a la base de datos
         database = FirebaseDatabase.getInstance().reference
 
-        // Referencias a los campos y el botón
-        val inputCliente: EditText = findViewById(R.id.input_cliente)
-        val buttonSave: Button = findViewById(R.id.button_save)
+        // Referencias a los campos y los botones
+        val buttonIngresarEquipo: Button = findViewById(R.id.button_ingresar_equipo)
+        val equipmentInputLayout: View = findViewById(R.id.equipment_input_layout)
+        val buttonSaveEquipment: Button = findViewById(R.id.button_save_equipment)
 
-        // Manejar el clic del botón de guardar
-        buttonSave.setOnClickListener {
-            val cliente = inputCliente.text.toString()
-            saveData(cliente)
+        // Configura el Spinner para el campo "Equipo"
+        val spinnerEquipo: Spinner = findViewById(R.id.input_equipo)
+        val equipoOptions = arrayOf("Seleccionar", "Antena Cliente", "Router", "Onu", "Enlace", "Sector")
+        val equipoAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, equipoOptions)
+        equipoAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerEquipo.adapter = equipoAdapter
+
+        // Configura el Spinner para el campo "Estado"
+        val spinnerEstado: Spinner = findViewById(R.id.input_estado)
+        val estadoOptions = arrayOf("Seleccionar", "Activo", "Dañado", "Bodega", "Revisión")
+        val estadoAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, estadoOptions)
+        estadoAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerEstado.adapter = estadoAdapter
+
+        // Manejar el clic del botón de ingresar equipo
+        buttonIngresarEquipo.setOnClickListener {
+            equipmentInputLayout.visibility = View.VISIBLE
         }
 
-        // Leer datos de la base de datos
-        readData()
+        // Manejar el clic del botón de guardar equipo
+        buttonSaveEquipment.setOnClickListener {
+            val equipo = spinnerEquipo.selectedItem.toString()
+            val serial = findViewById<EditText>(R.id.input_serial).text.toString()
+            val tecnologia = findViewById<EditText>(R.id.input_tecnologia).text.toString()
+            val modelo = findViewById<EditText>(R.id.input_modelo).text.toString()
+            val estado = spinnerEstado.selectedItem.toString()
+            val observaciones = findViewById<EditText>(R.id.input_observaciones).text.toString()
+
+            showConfirmationDialogForEquipment(equipo, serial, tecnologia, modelo, estado, observaciones)
+        }
     }
 
-    private fun saveData(cliente: String) {
-        // Crear un mapa con los datos
-        val inventoryData = mapOf(
-            "serial" to "1234567890123456789012345678901234567890",
-            "tecnologia" to "Nombre de la tecnología",
-            "modelo" to "Nombre del modelo",
-            "estado" to "Estado del dispositivo",
-            "cliente" to cliente
+    private fun showConfirmationDialogForEquipment(equipo: String, serial: String, tecnologia: String, modelo: String, estado: String, observaciones: String) {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Confirmar")
+        builder.setMessage("¿Deseas guardar los datos del equipo?")
+        builder.setPositiveButton("Sí") { dialog, _ ->
+            saveEquipmentData(equipo, serial, tecnologia, modelo, estado, observaciones)
+            dialog.dismiss()
+            finish() // Close the activity and go back to the previous screen
+        }
+        builder.setNegativeButton("No") { dialog, _ ->
+            dialog.dismiss()
+            finish() // Close the activity and go back to the previous screen
+        }
+        builder.create().show()
+    }
+
+    private fun saveEquipmentData(equipo: String, serial: String, tecnologia: String, modelo: String, estado: String, observaciones: String) {
+        // Crear un mapa con los datos del equipo
+        val equipmentData = mapOf(
+            "equipo" to equipo,
+            "serial" to serial,
+            "tecnologia" to tecnologia,
+            "modelo" to modelo,
+            "estado" to estado,
+            "observaciones" to observaciones
         )
 
-        // Escribir los datos en la base de datos
-        database.child("inventario").setValue(inventoryData)
+        // Escribir los datos del equipo en la base de datos con una clave única
+        database.child("inventario").push().setValue(equipmentData)
             .addOnSuccessListener {
                 // Datos escritos correctamente
+                showMessage("Datos del equipo guardados")
             }
             .addOnFailureListener { exception ->
                 // Manejo de errores
                 exception.printStackTrace()
+                showMessage("Error al guardar los datos del equipo")
             }
     }
 
-    private fun readData() {
-        // Leer los datos de la base de datos
-        database.child("inventario").get()
-            .addOnSuccessListener { snapshot ->
-                if (snapshot.exists()) {
-                    val serial = snapshot.child("serial").getValue(String::class.java)
-                    val tecnologia = snapshot.child("tecnologia").getValue(String::class.java)
-                    val modelo = snapshot.child("modelo").getValue(String::class.java)
-                    val estado = snapshot.child("estado").getValue(String::class.java)
-                    val cliente = snapshot.child("cliente").getValue(String::class.java)
-
-                    // Actualizar los TextViews en la interfaz de usuario
-                    findViewById<TextView>(R.id.value_serial).text = serial ?: "No data"
-                    findViewById<TextView>(R.id.value_tecnologia).text = tecnologia ?: "No data"
-                    findViewById<TextView>(R.id.value_modelo).text = modelo ?: "No data"
-                    findViewById<TextView>(R.id.value_estado).text = estado ?: "No data"
-                    findViewById<TextView>(R.id.value_cliente).text = cliente ?: "No data"
-                }
+    private fun showMessage(message: String) {
+        AlertDialog.Builder(this)
+            .setTitle("Resultado")
+            .setMessage(message)
+            .setPositiveButton("OK") { dialog, _ ->
+                dialog.dismiss()
             }
-            .addOnFailureListener { exception ->
-                // Manejo de errores
-                exception.printStackTrace()
-            }
+            .create()
+            .show()
     }
 }
