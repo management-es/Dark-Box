@@ -1,3 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Dark Box</string>
+
+    <!-- Arrays para los Spinner -->
+    <string-array name="estado_array">
+        <item>Activo</item>
+        <item>Inactivo</item>
+        <item>Retirado</item>
+    </string-array>
+
+    <string-array name="equipo_array">
+        <item>Antena Cliente</item>
+        <item>Router</item>
+        <item>Onu</item>
+        <item>Enlace</item>
+        <item>Sector</item>
+    </string-array>
+
+    <string-array name="zona_array">
+        <item>Medellin</item>
+        <item>Salgar</item>
+        <item>Amaga</item>
+    </string-array>
+
+    <!-- Otros recursos de cadena si es necesario -->
 </resources>
