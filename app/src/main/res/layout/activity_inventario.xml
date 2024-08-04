@@ -86,6 +86,18 @@
                 android:layout_marginBottom="16dp" />
 
             <TextView
+                android:id="@+id/label_zona"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Zona:" />
+
+            <Spinner
+                android:id="@+id/input_zona"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
                 android:id="@+id/label_observaciones"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -38,6 +38,13 @@ class InventoryActivity : ComponentActivity() {
         estadoAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerEstado.adapter = estadoAdapter
 
+        // Configura el Spinner para el campo "Zona"
+        val spinnerZona: Spinner = findViewById(R.id.input_zona)
+        val zonaOptions = arrayOf("Seleccionar", "Medellin", "Salgar", "Amaga")
+        val zonaAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, zonaOptions)
+        zonaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerZona.adapter = zonaAdapter
+
         // Manejar el clic del botón de ingresar equipo
         buttonIngresarEquipo.setOnClickListener {
             equipmentInputLayout.visibility = View.VISIBLE
@@ -50,18 +57,19 @@ class InventoryActivity : ComponentActivity() {
             val tecnologia = findViewById<EditText>(R.id.input_tecnologia).text.toString()
             val modelo = findViewById<EditText>(R.id.input_modelo).text.toString()
             val estado = spinnerEstado.selectedItem.toString()
+            val zona = spinnerZona.selectedItem.toString()
             val observaciones = findViewById<EditText>(R.id.input_observaciones).text.toString()
 
-            showConfirmationDialogForEquipment(equipo, serial, tecnologia, modelo, estado, observaciones)
+            showConfirmationDialogForEquipment(equipo, serial, tecnologia, modelo, estado, zona, observaciones)
         }
     }
 
-    private fun showConfirmationDialogForEquipment(equipo: String, serial: String, tecnologia: String, modelo: String, estado: String, observaciones: String) {
+    private fun showConfirmationDialogForEquipment(equipo: String, serial: String, tecnologia: String, modelo: String, estado: String, zona: String, observaciones: String) {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Confirmar")
         builder.setMessage("¿Deseas guardar los datos del equipo?")
         builder.setPositiveButton("Sí") { dialog, _ ->
-            saveEquipmentData(equipo, serial, tecnologia, modelo, estado, observaciones)
+            saveEquipmentData(equipo, serial, tecnologia, modelo, estado, zona, observaciones)
             dialog.dismiss()
             finish() // Close the activity and go back to the previous screen
         }
@@ -72,7 +80,7 @@ class InventoryActivity : ComponentActivity() {
         builder.create().show()
     }
 
-    private fun saveEquipmentData(equipo: String, serial: String, tecnologia: String, modelo: String, estado: String, observaciones: String) {
+    private fun saveEquipmentData(equipo: String, serial: String, tecnologia: String, modelo: String, estado: String, zona: String, observaciones: String) {
         // Crear un mapa con los datos del equipo
         val equipmentData = mapOf(
             "equipo" to equipo,
@@ -80,6 +88,7 @@ class InventoryActivity : ComponentActivity() {
             "tecnologia" to tecnologia,
             "modelo" to modelo,
             "estado" to estado,
+            "zona" to zona,
             "observaciones" to observaciones
         )
 
