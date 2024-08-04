@@ -13,10 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import com.darkbox.ui.theme.DarkBoxTheme
-import kotlinx.coroutines.launch
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
@@ -25,7 +23,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             DarkBoxTheme {
-                MainScreen { navigateToInventory() }
+                MainScreen(
+                    onInventoryClick = { navigateToInventory() },
+                    onClientesClick = { navigateToClientes() }
+                )
             }
         }
     }
@@ -34,11 +35,16 @@ class MainActivity : ComponentActivity() {
         val intent = Intent(this, InventoryActivity::class.java)
         startActivity(intent)
     }
+
+    private fun navigateToClientes() {
+        val intent = Intent(this, ClientesActivity::class.java)
+        startActivity(intent)
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(onInventoryClick: () -> Unit) {
+fun MainScreen(onInventoryClick: () -> Unit, onClientesClick: () -> Unit) {
     var expanded by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -59,6 +65,13 @@ fun MainScreen(onInventoryClick: () -> Unit) {
                             onClick = {
                                 expanded = false
                                 onInventoryClick()
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Clientes") },
+                            onClick = {
+                                expanded = false
+                                onClientesClick()
                             }
                         )
                     }
@@ -91,6 +104,9 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     DarkBoxTheme {
-        MainScreen(onInventoryClick = {})
+        MainScreen(
+            onInventoryClick = {},
+            onClientesClick = {}
+        )
     }
 }
