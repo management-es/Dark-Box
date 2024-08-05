@@ -14,7 +14,8 @@
             android:id="@+id/button_ingresar_cliente"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ingresar Cliente" />
+            android:text="Ingresar Cliente"
+            android:onClick="toggleVisibility" />
 
         <!-- Layout para los datos del cliente -->
         <LinearLayout
@@ -40,7 +41,8 @@
                 android:id="@+id/button_show_client_data"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Datos Cliente" />
+                android:text="Datos Cliente"
+                android:onClick="toggleVisibility" />
 
             <!-- Layout oculto para los datos del cliente -->
             <LinearLayout
@@ -145,15 +147,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp" />
-
-                <!-- Botón para mostrar datos del cliente -->
             </LinearLayout>
 
             <Button
                 android:id="@+id/button_show_service"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Servicio" />
+                android:text="Servicio"
+                android:onClick="toggleVisibility" />
 
             <!-- Layout oculto para los datos del servicio -->
             <LinearLayout
@@ -234,15 +235,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp" />
-
-                <!-- Botón para mostrar datos del servicio -->
             </LinearLayout>
 
             <Button
                 android:id="@+id/button_show_additional"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Adicional" />
+                android:text="Adicional"
+                android:onClick="toggleVisibility" />
 
             <!-- Layout oculto para los datos adicionales -->
             <LinearLayout
@@ -275,10 +275,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp" />
-
-                <!-- Botón para mostrar datos adicionales -->
             </LinearLayout>
-
         </LinearLayout>
 
         <!-- Botón Agregar -->
@@ -289,7 +286,5 @@
             android:text="Agregar"
             android:layout_gravity="center"
             android:layout_marginTop="16dp" />
-
     </LinearLayout>
-
 </ScrollView>

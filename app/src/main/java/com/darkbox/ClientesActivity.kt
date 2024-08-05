@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.Spinner
+import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AlertDialog
 import com.google.firebase.database.DatabaseReference
@@ -21,14 +23,12 @@ class ClientesActivity : ComponentActivity() {
         // Inicializa la referencia a la base de datos
         database = FirebaseDatabase.getInstance().reference
 
+        // Referencias a los botones y layouts
         val buttonIngresarCliente: Button = findViewById(R.id.button_ingresar_cliente)
-        val clientInputLayout: View = findViewById(R.id.client_input_layout)
-        val buttonShowClientData: Button = findViewById(R.id.button_show_client_data)
-        val clientDataLayout: View = findViewById(R.id.client_data_layout)
-        val buttonShowService: Button = findViewById(R.id.button_show_service)
-        val serviceDataLayout: View = findViewById(R.id.service_data_layout)
-        val buttonShowAdditional: Button = findViewById(R.id.button_show_additional)
-        val additionalDataLayout: View = findViewById(R.id.additional_data_layout)
+        val clientInputLayout: LinearLayout = findViewById(R.id.client_input_layout)
+        val clientDataLayout: LinearLayout = findViewById(R.id.client_data_layout)
+        val serviceDataLayout: LinearLayout = findViewById(R.id.service_data_layout)
+        val additionalDataLayout: LinearLayout = findViewById(R.id.additional_data_layout)
         val buttonAgregar: Button = findViewById(R.id.button_agregar)
 
         // Manejar el clic del botón de ingresar cliente
@@ -37,23 +37,23 @@ class ClientesActivity : ComponentActivity() {
         }
 
         // Manejar el clic del botón de mostrar datos del cliente
-        buttonShowClientData.setOnClickListener {
-            clientDataLayout.visibility = if (clientDataLayout.visibility == View.GONE) View.VISIBLE else View.GONE
+        findViewById<Button>(R.id.button_show_client_data).setOnClickListener {
+            clientDataLayout.visibility = if (clientDataLayout.visibility == View.VISIBLE) View.GONE else View.VISIBLE
         }
 
         // Manejar el clic del botón de mostrar datos del servicio
-        buttonShowService.setOnClickListener {
-            serviceDataLayout.visibility = if (serviceDataLayout.visibility == View.GONE) View.VISIBLE else View.GONE
+        findViewById<Button>(R.id.button_show_service).setOnClickListener {
+            serviceDataLayout.visibility = if (serviceDataLayout.visibility == View.VISIBLE) View.GONE else View.VISIBLE
         }
 
         // Manejar el clic del botón de mostrar datos adicionales
-        buttonShowAdditional.setOnClickListener {
-            additionalDataLayout.visibility = if (additionalDataLayout.visibility == View.GONE) View.VISIBLE else View.GONE
+        findViewById<Button>(R.id.button_show_additional).setOnClickListener {
+            additionalDataLayout.visibility = if (additionalDataLayout.visibility == View.VISIBLE) View.GONE else View.VISIBLE
         }
 
-        // Manejar el clic del botón de agregar
+        // Manejar el clic del botón de agregar cliente
         buttonAgregar.setOnClickListener {
-            val estado = findViewById<Spinner>(R.id.spinner_estado).selectedItem.toString()
+            val codCliente = findViewById<EditText>(R.id.input_cod_cliente).text.toString()
             val nombres = findViewById<EditText>(R.id.input_nombres).text.toString()
             val apellidos = findViewById<EditText>(R.id.input_apellidos).text.toString()
             val tipoDocumento = findViewById<EditText>(R.id.input_tipo_documento).text.toString()
@@ -62,7 +62,7 @@ class ClientesActivity : ComponentActivity() {
             val telefono = findViewById<EditText>(R.id.input_telefono).text.toString()
             val correo = findViewById<EditText>(R.id.input_correo).text.toString()
             val contactos = findViewById<EditText>(R.id.input_contactos).text.toString()
-            val codCliente = findViewById<EditText>(R.id.input_cod_cliente).text.toString()
+            val estado = findViewById<Spinner>(R.id.spinner_estado).selectedItem.toString()
             val plan = findViewById<EditText>(R.id.input_plan).text.toString()
             val tecnologia = findViewById<EditText>(R.id.input_tecnologia).text.toString()
             val equipos = findViewById<EditText>(R.id.input_equipos).text.toString()
@@ -71,28 +71,32 @@ class ClientesActivity : ComponentActivity() {
             val observaciones = findViewById<EditText>(R.id.input_observaciones).text.toString()
             val historial = findViewById<EditText>(R.id.input_historial).text.toString()
 
+            // Verifica que todos los campos obligatorios estén llenos
+            if (codCliente.isEmpty()) {
+                showMessage("El código del cliente es obligatorio.")
+                return@setOnClickListener
+            }
+
             showConfirmationDialogForClient(
-                estado, nombres, apellidos, tipoDocumento, numeroDocumento, direccion, telefono,
-                correo, contactos, codCliente, plan, tecnologia, equipos, ipAntena, ipRemota,
-                observaciones, historial
+                codCliente, nombres, apellidos, tipoDocumento, numeroDocumento,
+                direccion, telefono, correo, contactos, estado, plan, tecnologia,
+                equipos, ipAntena, ipRemota, observaciones, historial
             )
         }
     }
 
     private fun showConfirmationDialogForClient(
-        estado: String, nombres: String, apellidos: String, tipoDocumento: String, numeroDocumento: String,
-        direccion: String, telefono: String, correo: String, contactos: String,
-        codCliente: String, plan: String, tecnologia: String, equipos: String, ipAntena: String,
-        ipRemota: String, observaciones: String, historial: String
+        codCliente: String, nombres: String, apellidos: String, tipoDocumento: String, numeroDocumento: String,
+        direccion: String, telefono: String, correo: String, contactos: String, estado: String, plan: String,
+        tecnologia: String, equipos: String, ipAntena: String, ipRemota: String, observaciones: String, historial: String
     ) {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Confirmar")
         builder.setMessage("¿Deseas guardar los datos del cliente?")
         builder.setPositiveButton("Sí") { dialog, _ ->
             saveClientData(
-                estado, nombres, apellidos, tipoDocumento, numeroDocumento, direccion, telefono,
-                correo, contactos, codCliente, plan, tecnologia, equipos, ipAntena, ipRemota,
-                observaciones, historial
+                codCliente, nombres, apellidos, tipoDocumento, numeroDocumento, direccion,
+                telefono, correo, contactos, estado, plan, tecnologia, equipos, ipAntena, ipRemota, observaciones, historial
             )
             dialog.dismiss()
             finish() // Close the activity and go back to the previous screen
@@ -105,34 +109,32 @@ class ClientesActivity : ComponentActivity() {
     }
 
     private fun saveClientData(
-        estado: String, nombres: String, apellidos: String, tipoDocumento: String, numeroDocumento: String,
-        direccion: String, telefono: String, correo: String, contactos: String,
-        codCliente: String, plan: String, tecnologia: String, equipos: String, ipAntena: String,
-        ipRemota: String, observaciones: String, historial: String
+        codCliente: String, nombres: String, apellidos: String, tipoDocumento: String, numeroDocumento: String,
+        direccion: String, telefono: String, correo: String, contactos: String, estado: String, plan: String,
+        tecnologia: String, equipos: String, ipAntena: String, ipRemota: String, observaciones: String, historial: String
     ) {
         // Crear un mapa con los datos del cliente
         val clientData = mapOf(
-            "estado" to estado,
             "nombres" to nombres,
             "apellidos" to apellidos,
-            "tipoDocumento" to tipoDocumento,
-            "numeroDocumento" to numeroDocumento,
+            "tipo_documento" to tipoDocumento,
+            "numero_documento" to numeroDocumento,
             "direccion" to direccion,
             "telefono" to telefono,
             "correo" to correo,
             "contactos" to contactos,
-            "codCliente" to codCliente,
+            "estado" to estado,
             "plan" to plan,
             "tecnologia" to tecnologia,
             "equipos" to equipos,
-            "ipAntena" to ipAntena,
-            "ipRemota" to ipRemota,
+            "ip_antena" to ipAntena,
+            "ip_remota" to ipRemota,
             "observaciones" to observaciones,
             "historial" to historial
         )
 
-        // Escribir los datos del cliente en la base de datos con una clave única
-        database.child("clientes").push().setValue(clientData)
+        // Escribir los datos del cliente en la base de datos usando el código del cliente como clave
+        database.child("clientes").child(codCliente).setValue(clientData)
             .addOnSuccessListener {
                 // Datos escritos correctamente
                 showMessage("Datos del cliente guardados")
