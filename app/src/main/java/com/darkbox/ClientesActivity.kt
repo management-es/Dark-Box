@@ -108,11 +108,13 @@ class ClientesActivity : ComponentActivity() {
                 val ipRemota = findViewById<EditText>(R.id.input_ip_remota).text.toString()
                 val observaciones = findViewById<EditText>(R.id.input_observaciones).text.toString()
                 val historial = findViewById<EditText>(R.id.input_historial).text.toString()
+                val zona = spinnerZona.selectedItem.toString()
+                val coordenadas = findViewById<EditText>(R.id.input_coordenadas).text.toString()
 
                 showConfirmationDialogForClient(
                     codCliente, nombres, apellidos, tipoDocumento, numeroDocumento, direccion,
                     telefono, correo, contactos, plan, tecnologia, equipos, ipAntena, ipRemota,
-                    observaciones, historial
+                    observaciones, historial, zona, coordenadas
                 )
             }
         }
@@ -132,6 +134,8 @@ class ClientesActivity : ComponentActivity() {
         val equipos = findViewById<EditText>(R.id.input_equipos).text.toString()
         val ipAntena = findViewById<EditText>(R.id.input_ip_antena).text.toString()
         val ipRemota = findViewById<EditText>(R.id.input_ip_remota).text.toString()
+        val observaciones = findViewById<EditText>(R.id.input_observaciones).text.toString()
+        val coordenadas = findViewById<EditText>(R.id.input_coordenadas).text.toString()
 
         return when {
             nombres.isEmpty() -> {
@@ -186,6 +190,15 @@ class ClientesActivity : ComponentActivity() {
                 showMessage("El campo 'IP Remota' es obligatorio.")
                 false
             }
+            observaciones.isEmpty() -> {
+                showMessage("El campo 'Observaciones' es obligatorio.")
+                false
+            }
+            coordenadas.isEmpty() -> {
+                showMessage("El campo 'Coordenadas' es obligatorio.")
+                false
+            }
+
             else -> true
         }
     }
@@ -201,7 +214,7 @@ class ClientesActivity : ComponentActivity() {
         codCliente: String, nombres: String, apellidos: String, tipoDocumento: String,
         numeroDocumento: String, direccion: String, telefono: String, correo: String,
         contactos: String, plan: String, tecnologia: String, equipos: String, ipAntena: String,
-        ipRemota: String, observaciones: String, historial: String
+        ipRemota: String, observaciones: String, historial: String, zona: String, coordenadas: String
     ) {
         AlertDialog.Builder(this)
             .setTitle("Confirmación")
@@ -210,7 +223,7 @@ class ClientesActivity : ComponentActivity() {
                 saveClientData(
                     codCliente, nombres, apellidos, tipoDocumento, numeroDocumento, direccion,
                     telefono, correo, contactos, plan, tecnologia, equipos, ipAntena, ipRemota,
-                    observaciones, historial
+                    observaciones, historial, zona, coordenadas
                 )
             }
             .setNegativeButton("No", null)
@@ -221,7 +234,7 @@ class ClientesActivity : ComponentActivity() {
         codCliente: String, nombres: String, apellidos: String, tipoDocumento: String,
         numeroDocumento: String, direccion: String, telefono: String, correo: String,
         contactos: String, plan: String, tecnologia: String, equipos: String, ipAntena: String,
-        ipRemota: String, observaciones: String, historial: String
+        ipRemota: String, observaciones: String, historial: String, zona: String, coordenadas: String
     ) {
         val clientData = mapOf(
             "nombres" to nombres,
@@ -238,12 +251,15 @@ class ClientesActivity : ComponentActivity() {
             "ipAntena" to ipAntena,
             "ipRemota" to ipRemota,
             "observaciones" to observaciones,
-            "historial" to historial
+            "historial" to historial,
+            "zona" to zona,
+            "coordenadas" to coordenadas
         )
 
         database.child("clientes").child(codCliente).setValue(clientData)
             .addOnSuccessListener {
                 showMessage("Datos del cliente guardados exitosamente.")
+                finish() // Regresa al menú anterior
             }
             .addOnFailureListener {
                 showMessage("Error al guardar los datos del cliente.")
