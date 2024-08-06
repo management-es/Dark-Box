@@ -178,6 +178,56 @@
                     android:layout_height="wrap_content"
                     android:hint="Equipos" />
 
+
+                <!-- Layout para los campos específicos de Fibra Optica -->
+                <LinearLayout
+                    android:id="@+id/fibra_optica_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <EditText
+                        android:id="@+id/input_serial_onu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Serial ONU" />
+
+                    <EditText
+                        android:id="@+id/input_equipo_adicional_fibra"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Equipo Adicional" />
+                </LinearLayout>
+
+                <!-- Layout para los campos específicos de Radio Enlace -->
+                <LinearLayout
+                    android:id="@+id/radio_enlace_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <EditText
+                        android:id="@+id/input_antena"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Antena" />
+
+                    <EditText
+                        android:id="@+id/input_router"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Router" />
+
+                    <EditText
+                        android:id="@+id/input_equipo_adicional_radio"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Equipo Adicional" />
+                </LinearLayout>
+
+
                 <EditText
                     android:id="@+id/input_ip_antena"
                     android:layout_width="match_parent"

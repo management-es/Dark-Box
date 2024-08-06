@@ -2,6 +2,7 @@ package com.darkbox
 
 import android.os.Bundle
 import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -37,18 +38,17 @@ class ClientesActivity : ComponentActivity() {
 
         // Spinner zona
         val spinnerZona: Spinner = findViewById(R.id.spinner_zona)
-
-        // Spinner de Plan
         val spinnerPlan: Spinner = findViewById(R.id.spinner_plan)
-
-        // Spinner de Tecnologia
         val spinnerTecnologia: Spinner = findViewById(R.id.spinner_tecnologia)
 
+        // Layouts específicos
+        val fibraOpticaLayout: View = findViewById(R.id.fibra_optica_layout)
+        val radioEnlaceLayout: View = findViewById(R.id.radio_enlace_layout)
 
         // Configurar el adaptador para el Spinner zona
         ArrayAdapter.createFromResource(
             this,
-            R.array.zona_options, // La referencia al array de strings
+            R.array.zona_options,
             android.R.layout.simple_spinner_item
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -58,7 +58,7 @@ class ClientesActivity : ComponentActivity() {
         // Configurar el adaptador para el Spinner plan
         ArrayAdapter.createFromResource(
             this,
-            R.array.plan_options, // La referencia al array de strings
+            R.array.plan_options,
             android.R.layout.simple_spinner_item
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -68,17 +68,19 @@ class ClientesActivity : ComponentActivity() {
         // Configurar el adaptador para el Spinner tecnologia
         ArrayAdapter.createFromResource(
             this,
-            R.array.tecnologia_options, // La referencia al array de strings
+            R.array.tecnologia_options,
             android.R.layout.simple_spinner_item
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinnerTecnologia.adapter = adapter
         }
 
-        // Inicializa el layout de datos cliente, servicio y adicionales
+        // Inicializa los layouts de datos cliente, servicio y adicionales
         datosClienteLayout.visibility = View.GONE
         servicioLayout.visibility = View.GONE
         adicionalesLayout.visibility = View.GONE
+        fibraOpticaLayout.visibility = View.GONE
+        radioEnlaceLayout.visibility = View.GONE
 
         // Manejar el clic del botón de ingresar cliente
         buttonIngresarCliente.setOnClickListener {
@@ -114,6 +116,31 @@ class ClientesActivity : ComponentActivity() {
             datosClienteLayout.visibility = View.GONE
             servicioLayout.visibility = View.GONE
             adicionalesLayout.visibility = View.VISIBLE
+        }
+
+        // Manejar el cambio en el Spinner de Tecnología
+        spinnerTecnologia.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                when (spinnerTecnologia.selectedItem.toString()) {
+                    "Fibra Optica" -> {
+                        fibraOpticaLayout.visibility = View.VISIBLE
+                        radioEnlaceLayout.visibility = View.GONE
+                    }
+                    "Radio Enlace" -> {
+                        fibraOpticaLayout.visibility = View.GONE
+                        radioEnlaceLayout.visibility = View.VISIBLE
+                    }
+                    else -> {
+                        fibraOpticaLayout.visibility = View.GONE
+                        radioEnlaceLayout.visibility = View.GONE
+                    }
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                fibraOpticaLayout.visibility = View.GONE
+                radioEnlaceLayout.visibility = View.GONE
+            }
         }
 
         // Manejar el clic del botón de agregar cliente
