@@ -35,10 +35,14 @@ class ClientesActivity : ComponentActivity() {
         val buttonUbicacion: Button = findViewById(R.id.button_ubicacion)
         val ubicacionLayout: View = findViewById(R.id.ubicacion_layout)
 
-        // Referencia al Spinner
+        // Spinner zona
         val spinnerZona: Spinner = findViewById(R.id.spinner_zona)
 
-        // Configurar el adaptador para el Spinner
+        // Spinner de Plan
+        val spinnerPlan: Spinner = findViewById(R.id.spinner_plan)
+
+
+        // Configurar el adaptador para el Spinner zona
         ArrayAdapter.createFromResource(
             this,
             R.array.zona_options, // La referencia al array de strings
@@ -46,6 +50,16 @@ class ClientesActivity : ComponentActivity() {
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinnerZona.adapter = adapter
+        }
+
+        // Configurar el adaptador para el Spinner plan
+        ArrayAdapter.createFromResource(
+            this,
+            R.array.plan_options, // La referencia al array de strings
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinnerPlan.adapter = adapter
         }
 
         // Inicializa el layout de datos cliente, servicio y adicionales
@@ -101,7 +115,7 @@ class ClientesActivity : ComponentActivity() {
                 val telefono = findViewById<EditText>(R.id.input_telefono).text.toString()
                 val correo = findViewById<EditText>(R.id.input_correo).text.toString()
                 val contactos = findViewById<EditText>(R.id.input_contactos).text.toString()
-                val plan = findViewById<EditText>(R.id.input_plan).text.toString()
+                val plan = spinnerPlan.selectedItem.toString()
                 val tecnologia = findViewById<EditText>(R.id.input_tecnologia).text.toString()
                 val equipos = findViewById<EditText>(R.id.input_equipos).text.toString()
                 val ipAntena = findViewById<EditText>(R.id.input_ip_antena).text.toString()
@@ -129,7 +143,6 @@ class ClientesActivity : ComponentActivity() {
         val telefono = findViewById<EditText>(R.id.input_telefono).text.toString()
         val correo = findViewById<EditText>(R.id.input_correo).text.toString()
         val contactos = findViewById<EditText>(R.id.input_contactos).text.toString()
-        val plan = findViewById<EditText>(R.id.input_plan).text.toString()
         val tecnologia = findViewById<EditText>(R.id.input_tecnologia).text.toString()
         val equipos = findViewById<EditText>(R.id.input_equipos).text.toString()
         val ipAntena = findViewById<EditText>(R.id.input_ip_antena).text.toString()
@@ -168,10 +181,6 @@ class ClientesActivity : ComponentActivity() {
             }
             contactos.isEmpty() -> {
                 showMessage("El campo 'Contactos' es obligatorio.")
-                false
-            }
-            plan.isEmpty() -> {
-                showMessage("El campo 'Plan' es obligatorio.")
                 false
             }
             tecnologia.isEmpty() -> {

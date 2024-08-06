@@ -16,6 +16,16 @@
         <item>Amagá</item>
     </string-array>
 
+    <string-array name="plan_options">
+        <item>Seleccionar</item>
+        <item>Basico</item>
+        <item>Super</item>
+        <item>Hiper</item>
+        <item>Bronce</item>
+        <item>Plata</item>
+        <item>Oro</item>
+    </string-array>
+
     <string-array name="equipo_array">
         <item>Antena Cliente</item>
         <item>Router</item>

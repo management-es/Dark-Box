@@ -83,7 +83,6 @@
                         android:layout_height="wrap_content"
                         android:text="Zona"
                         android:textSize="16sp"
-
                         android:paddingBottom="8dp"/>
 
                     <Spinner
@@ -147,8 +146,15 @@
                     android:layout_height="wrap_content"
                     android:hint="Cod. Cliente" />
 
-                <EditText
-                    android:id="@+id/input_plan"
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Plan"
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp"/>
+
+                <Spinner
+                    android:id="@+id/spinner_plan"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Plan" />
