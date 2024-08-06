@@ -65,11 +65,37 @@
                     android:layout_height="wrap_content"
                     android:hint="Número Documento" />
 
-                <EditText
-                    android:id="@+id/input_direccion"
+                <Button
+                    android:id="@+id/button_ubicacion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ubicación" />
+
+                <LinearLayout
+                    android:id="@+id/ubicacion_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Dirección" />
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <EditText
+                        android:id="@+id/input_zona"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Zona" />
+
+                    <EditText
+                        android:id="@+id/input_direccion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Dirección" />
+
+                    <EditText
+                        android:id="@+id/input_coordenadas"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Coordenadas" />
+                </LinearLayout>
 
                 <EditText
                     android:id="@+id/input_telefono"

@@ -9,6 +9,7 @@ import androidx.appcompat.app.AlertDialog
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
+
 class ClientesActivity : ComponentActivity() {
 
     private lateinit var database: DatabaseReference
@@ -30,6 +31,13 @@ class ClientesActivity : ComponentActivity() {
         val buttonAdicionales: Button = findViewById(R.id.button_adicionales)
         val adicionalesLayout: View = findViewById(R.id.adicionales_layout)
         val buttonAgregarCliente: Button = findViewById(R.id.button_agregar_cliente)
+        val buttonUbicacion: Button = findViewById(R.id.button_ubicacion)
+        val ubicacionLayout: View = findViewById(R.id.ubicacion_layout)
+
+        // Inicializa el layout de datos cliente, servicio y adicionales
+        datosClienteLayout.visibility = View.GONE
+        servicioLayout.visibility = View.GONE
+        adicionalesLayout.visibility = View.GONE
 
         // Manejar el clic del botón de ingresar cliente
         buttonIngresarCliente.setOnClickListener {
@@ -41,6 +49,16 @@ class ClientesActivity : ComponentActivity() {
             datosClienteLayout.visibility = View.VISIBLE
             servicioLayout.visibility = View.GONE
             adicionalesLayout.visibility = View.GONE
+        }
+
+        // Manejar el clic del botón de ubicación
+        buttonUbicacion.setOnClickListener {
+            // Alternar la visibilidad del layout de ubicación
+            if (ubicacionLayout.visibility == View.GONE) {
+                ubicacionLayout.visibility = View.VISIBLE
+            } else {
+                ubicacionLayout.visibility = View.GONE
+            }
         }
 
         // Manejar el clic del botón de servicio
@@ -77,7 +95,11 @@ class ClientesActivity : ComponentActivity() {
                 val observaciones = findViewById<EditText>(R.id.input_observaciones).text.toString()
                 val historial = findViewById<EditText>(R.id.input_historial).text.toString()
 
-                showConfirmationDialogForClient(codCliente, nombres, apellidos, tipoDocumento, numeroDocumento, direccion, telefono, correo, contactos, plan, tecnologia, equipos, ipAntena, ipRemota, observaciones, historial)
+                showConfirmationDialogForClient(
+                    codCliente, nombres, apellidos, tipoDocumento, numeroDocumento, direccion,
+                    telefono, correo, contactos, plan, tecnologia, equipos, ipAntena, ipRemota,
+                    observaciones, historial
+                )
             }
         }
     }
@@ -164,8 +186,9 @@ class ClientesActivity : ComponentActivity() {
         builder.setMessage("¿Deseas guardar los datos del cliente?")
         builder.setPositiveButton("Sí") { dialog, _ ->
             saveClientData(
-                codCliente, nombres, apellidos, tipoDocumento, numeroDocumento, direccion, telefono, correo, contactos,
-                plan, tecnologia, equipos, ipAntena, ipRemota, observaciones, historial
+                codCliente, nombres, apellidos, tipoDocumento, numeroDocumento, direccion,
+                telefono, correo, contactos, plan, tecnologia, equipos, ipAntena, ipRemota,
+                observaciones, historial
             )
             dialog.dismiss()
             finish() // Close the activity and go back to the previous screen

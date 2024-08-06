@@ -9,6 +9,13 @@
         <item>Retirado</item>
     </string-array>
 
+    <string-array name="zona_options">
+        <item>Seleccionar</item>
+        <item>Medellín</item>
+        <item>Salgar</item>
+        <item>Amagá</item>
+    </string-array>
+
     <string-array name="equipo_array">
         <item>Antena Cliente</item>
         <item>Router</item>
@@ -17,11 +24,7 @@
         <item>Sector</item>
     </string-array>
 
-    <string-array name="zona_array">
-        <item>Medellin</item>
-        <item>Salgar</item>
-        <item>Amaga</item>
-    </string-array>
+
 
     <!-- Otros recursos de cadena si es necesario -->
 </resources>
