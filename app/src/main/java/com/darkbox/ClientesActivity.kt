@@ -59,24 +59,98 @@ class ClientesActivity : ComponentActivity() {
 
         // Manejar el clic del botón de agregar cliente
         buttonAgregarCliente.setOnClickListener {
-            val codCliente = findViewById<EditText>(R.id.input_cod_cliente).text.toString()
-            val nombres = findViewById<EditText>(R.id.input_nombres).text.toString()
-            val apellidos = findViewById<EditText>(R.id.input_apellidos).text.toString()
-            val tipoDocumento = findViewById<EditText>(R.id.input_tipo_documento).text.toString()
-            val numeroDocumento = findViewById<EditText>(R.id.input_numero_documento).text.toString()
-            val direccion = findViewById<EditText>(R.id.input_direccion).text.toString()
-            val telefono = findViewById<EditText>(R.id.input_telefono).text.toString()
-            val correo = findViewById<EditText>(R.id.input_correo).text.toString()
-            val contactos = findViewById<EditText>(R.id.input_contactos).text.toString()
-            val plan = findViewById<EditText>(R.id.input_plan).text.toString()
-            val tecnologia = findViewById<EditText>(R.id.input_tecnologia).text.toString()
-            val equipos = findViewById<EditText>(R.id.input_equipos).text.toString()
-            val ipAntena = findViewById<EditText>(R.id.input_ip_antena).text.toString()
-            val ipRemota = findViewById<EditText>(R.id.input_ip_remota).text.toString()
-            val observaciones = findViewById<EditText>(R.id.input_observaciones).text.toString()
-            val historial = findViewById<EditText>(R.id.input_historial).text.toString()
+            if (validateClientData()) {
+                val codCliente = findViewById<EditText>(R.id.input_cod_cliente).text.toString()
+                val nombres = findViewById<EditText>(R.id.input_nombres).text.toString()
+                val apellidos = findViewById<EditText>(R.id.input_apellidos).text.toString()
+                val tipoDocumento = findViewById<EditText>(R.id.input_tipo_documento).text.toString()
+                val numeroDocumento = findViewById<EditText>(R.id.input_numero_documento).text.toString()
+                val direccion = findViewById<EditText>(R.id.input_direccion).text.toString()
+                val telefono = findViewById<EditText>(R.id.input_telefono).text.toString()
+                val correo = findViewById<EditText>(R.id.input_correo).text.toString()
+                val contactos = findViewById<EditText>(R.id.input_contactos).text.toString()
+                val plan = findViewById<EditText>(R.id.input_plan).text.toString()
+                val tecnologia = findViewById<EditText>(R.id.input_tecnologia).text.toString()
+                val equipos = findViewById<EditText>(R.id.input_equipos).text.toString()
+                val ipAntena = findViewById<EditText>(R.id.input_ip_antena).text.toString()
+                val ipRemota = findViewById<EditText>(R.id.input_ip_remota).text.toString()
+                val observaciones = findViewById<EditText>(R.id.input_observaciones).text.toString()
+                val historial = findViewById<EditText>(R.id.input_historial).text.toString()
 
-            showConfirmationDialogForClient(codCliente, nombres, apellidos, tipoDocumento, numeroDocumento, direccion, telefono, correo, contactos, plan, tecnologia, equipos, ipAntena, ipRemota, observaciones, historial)
+                showConfirmationDialogForClient(codCliente, nombres, apellidos, tipoDocumento, numeroDocumento, direccion, telefono, correo, contactos, plan, tecnologia, equipos, ipAntena, ipRemota, observaciones, historial)
+            }
+        }
+    }
+
+    private fun validateClientData(): Boolean {
+        val nombres = findViewById<EditText>(R.id.input_nombres).text.toString()
+        val apellidos = findViewById<EditText>(R.id.input_apellidos).text.toString()
+        val tipoDocumento = findViewById<EditText>(R.id.input_tipo_documento).text.toString()
+        val numeroDocumento = findViewById<EditText>(R.id.input_numero_documento).text.toString()
+        val direccion = findViewById<EditText>(R.id.input_direccion).text.toString()
+        val telefono = findViewById<EditText>(R.id.input_telefono).text.toString()
+        val correo = findViewById<EditText>(R.id.input_correo).text.toString()
+        val contactos = findViewById<EditText>(R.id.input_contactos).text.toString()
+        val plan = findViewById<EditText>(R.id.input_plan).text.toString()
+        val tecnologia = findViewById<EditText>(R.id.input_tecnologia).text.toString()
+        val equipos = findViewById<EditText>(R.id.input_equipos).text.toString()
+        val ipAntena = findViewById<EditText>(R.id.input_ip_antena).text.toString()
+        val ipRemota = findViewById<EditText>(R.id.input_ip_remota).text.toString()
+
+        return when {
+            nombres.isEmpty() -> {
+                showMessage("El campo 'Nombres' es obligatorio.")
+                false
+            }
+            apellidos.isEmpty() -> {
+                showMessage("El campo 'Apellidos' es obligatorio.")
+                false
+            }
+            tipoDocumento.isEmpty() -> {
+                showMessage("El campo 'Tipo Documento' es obligatorio.")
+                false
+            }
+            numeroDocumento.isEmpty() -> {
+                showMessage("El campo 'Número Documento' es obligatorio.")
+                false
+            }
+            direccion.isEmpty() -> {
+                showMessage("El campo 'Dirección' es obligatorio.")
+                false
+            }
+            telefono.isEmpty() -> {
+                showMessage("El campo 'Teléfono' es obligatorio.")
+                false
+            }
+            correo.isEmpty() -> {
+                showMessage("El campo 'Correo' es obligatorio.")
+                false
+            }
+            contactos.isEmpty() -> {
+                showMessage("El campo 'Contactos' es obligatorio.")
+                false
+            }
+            plan.isEmpty() -> {
+                showMessage("El campo 'Plan' es obligatorio.")
+                false
+            }
+            tecnologia.isEmpty() -> {
+                showMessage("El campo 'Tecnología' es obligatorio.")
+                false
+            }
+            equipos.isEmpty() -> {
+                showMessage("El campo 'Equipos' es obligatorio.")
+                false
+            }
+            ipAntena.isEmpty() -> {
+                showMessage("El campo 'IP Antena' es obligatorio.")
+                false
+            }
+            ipRemota.isEmpty() -> {
+                showMessage("El campo 'IP Remota' es obligatorio.")
+                false
+            }
+            else -> true
         }
     }
 
