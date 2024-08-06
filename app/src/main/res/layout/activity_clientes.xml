@@ -9,282 +9,176 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Botón para ingresar cliente -->
+        <!-- Button to show more options -->
         <Button
             android:id="@+id/button_ingresar_cliente"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ingresar Cliente"
-            android:onClick="toggleVisibility" />
+            android:text="Ingresar Cliente" />
 
-        <!-- Layout para los datos del cliente -->
+        <!-- Hidden layout for additional options -->
         <LinearLayout
-            android:id="@+id/client_input_layout"
+            android:id="@+id/options_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:visibility="gone"
+            android:layout_marginTop="16dp">
 
-            <TextView
-                android:id="@+id/label_estado"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Estado:" />
-
-            <Spinner
-                android:id="@+id/spinner_estado"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:entries="@array/estado_array" />
-
+            <!-- Button for Datos Cliente -->
             <Button
-                android:id="@+id/button_show_client_data"
+                android:id="@+id/button_datos_cliente"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Datos Cliente"
-                android:onClick="toggleVisibility" />
+                android:text="Datos Cliente" />
 
-            <!-- Layout oculto para los datos del cliente -->
+            <!-- Hidden layout for Datos Cliente fields -->
             <LinearLayout
-                android:id="@+id/client_data_layout"
+                android:id="@+id/datos_cliente_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone">
-
-                <TextView
-                    android:id="@+id/label_nombres"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Nombres:" />
+                android:visibility="gone"
+                android:layout_marginTop="16dp">
 
                 <EditText
                     android:id="@+id/input_nombres"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp" />
-
-                <TextView
-                    android:id="@+id/label_apellidos"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Apellidos:" />
+                    android:hint="Nombres" />
 
                 <EditText
                     android:id="@+id/input_apellidos"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp" />
-
-                <TextView
-                    android:id="@+id/label_tipo_documento"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tipo Documento:" />
+                    android:hint="Apellidos" />
 
                 <EditText
                     android:id="@+id/input_tipo_documento"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp" />
-
-                <TextView
-                    android:id="@+id/label_numero_documento"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Número Documento:" />
+                    android:hint="Tipo Documento" />
 
                 <EditText
                     android:id="@+id/input_numero_documento"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp" />
-
-                <TextView
-                    android:id="@+id/label_direccion"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Dirección:" />
+                    android:hint="Número Documento" />
 
                 <EditText
                     android:id="@+id/input_direccion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp" />
-
-                <TextView
-                    android:id="@+id/label_telefono"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Teléfono:" />
+                    android:hint="Dirección" />
 
                 <EditText
                     android:id="@+id/input_telefono"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp" />
-
-                <TextView
-                    android:id="@+id/label_correo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Correo:" />
+                    android:hint="Teléfono" />
 
                 <EditText
                     android:id="@+id/input_correo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp" />
-
-                <TextView
-                    android:id="@+id/label_contactos"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Contactos:" />
+                    android:hint="Correo" />
 
                 <EditText
                     android:id="@+id/input_contactos"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp" />
+                    android:hint="Contactos" />
             </LinearLayout>
 
+            <!-- Button for Servicio -->
             <Button
-                android:id="@+id/button_show_service"
+                android:id="@+id/button_servicio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Servicio"
-                android:onClick="toggleVisibility" />
+                android:text="Servicio" />
 
-            <!-- Layout oculto para los datos del servicio -->
+            <!-- Hidden layout for Servicio fields -->
             <LinearLayout
-                android:id="@+id/service_data_layout"
+                android:id="@+id/servicio_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone">
-
-                <TextView
-                    android:id="@+id/label_cod_cliente"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Cod. Cliente:" />
+                android:visibility="gone"
+                android:layout_marginTop="16dp">
 
                 <EditText
                     android:id="@+id/input_cod_cliente"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp" />
-
-                <TextView
-                    android:id="@+id/label_plan"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Plan:" />
+                    android:hint="Cod. Cliente" />
 
                 <EditText
                     android:id="@+id/input_plan"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp" />
-
-                <TextView
-                    android:id="@+id/label_tecnologia"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tecnología:" />
+                    android:hint="Plan" />
 
                 <EditText
                     android:id="@+id/input_tecnologia"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp" />
-
-                <TextView
-                    android:id="@+id/label_equipos"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Equipos:" />
+                    android:hint="Tecnología" />
 
                 <EditText
                     android:id="@+id/input_equipos"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp" />
-
-                <TextView
-                    android:id="@+id/label_ip_antena"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="IP Antena:" />
+                    android:hint="Equipos" />
 
                 <EditText
                     android:id="@+id/input_ip_antena"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp" />
-
-                <TextView
-                    android:id="@+id/label_ip_remota"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="IP Remota:" />
+                    android:hint="IP Antena" />
 
                 <EditText
                     android:id="@+id/input_ip_remota"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp" />
+                    android:hint="IP Remota" />
             </LinearLayout>
 
+            <!-- Button for Adicionales -->
             <Button
-                android:id="@+id/button_show_additional"
+                android:id="@+id/button_adicionales"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Adicional"
-                android:onClick="toggleVisibility" />
+                android:text="Adicionales" />
 
-            <!-- Layout oculto para los datos adicionales -->
+            <!-- Hidden layout for Adicionales fields -->
             <LinearLayout
-                android:id="@+id/additional_data_layout"
+                android:id="@+id/adicionales_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone">
-
-                <TextView
-                    android:id="@+id/label_observaciones"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Observaciones:" />
+                android:visibility="gone"
+                android:layout_marginTop="16dp">
 
                 <EditText
                     android:id="@+id/input_observaciones"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp" />
-
-                <TextView
-                    android:id="@+id/label_historial"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Historial:" />
+                    android:hint="Observaciones" />
 
                 <EditText
                     android:id="@+id/input_historial"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp" />
+                    android:hint="Historial" />
             </LinearLayout>
-        </LinearLayout>
 
-        <!-- Botón Agregar -->
-        <Button
-            android:id="@+id/button_agregar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Agregar"
-            android:layout_gravity="center"
-            android:layout_marginTop="16dp" />
+            <!-- Button to save the client data -->
+            <Button
+                android:id="@+id/button_agregar_cliente"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Agregar Cliente"
+                android:layout_marginTop="16dp" />
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>
