@@ -2,13 +2,14 @@ package com.darkbox
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Spinner
 import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AlertDialog
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-
 
 class ClientesActivity : ComponentActivity() {
 
@@ -33,6 +34,19 @@ class ClientesActivity : ComponentActivity() {
         val buttonAgregarCliente: Button = findViewById(R.id.button_agregar_cliente)
         val buttonUbicacion: Button = findViewById(R.id.button_ubicacion)
         val ubicacionLayout: View = findViewById(R.id.ubicacion_layout)
+
+        // Referencia al Spinner
+        val spinnerZona: Spinner = findViewById(R.id.spinner_zona)
+
+        // Configurar el adaptador para el Spinner
+        ArrayAdapter.createFromResource(
+            this,
+            R.array.zona_options, // La referencia al array de strings
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinnerZona.adapter = adapter
+        }
 
         // Inicializa el layout de datos cliente, servicio y adicionales
         datosClienteLayout.visibility = View.GONE
@@ -176,40 +190,44 @@ class ClientesActivity : ComponentActivity() {
         }
     }
 
+    private fun showMessage(message: String) {
+        AlertDialog.Builder(this)
+            .setMessage(message)
+            .setPositiveButton("OK", null)
+            .show()
+    }
+
     private fun showConfirmationDialogForClient(
-        codCliente: String, nombres: String, apellidos: String, tipoDocumento: String, numeroDocumento: String,
-        direccion: String, telefono: String, correo: String, contactos: String, plan: String, tecnologia: String,
-        equipos: String, ipAntena: String, ipRemota: String, observaciones: String, historial: String
+        codCliente: String, nombres: String, apellidos: String, tipoDocumento: String,
+        numeroDocumento: String, direccion: String, telefono: String, correo: String,
+        contactos: String, plan: String, tecnologia: String, equipos: String, ipAntena: String,
+        ipRemota: String, observaciones: String, historial: String
     ) {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Confirmar")
-        builder.setMessage("¿Deseas guardar los datos del cliente?")
-        builder.setPositiveButton("Sí") { dialog, _ ->
-            saveClientData(
-                codCliente, nombres, apellidos, tipoDocumento, numeroDocumento, direccion,
-                telefono, correo, contactos, plan, tecnologia, equipos, ipAntena, ipRemota,
-                observaciones, historial
-            )
-            dialog.dismiss()
-            finish() // Close the activity and go back to the previous screen
-        }
-        builder.setNegativeButton("No") { dialog, _ ->
-            dialog.dismiss()
-            finish() // Close the activity and go back to the previous screen
-        }
-        builder.create().show()
+        AlertDialog.Builder(this)
+            .setTitle("Confirmación")
+            .setMessage("¿Deseas guardar los datos del cliente?")
+            .setPositiveButton("Sí") { _, _ ->
+                saveClientData(
+                    codCliente, nombres, apellidos, tipoDocumento, numeroDocumento, direccion,
+                    telefono, correo, contactos, plan, tecnologia, equipos, ipAntena, ipRemota,
+                    observaciones, historial
+                )
+            }
+            .setNegativeButton("No", null)
+            .show()
     }
 
     private fun saveClientData(
-        codCliente: String, nombres: String, apellidos: String, tipoDocumento: String, numeroDocumento: String,
-        direccion: String, telefono: String, correo: String, contactos: String, plan: String, tecnologia: String,
-        equipos: String, ipAntena: String, ipRemota: String, observaciones: String, historial: String
+        codCliente: String, nombres: String, apellidos: String, tipoDocumento: String,
+        numeroDocumento: String, direccion: String, telefono: String, correo: String,
+        contactos: String, plan: String, tecnologia: String, equipos: String, ipAntena: String,
+        ipRemota: String, observaciones: String, historial: String
     ) {
         val clientData = mapOf(
             "nombres" to nombres,
             "apellidos" to apellidos,
-            "tipo_documento" to tipoDocumento,
-            "numero_documento" to numeroDocumento,
+            "tipoDocumento" to tipoDocumento,
+            "numeroDocumento" to numeroDocumento,
             "direccion" to direccion,
             "telefono" to telefono,
             "correo" to correo,
@@ -217,33 +235,18 @@ class ClientesActivity : ComponentActivity() {
             "plan" to plan,
             "tecnologia" to tecnologia,
             "equipos" to equipos,
-            "ip_antena" to ipAntena,
-            "ip_remota" to ipRemota,
+            "ipAntena" to ipAntena,
+            "ipRemota" to ipRemota,
             "observaciones" to observaciones,
             "historial" to historial
         )
 
-        // Save client data in the database with the provided Cod. Cliente as the key
         database.child("clientes").child(codCliente).setValue(clientData)
             .addOnSuccessListener {
-                // Data written successfully
-                showMessage("Datos del cliente guardados")
+                showMessage("Datos del cliente guardados exitosamente.")
             }
-            .addOnFailureListener { exception ->
-                // Error handling
-                exception.printStackTrace()
-                showMessage("Error al guardar los datos del cliente")
+            .addOnFailureListener {
+                showMessage("Error al guardar los datos del cliente.")
             }
-    }
-
-    private fun showMessage(message: String) {
-        AlertDialog.Builder(this)
-            .setTitle("Resultado")
-            .setMessage(message)
-            .setPositiveButton("OK") { dialog, _ ->
-                dialog.dismiss()
-            }
-            .create()
-            .show()
     }
 }
