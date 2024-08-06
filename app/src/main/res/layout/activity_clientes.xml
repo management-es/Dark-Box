@@ -159,11 +159,18 @@
                     android:layout_height="wrap_content"
                     android:hint="Plan" />
 
-                <EditText
-                    android:id="@+id/input_tecnologia"
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Tecnología" />
+                    android:text="Tecnologia"
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp"/>
+
+                <Spinner
+                    android:id="@+id/spinner_tecnologia"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Tecnologia" />
 
                 <EditText
                     android:id="@+id/input_equipos"

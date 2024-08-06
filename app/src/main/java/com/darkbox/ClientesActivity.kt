@@ -41,6 +41,9 @@ class ClientesActivity : ComponentActivity() {
         // Spinner de Plan
         val spinnerPlan: Spinner = findViewById(R.id.spinner_plan)
 
+        // Spinner de Tecnologia
+        val spinnerTecnologia: Spinner = findViewById(R.id.spinner_tecnologia)
+
 
         // Configurar el adaptador para el Spinner zona
         ArrayAdapter.createFromResource(
@@ -60,6 +63,16 @@ class ClientesActivity : ComponentActivity() {
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinnerPlan.adapter = adapter
+        }
+
+        // Configurar el adaptador para el Spinner tecnologia
+        ArrayAdapter.createFromResource(
+            this,
+            R.array.tecnologia_options, // La referencia al array de strings
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinnerTecnologia.adapter = adapter
         }
 
         // Inicializa el layout de datos cliente, servicio y adicionales
@@ -116,7 +129,7 @@ class ClientesActivity : ComponentActivity() {
                 val correo = findViewById<EditText>(R.id.input_correo).text.toString()
                 val contactos = findViewById<EditText>(R.id.input_contactos).text.toString()
                 val plan = spinnerPlan.selectedItem.toString()
-                val tecnologia = findViewById<EditText>(R.id.input_tecnologia).text.toString()
+                val tecnologia = spinnerTecnologia.selectedItem.toString()
                 val equipos = findViewById<EditText>(R.id.input_equipos).text.toString()
                 val ipAntena = findViewById<EditText>(R.id.input_ip_antena).text.toString()
                 val ipRemota = findViewById<EditText>(R.id.input_ip_remota).text.toString()

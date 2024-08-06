@@ -26,6 +26,13 @@
         <item>Oro</item>
     </string-array>
 
+    <string-array name="tecnologia_options">
+        <item>Seleccionar</item>
+        <item>Fibra Optica</item>
+        <item>Radio Enlace</item>
+
+    </string-array>
+
     <string-array name="equipo_array">
         <item>Antena Cliente</item>
         <item>Router</item>
