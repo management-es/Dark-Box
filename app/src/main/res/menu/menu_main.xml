@@ -8,4 +8,9 @@
         android:id="@+id/action_clientes"
         android:title="Clientes"
         android:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_agenda"
+        android:title="Agenda"
+        android:showAsAction="never" />
 </menu>

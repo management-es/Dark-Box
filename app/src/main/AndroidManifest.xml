@@ -42,5 +42,12 @@
             android:exported="true"
             android:label="Clientes"
             android:theme="@style/Theme.DarkBox" />
+
+        <!-- Agregar AgendaActivity -->
+        <activity
+            android:name=".AgendaActivity"
+            android:exported="true"
+            android:label="Agenda"
+            android:theme="@style/Theme.DarkBox" />
     </application>
 </manifest>

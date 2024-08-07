@@ -25,7 +25,9 @@ class MainActivity : ComponentActivity() {
             DarkBoxTheme {
                 MainScreen(
                     onInventoryClick = { navigateToInventory() },
-                    onClientesClick = { navigateToClientes() }
+                    onClientesClick = { navigateToClientes() },
+                    onAgendaClick = { navigateToAgenda() }
+
                 )
             }
         }
@@ -40,11 +42,16 @@ class MainActivity : ComponentActivity() {
         val intent = Intent(this, ClientesActivity::class.java)
         startActivity(intent)
     }
+
+    private fun navigateToAgenda() {
+        val intent = Intent(this, AgendaActivity::class.java)
+        startActivity(intent)
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(onInventoryClick: () -> Unit, onClientesClick: () -> Unit) {
+fun MainScreen(onInventoryClick: () -> Unit, onClientesClick: () -> Unit, onAgendaClick: () -> Unit) {
     var expanded by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -73,6 +80,15 @@ fun MainScreen(onInventoryClick: () -> Unit, onClientesClick: () -> Unit) {
                                 expanded = false
                                 onClientesClick()
                             }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Agenda") },
+                            onClick = {
+                                expanded = false
+                                onAgendaClick()
+                            }
+
+
                         )
                     }
                 }
@@ -106,7 +122,8 @@ fun GreetingPreview() {
     DarkBoxTheme {
         MainScreen(
             onInventoryClick = {},
-            onClientesClick = {}
+            onClientesClick = {},
+            onAgendaClick = {}
         )
     }
 }
