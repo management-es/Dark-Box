@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Dark Box</string>
-
     <!-- Arrays para los Spinner -->
     <string-array name="estado_array">
         <item>Activo</item>
         <item>Inactivo</item>
         <item>Retirado</item>
     </string-array>
-
     <string-array name="zona_options">
         <item>Seleccionar</item>
         <item>Medellín</item>
@@ -26,19 +24,26 @@
         <item>Oro</item>
     </string-array>
 
-    <string-array name="tecnologia_options">
-        <item>Seleccionar</item>
-        <item>Fibra Optica</item>
-        <item>Radio Enlace</item>
-
-    </string-array>
-
     <string-array name="equipo_array">
         <item>Antena Cliente</item>
         <item>Router</item>
         <item>Onu</item>
         <item>Enlace</item>
         <item>Sector</item>
+    </string-array>
+
+    <string-array name="tecnologia_options">
+        <item>Seleccionar</item>
+        <item>Fibra Óptica</item>
+        <item>Radio Enlace</item>
+    </string-array>
+
+    <string-array name="tipo_documento_options">
+        <item>Seleccionar</item>
+        <item>Cédula de Ciudadanía</item>
+        <item>RUT</item>
+        <item>Cédula de Extranjería</item>
+        <item>Pasaporte</item>
     </string-array>
 
     <!-- Otros recursos de cadena si es necesario -->

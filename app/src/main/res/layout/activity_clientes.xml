@@ -2,20 +2,17 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp">
-
         <!-- Button to show more options -->
         <Button
             android:id="@+id/button_ingresar_cliente"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Ingresar Cliente" />
-
         <!-- Hidden layout for additional options -->
         <LinearLayout
             android:id="@+id/options_layout"
@@ -24,14 +21,12 @@
             android:orientation="vertical"
             android:visibility="gone"
             android:layout_marginTop="16dp">
-
             <!-- Button for Datos Cliente -->
             <Button
                 android:id="@+id/button_datos_cliente"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Datos Cliente" />
-
             <!-- Hidden layout for Datos Cliente fields -->
             <LinearLayout
                 android:id="@+id/datos_cliente_layout"
@@ -40,44 +35,47 @@
                 android:orientation="vertical"
                 android:visibility="gone"
                 android:layout_marginTop="16dp">
-
                 <EditText
                     android:id="@+id/input_nombres"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Nombres" />
-
                 <EditText
                     android:id="@+id/input_apellidos"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Apellidos" />
 
-                <EditText
-                    android:id="@+id/input_tipo_documento"
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Tipo Documento"
+                    android:textSize="16sp"
+                    android:paddingBottom="8dp"/>
+
+                <Spinner
+                    android:id="@+id/spinner_tipo_documento"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Tipo Documento" />
+
 
                 <EditText
                     android:id="@+id/input_numero_documento"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Número Documento" />
-
                 <Button
                     android:id="@+id/button_ubicacion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Ubicación" />
-
                 <LinearLayout
                     android:id="@+id/ubicacion_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:visibility="gone">
-
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -90,47 +88,39 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Zona" />
-
-
                     <EditText
                         android:id="@+id/input_direccion"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Dirección" />
-
                     <EditText
                         android:id="@+id/input_coordenadas"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Coordenadas" />
                 </LinearLayout>
-
                 <EditText
                     android:id="@+id/input_telefono"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Teléfono" />
-
                 <EditText
                     android:id="@+id/input_correo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Correo" />
-
                 <EditText
                     android:id="@+id/input_contactos"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Contactos" />
             </LinearLayout>
-
             <!-- Button for Servicio -->
             <Button
                 android:id="@+id/button_servicio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Servicio" />
-
             <!-- Hidden layout for Servicio fields -->
             <LinearLayout
                 android:id="@+id/servicio_layout"
@@ -139,7 +129,6 @@
                 android:orientation="vertical"
                 android:visibility="gone"
                 android:layout_marginTop="16dp">
-
                 <EditText
                     android:id="@+id/input_cod_cliente"
                     android:layout_width="match_parent"
@@ -162,92 +151,37 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Tecnologia"
+                    android:text="Tecnología"
                     android:textSize="16sp"
                     android:paddingBottom="8dp"/>
-
                 <Spinner
                     android:id="@+id/spinner_tecnologia"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Tecnologia" />
+                    android:hint="Tecnología" />
 
                 <EditText
                     android:id="@+id/input_equipos"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Equipos" />
-
-
-                <!-- Layout para los campos específicos de Fibra Optica -->
-                <LinearLayout
-                    android:id="@+id/fibra_optica_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <EditText
-                        android:id="@+id/input_serial_onu"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Serial ONU" />
-
-                    <EditText
-                        android:id="@+id/input_equipo_adicional_fibra"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Equipo Adicional" />
-                </LinearLayout>
-
-                <!-- Layout para los campos específicos de Radio Enlace -->
-                <LinearLayout
-                    android:id="@+id/radio_enlace_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <EditText
-                        android:id="@+id/input_antena"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Antena" />
-
-                    <EditText
-                        android:id="@+id/input_router"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Router" />
-
-                    <EditText
-                        android:id="@+id/input_equipo_adicional_radio"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Equipo Adicional" />
-                </LinearLayout>
-
-
                 <EditText
                     android:id="@+id/input_ip_antena"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="IP Antena" />
-
                 <EditText
                     android:id="@+id/input_ip_remota"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="IP Remota" />
             </LinearLayout>
-
             <!-- Button for Adicionales -->
             <Button
                 android:id="@+id/button_adicionales"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Adicionales" />
-
             <!-- Hidden layout for Adicionales fields -->
             <LinearLayout
                 android:id="@+id/adicionales_layout"
@@ -256,20 +190,17 @@
                 android:orientation="vertical"
                 android:visibility="gone"
                 android:layout_marginTop="16dp">
-
                 <EditText
                     android:id="@+id/input_observaciones"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Observaciones" />
-
                 <EditText
                     android:id="@+id/input_historial"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Historial" />
             </LinearLayout>
-
             <!-- Button to save the client data -->
             <Button
                 android:id="@+id/button_agregar_cliente"

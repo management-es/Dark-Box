@@ -1,8 +1,6 @@
 package com.darkbox
-
 import android.os.Bundle
 import android.view.View
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
@@ -11,18 +9,13 @@ import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AlertDialog
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-
 class ClientesActivity : ComponentActivity() {
-
     private lateinit var database: DatabaseReference
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_clientes)
-
         // Inicializa la referencia a la base de datos
         database = FirebaseDatabase.getInstance().reference
-
         // Referencias a los campos y botones
         val buttonIngresarCliente: Button = findViewById(R.id.button_ingresar_cliente)
         val optionsLayout: View = findViewById(R.id.options_layout)
@@ -38,17 +31,26 @@ class ClientesActivity : ComponentActivity() {
 
         // Spinner zona
         val spinnerZona: Spinner = findViewById(R.id.spinner_zona)
-        val spinnerPlan: Spinner = findViewById(R.id.spinner_plan)
-        val spinnerTecnologia: Spinner = findViewById(R.id.spinner_tecnologia)
 
-        // Layouts específicos
-        val fibraOpticaLayout: View = findViewById(R.id.fibra_optica_layout)
-        val radioEnlaceLayout: View = findViewById(R.id.radio_enlace_layout)
+        // Spinner de Plan
+        val spinnerPlan: Spinner = findViewById(R.id.spinner_plan)
+
+        // Configurar el Spinner para Tipo de Documento
+        val spinnerTipoDocumento: Spinner = findViewById(R.id.spinner_tipo_documento)
+        ArrayAdapter.createFromResource(
+            this,
+            R.array.tipo_documento_options,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinnerTipoDocumento.adapter = adapter
+        }
+
 
         // Configurar el adaptador para el Spinner zona
         ArrayAdapter.createFromResource(
             this,
-            R.array.zona_options,
+            R.array.zona_options, // La referencia al array de strings
             android.R.layout.simple_spinner_item
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -58,14 +60,15 @@ class ClientesActivity : ComponentActivity() {
         // Configurar el adaptador para el Spinner plan
         ArrayAdapter.createFromResource(
             this,
-            R.array.plan_options,
+            R.array.plan_options, // La referencia al array de strings
             android.R.layout.simple_spinner_item
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinnerPlan.adapter = adapter
         }
 
-        // Configurar el adaptador para el Spinner tecnologia
+        // Configurar el Spinner de Tecnología
+        val spinnerTecnologia: Spinner = findViewById(R.id.spinner_tecnologia)
         ArrayAdapter.createFromResource(
             this,
             R.array.tecnologia_options,
@@ -75,25 +78,20 @@ class ClientesActivity : ComponentActivity() {
             spinnerTecnologia.adapter = adapter
         }
 
-        // Inicializa los layouts de datos cliente, servicio y adicionales
+        // Inicializa el layout de datos cliente, servicio y adicionales
         datosClienteLayout.visibility = View.GONE
         servicioLayout.visibility = View.GONE
         adicionalesLayout.visibility = View.GONE
-        fibraOpticaLayout.visibility = View.GONE
-        radioEnlaceLayout.visibility = View.GONE
-
         // Manejar el clic del botón de ingresar cliente
         buttonIngresarCliente.setOnClickListener {
             optionsLayout.visibility = View.VISIBLE
         }
-
         // Manejar el clic del botón de datos cliente
         buttonDatosCliente.setOnClickListener {
             datosClienteLayout.visibility = View.VISIBLE
             servicioLayout.visibility = View.GONE
             adicionalesLayout.visibility = View.GONE
         }
-
         // Manejar el clic del botón de ubicación
         buttonUbicacion.setOnClickListener {
             // Alternar la visibilidad del layout de ubicación
@@ -103,53 +101,25 @@ class ClientesActivity : ComponentActivity() {
                 ubicacionLayout.visibility = View.GONE
             }
         }
-
         // Manejar el clic del botón de servicio
         buttonServicio.setOnClickListener {
             datosClienteLayout.visibility = View.GONE
             servicioLayout.visibility = View.VISIBLE
             adicionalesLayout.visibility = View.GONE
         }
-
         // Manejar el clic del botón de adicionales
         buttonAdicionales.setOnClickListener {
             datosClienteLayout.visibility = View.GONE
             servicioLayout.visibility = View.GONE
             adicionalesLayout.visibility = View.VISIBLE
         }
-
-        // Manejar el cambio en el Spinner de Tecnología
-        spinnerTecnologia.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                when (spinnerTecnologia.selectedItem.toString()) {
-                    "Fibra Optica" -> {
-                        fibraOpticaLayout.visibility = View.VISIBLE
-                        radioEnlaceLayout.visibility = View.GONE
-                    }
-                    "Radio Enlace" -> {
-                        fibraOpticaLayout.visibility = View.GONE
-                        radioEnlaceLayout.visibility = View.VISIBLE
-                    }
-                    else -> {
-                        fibraOpticaLayout.visibility = View.GONE
-                        radioEnlaceLayout.visibility = View.GONE
-                    }
-                }
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                fibraOpticaLayout.visibility = View.GONE
-                radioEnlaceLayout.visibility = View.GONE
-            }
-        }
-
         // Manejar el clic del botón de agregar cliente
         buttonAgregarCliente.setOnClickListener {
             if (validateClientData()) {
                 val codCliente = findViewById<EditText>(R.id.input_cod_cliente).text.toString()
                 val nombres = findViewById<EditText>(R.id.input_nombres).text.toString()
                 val apellidos = findViewById<EditText>(R.id.input_apellidos).text.toString()
-                val tipoDocumento = findViewById<EditText>(R.id.input_tipo_documento).text.toString()
+                val tipoDocumento = spinnerTipoDocumento.selectedItem.toString()
                 val numeroDocumento = findViewById<EditText>(R.id.input_numero_documento).text.toString()
                 val direccion = findViewById<EditText>(R.id.input_direccion).text.toString()
                 val telefono = findViewById<EditText>(R.id.input_telefono).text.toString()
@@ -164,7 +134,6 @@ class ClientesActivity : ComponentActivity() {
                 val historial = findViewById<EditText>(R.id.input_historial).text.toString()
                 val zona = spinnerZona.selectedItem.toString()
                 val coordenadas = findViewById<EditText>(R.id.input_coordenadas).text.toString()
-
                 showConfirmationDialogForClient(
                     codCliente, nombres, apellidos, tipoDocumento, numeroDocumento, direccion,
                     telefono, correo, contactos, plan, tecnologia, equipos, ipAntena, ipRemota,
@@ -173,23 +142,21 @@ class ClientesActivity : ComponentActivity() {
             }
         }
     }
-
     private fun validateClientData(): Boolean {
         val nombres = findViewById<EditText>(R.id.input_nombres).text.toString()
         val apellidos = findViewById<EditText>(R.id.input_apellidos).text.toString()
-        val tipoDocumento = findViewById<EditText>(R.id.input_tipo_documento).text.toString()
+
         val numeroDocumento = findViewById<EditText>(R.id.input_numero_documento).text.toString()
         val direccion = findViewById<EditText>(R.id.input_direccion).text.toString()
         val telefono = findViewById<EditText>(R.id.input_telefono).text.toString()
         val correo = findViewById<EditText>(R.id.input_correo).text.toString()
         val contactos = findViewById<EditText>(R.id.input_contactos).text.toString()
-        val tecnologia = findViewById<EditText>(R.id.input_tecnologia).text.toString()
+
         val equipos = findViewById<EditText>(R.id.input_equipos).text.toString()
         val ipAntena = findViewById<EditText>(R.id.input_ip_antena).text.toString()
         val ipRemota = findViewById<EditText>(R.id.input_ip_remota).text.toString()
         val observaciones = findViewById<EditText>(R.id.input_observaciones).text.toString()
         val coordenadas = findViewById<EditText>(R.id.input_coordenadas).text.toString()
-
         return when {
             nombres.isEmpty() -> {
                 showMessage("El campo 'Nombres' es obligatorio.")
@@ -199,10 +166,7 @@ class ClientesActivity : ComponentActivity() {
                 showMessage("El campo 'Apellidos' es obligatorio.")
                 false
             }
-            tipoDocumento.isEmpty() -> {
-                showMessage("El campo 'Tipo Documento' es obligatorio.")
-                false
-            }
+
             numeroDocumento.isEmpty() -> {
                 showMessage("El campo 'Número Documento' es obligatorio.")
                 false
@@ -223,10 +187,7 @@ class ClientesActivity : ComponentActivity() {
                 showMessage("El campo 'Contactos' es obligatorio.")
                 false
             }
-            tecnologia.isEmpty() -> {
-                showMessage("El campo 'Tecnología' es obligatorio.")
-                false
-            }
+
             equipos.isEmpty() -> {
                 showMessage("El campo 'Equipos' es obligatorio.")
                 false
@@ -247,18 +208,15 @@ class ClientesActivity : ComponentActivity() {
                 showMessage("El campo 'Coordenadas' es obligatorio.")
                 false
             }
-
             else -> true
         }
     }
-
     private fun showMessage(message: String) {
         AlertDialog.Builder(this)
             .setMessage(message)
             .setPositiveButton("OK", null)
             .show()
     }
-
     private fun showConfirmationDialogForClient(
         codCliente: String, nombres: String, apellidos: String, tipoDocumento: String,
         numeroDocumento: String, direccion: String, telefono: String, correo: String,
@@ -278,7 +236,6 @@ class ClientesActivity : ComponentActivity() {
             .setNegativeButton("No", null)
             .show()
     }
-
     private fun saveClientData(
         codCliente: String, nombres: String, apellidos: String, tipoDocumento: String,
         numeroDocumento: String, direccion: String, telefono: String, correo: String,
@@ -304,7 +261,6 @@ class ClientesActivity : ComponentActivity() {
             "zona" to zona,
             "coordenadas" to coordenadas
         )
-
         database.child("clientes").child(codCliente).setValue(clientData)
             .addOnSuccessListener {
                 showMessage("Datos del cliente guardados exitosamente.")
