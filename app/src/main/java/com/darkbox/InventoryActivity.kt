@@ -92,8 +92,8 @@ class InventoryActivity : ComponentActivity() {
             "observaciones" to observaciones
         )
 
-        // Escribir los datos del equipo en la base de datos con una clave única
-        database.child("inventario").push().setValue(equipmentData)
+        // Escribir los datos del equipo en la base de datos usando el serial como clave
+        database.child("inventario").child(serial).setValue(equipmentData)
             .addOnSuccessListener {
                 // Datos escritos correctamente
                 showMessage("Datos del equipo guardados")
