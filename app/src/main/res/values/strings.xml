@@ -46,5 +46,8 @@
         <item>Pasaporte</item>
     </string-array>
 
+    <string name="seleccionar_cliente">Seleccionar Cliente</string>
+
+
     <!-- Otros recursos de cadena si es necesario -->
 </resources>
