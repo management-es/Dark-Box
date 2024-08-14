@@ -8,6 +8,8 @@ import android.widget.*
 import androidx.activity.ComponentActivity
 import com.google.firebase.database.*
 import java.util.*
+import com.google.android.material.textfield.TextInputEditText
+import android.widget.ArrayAdapter
 
 class AgendaActivity : ComponentActivity() {
 
@@ -16,6 +18,8 @@ class AgendaActivity : ComponentActivity() {
     private lateinit var database: DatabaseReference
     private lateinit var textViewNombreCliente: TextView
     private var allClientes = mutableListOf<String>() // Para almacenar todos los clientes y permitir búsqueda
+    private lateinit var spinnerGestion: Spinner
+    private lateinit var editTextObservaciones: TextInputEditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +32,14 @@ class AgendaActivity : ComponentActivity() {
         spinnerClientes = findViewById(R.id.spinner_clientes)
         searchView = findViewById(R.id.search_view)
         textViewNombreCliente = findViewById(R.id.text_view_nombre_cliente)
+        spinnerGestion = findViewById(R.id.spinner_gestion)
+
+        // Configura el Spinner
+        configurarSpinnerGestion()
+
+        editTextObservaciones = findViewById(R.id.editText_observaciones)
+
+
 
         // Configurar la visibilidad inicial
         dateInputLayout.visibility = View.GONE
@@ -154,4 +166,12 @@ class AgendaActivity : ComponentActivity() {
         )
         datePickerDialog.show()
     }
+
+    private fun configurarSpinnerGestion() {
+        val opcionesGestion = resources.getStringArray(R.array.spinner_gestion_opciones)
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, opcionesGestion)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerGestion.adapter = adapter
+    }
 }
+
