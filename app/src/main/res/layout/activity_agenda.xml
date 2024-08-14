@@ -105,6 +105,14 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Botón para cargar cliente -->
+        <Button
+            android:id="@+id/button_cargar_cliente"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cargar Cliente"
+            android:layout_marginTop="16dp"/>
+
 
     </LinearLayout>
 

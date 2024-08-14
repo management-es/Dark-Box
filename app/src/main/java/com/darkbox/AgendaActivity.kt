@@ -9,7 +9,11 @@ import androidx.activity.ComponentActivity
 import com.google.firebase.database.*
 import java.util.*
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import android.widget.ArrayAdapter
+import java.text.SimpleDateFormat
+import java.util.Locale
+
 
 class AgendaActivity : ComponentActivity() {
 
@@ -20,6 +24,9 @@ class AgendaActivity : ComponentActivity() {
     private var allClientes = mutableListOf<String>() // Para almacenar todos los clientes y permitir búsqueda
     private lateinit var spinnerGestion: Spinner
     private lateinit var editTextObservaciones: TextInputEditText
+    private lateinit var buttonCargarCliente: Button
+    private var fechaSeleccionada: String? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,13 +40,16 @@ class AgendaActivity : ComponentActivity() {
         searchView = findViewById(R.id.search_view)
         textViewNombreCliente = findViewById(R.id.text_view_nombre_cliente)
         spinnerGestion = findViewById(R.id.spinner_gestion)
+        editTextObservaciones = findViewById(R.id.editText_observaciones)
+        buttonCargarCliente = findViewById(R.id.button_cargar_cliente)
 
-        // Configura el Spinner
+        // Configura el Spinner de Gestión
         configurarSpinnerGestion()
 
-        editTextObservaciones = findViewById(R.id.editText_observaciones)
-
-
+        // Configura el botón Cargar Cliente
+        buttonCargarCliente.setOnClickListener {
+            cargarCliente()
+        }
 
         // Configurar la visibilidad inicial
         dateInputLayout.visibility = View.GONE
@@ -145,7 +155,6 @@ class AgendaActivity : ComponentActivity() {
         })
     }
 
-
     private fun filtrarClientes(query: String?) {
         val filteredClientes = allClientes.filter { cliente ->
             cliente.contains(query ?: "", ignoreCase = true)
@@ -158,7 +167,14 @@ class AgendaActivity : ComponentActivity() {
         val datePickerDialog = DatePickerDialog(
             this,
             { _, year, month, dayOfMonth ->
-                dateEditText.setText("$dayOfMonth/${month + 1}/$year")
+                val fechaFormateada = "$dayOfMonth/${month + 1}/$year"
+                dateEditText.setText(fechaFormateada)
+
+                // Almacena la fecha en formato YYYYMMDD
+                val sdf = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
+                fechaSeleccionada = sdf.format(Calendar.getInstance().apply {
+                    set(year, month, dayOfMonth)
+                }.time)
             },
             calendar.get(Calendar.YEAR),
             calendar.get(Calendar.MONTH),
@@ -167,11 +183,73 @@ class AgendaActivity : ComponentActivity() {
         datePickerDialog.show()
     }
 
+
     private fun configurarSpinnerGestion() {
         val opcionesGestion = resources.getStringArray(R.array.spinner_gestion_opciones)
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, opcionesGestion)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerGestion.adapter = adapter
     }
-}
 
+    private fun cargarCliente() {
+        val gestionSeleccionada = spinnerGestion.selectedItem.toString()
+        val observaciones = editTextObservaciones.text.toString()
+        val clienteSeleccionado = spinnerClientes.selectedItem.toString()
+
+        // Verifica si se ha seleccionado un cliente y una fecha
+        if (clienteSeleccionado.isNotEmpty() && fechaSeleccionada != null) {
+            // Obtener datos del cliente desde Firebase
+            database.child(clienteSeleccionado).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val nombreCliente = snapshot.child("nombres").getValue(String::class.java)
+                    val apellidosCliente = snapshot.child("apellidos").getValue(String::class.java)
+                    val numeroDocumento = snapshot.child("numeroDocumento").getValue(String::class.java)
+                    val direccion = snapshot.child("direccion").getValue(String::class.java)
+                    val coordenadas = snapshot.child("coordenadas").getValue(String::class.java)
+                    val telefono = snapshot.child("telefono").getValue(String::class.java)
+                    val contactos = snapshot.child("contactos").getValue(String::class.java)
+
+                    // Crear la clave única combinando fecha y codCliente
+                    val claveUnica = "$fechaSeleccionada-$clienteSeleccionado"
+
+                    // Crear un mapa con todos los datos del cliente y las observaciones
+                    val clienteData: Map<String, Any?> = mapOf(
+                        "nombre" to nombreCliente,
+                        "apellidos" to apellidosCliente,
+                        "numeroDocumento" to numeroDocumento,
+                        "direccion" to direccion,
+                        "coordenadas" to coordenadas,
+                        "telefono" to telefono,
+                        "contactos" to contactos,
+                        "gestion" to gestionSeleccionada,
+                        "observaciones" to observaciones
+                    )
+
+                    // Guardar los datos en Firebase Realtime Database con la clave única
+                    val database = FirebaseDatabase.getInstance().getReference("agenda")
+                    val newEntryRef = database.child(claveUnica)  // Usa la clave única para almacenar los datos
+
+                    newEntryRef.setValue(clienteData)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                Toast.makeText(this@AgendaActivity, "Cliente cargado exitosamente", Toast.LENGTH_SHORT).show()
+                                // Limpia los campos si lo deseas
+                                spinnerGestion.setSelection(0)
+                                editTextObservaciones.text?.clear()
+                            } else {
+                                Toast.makeText(this@AgendaActivity, "Error al cargar el cliente", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(this@AgendaActivity, "Error al obtener los datos del cliente", Toast.LENGTH_SHORT).show()
+                }
+            })
+        } else {
+            Toast.makeText(this@AgendaActivity, "Seleccione un cliente y una fecha", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+}
