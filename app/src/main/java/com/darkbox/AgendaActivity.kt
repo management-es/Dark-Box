@@ -14,6 +14,7 @@ class AgendaActivity : ComponentActivity() {
     private lateinit var spinnerClientes: Spinner
     private lateinit var searchView: SearchView
     private lateinit var database: DatabaseReference
+    private lateinit var textViewNombreCliente: TextView
     private var allClientes = mutableListOf<String>() // Para almacenar todos los clientes y permitir búsqueda
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,6 +27,7 @@ class AgendaActivity : ComponentActivity() {
         val dateEditText: EditText = findViewById(R.id.input_date)
         spinnerClientes = findViewById(R.id.spinner_clientes)
         searchView = findViewById(R.id.search_view)
+        textViewNombreCliente = findViewById(R.id.text_view_nombre_cliente)
 
         // Configurar la visibilidad inicial
         dateInputLayout.visibility = View.GONE
@@ -54,6 +56,18 @@ class AgendaActivity : ComponentActivity() {
                 return true
             }
         })
+
+        // Listener para el spinner para mostrar el nombre del cliente seleccionado
+        spinnerClientes.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val codCliente = parent.getItemAtPosition(position).toString()
+                mostrarNombreCliente(codCliente)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                textViewNombreCliente.text = ""
+            }
+        }
     }
 
     private fun cargarClientes() {
@@ -89,28 +103,49 @@ class AgendaActivity : ComponentActivity() {
         spinnerClientes.visibility = View.VISIBLE  // Hacer visible el Spinner después de cargar los datos
     }
 
-    private fun filtrarClientes(query: String?) {
-        val filteredClientes = allClientes.filter { cliente ->
-            cliente.contains(query ?: "", ignoreCase = true) || // Filtro por codCliente
-                    buscarPorCampoEnCliente(cliente, "nombres", query) || // Filtro por nombres
-                    buscarPorCampoEnCliente(cliente, "apellidos", query) || // Filtro por apellidos
-                    buscarPorCampoEnCliente(cliente, "numeroDocumento", query) // Filtro por número de documento
-        }
-        actualizarSpinner(filteredClientes)
+    private fun mostrarNombreCliente(codCliente: String) {
+        database.child(codCliente).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val nombreCliente = snapshot.child("nombres").getValue(String::class.java)
+                val apellidosCliente = snapshot.child("apellidos").getValue(String::class.java)
+                val numeroDocumento = snapshot.child("numeroDocumento").getValue(String::class.java)
+                val direccion = snapshot.child("direccion").getValue(String::class.java)
+                val coordenadas = snapshot.child("coordenadas").getValue(String::class.java)
+                val telefono = snapshot.child("telefono").getValue(String::class.java)
+                val contactos = snapshot.child("contactos").getValue(String::class.java)
+
+                val informacionCliente = """
+                Nombre: ${nombreCliente ?: "Nombre no encontrado"}
+                Apellidos: ${apellidosCliente ?: "Apellidos no encontrados"}
+                Documento: ${numeroDocumento ?: "Documento no encontrado"}
+                Dirección: ${direccion ?: "Dirección no encontrada"}
+                Coordenadas: ${coordenadas ?: "Coordenadas no encontradas"}
+                Teléfono: ${telefono ?: "Teléfono no encontrado"}
+                Contactos: ${contactos ?: "Contactos no encontrados"}
+            """.trimIndent()
+
+                textViewNombreCliente.text = informacionCliente
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@AgendaActivity, "Error al obtener los datos del cliente", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
-    private fun buscarPorCampoEnCliente(cliente: String, campo: String, query: String?): Boolean {
-        // Implementa la lógica para buscar por otros campos si están disponibles en el cliente
-        // Por ejemplo, podrías realizar una consulta adicional a Firebase para obtener estos campos
-        // Para simplificar, este método siempre devuelve false en este ejemplo
-        return false
+
+    private fun filtrarClientes(query: String?) {
+        val filteredClientes = allClientes.filter { cliente ->
+            cliente.contains(query ?: "", ignoreCase = true)
+        }
+        actualizarSpinner(filteredClientes)
     }
 
     private fun showDatePickerDialog(dateEditText: EditText) {
         val calendar = Calendar.getInstance()
         val datePickerDialog = DatePickerDialog(
             this,
-            { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+            { _, year, month, dayOfMonth ->
                 dateEditText.setText("$dayOfMonth/${month + 1}/$year")
             },
             calendar.get(Calendar.YEAR),
