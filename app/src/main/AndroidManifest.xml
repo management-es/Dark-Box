@@ -49,5 +49,13 @@
             android:exported="true"
             android:label="Agenda"
             android:theme="@style/Theme.DarkBox" />
+
+        <!-- Agregar SolicitudInstalacionActivity -->
+        <activity
+            android:name=".SolicitudInstalacionActivity"
+            android:exported="true"
+            android:label="Solicitud Instalación"
+            android:theme="@style/Theme.DarkBox" />
+
     </application>
 </manifest>

@@ -1,18 +1,17 @@
 package com.darkbox
 
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.activity.ComponentActivity
 import com.google.firebase.database.*
+import java.text.SimpleDateFormat
 import java.util.*
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import android.widget.ArrayAdapter
-import java.text.SimpleDateFormat
-import java.util.Locale
 import android.app.AlertDialog
 
 class AgendaActivity : ComponentActivity() {
@@ -26,6 +25,7 @@ class AgendaActivity : ComponentActivity() {
     private lateinit var editTextObservaciones: TextInputEditText
     private lateinit var buttonCargarCliente: Button
     private var fechaSeleccionada: String? = null
+    private lateinit var buttonSolicitudInstalacion: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +41,7 @@ class AgendaActivity : ComponentActivity() {
         spinnerGestion = findViewById(R.id.spinner_gestion)
         editTextObservaciones = findViewById(R.id.editText_observaciones)
         buttonCargarCliente = findViewById(R.id.button_cargar_cliente)
+        buttonSolicitudInstalacion = findViewById(R.id.button_solicitud_instalacion)
 
         // Configura el Spinner de Gestión
         configurarSpinnerGestion()
@@ -48,6 +49,12 @@ class AgendaActivity : ComponentActivity() {
         // Configura el botón Cargar Cliente
         buttonCargarCliente.setOnClickListener {
             mostrarDialogoConfirmacion()
+        }
+
+        // Configura el botón Solicitud Instalación
+        buttonSolicitudInstalacion.setOnClickListener {
+            val intent = Intent(this, SolicitudInstalacionActivity::class.java)
+            startActivity(intent)
         }
 
         // Configurar la visibilidad inicial
@@ -280,6 +287,8 @@ class AgendaActivity : ComponentActivity() {
                             // Limpia los campos si lo deseas
                             spinnerGestion.setSelection(0)
                             editTextObservaciones.text?.clear()
+                            // Regresar al menú anterior
+                            finish()
                         } else {
                             Toast.makeText(this@AgendaActivity, "Error al cargar el cliente", Toast.LENGTH_SHORT).show()
                         }
