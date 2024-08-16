@@ -51,6 +51,14 @@
             android:layout_marginTop="16dp"
             android:layout_gravity="center_horizontal" />
 
+        <Button
+            android:id="@+id/button_otras_gestiones"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Otras Gestiones"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp" />
+
 
         <!-- SearchView para buscar clientes -->
         <SearchView

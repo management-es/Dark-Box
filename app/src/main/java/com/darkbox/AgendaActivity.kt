@@ -57,6 +57,14 @@ class AgendaActivity : ComponentActivity() {
             startActivity(intent)
         }
 
+        // Referencia al botón Otras Gestiones
+        val buttonOtrasGestiones = findViewById<Button>(R.id.button_otras_gestiones)
+        buttonOtrasGestiones.setOnClickListener {
+            val intent = Intent(this, OtrasGestionesActivity::class.java)
+            startActivity(intent)
+        }
+
+
         // Configurar la visibilidad inicial
         dateInputLayout.visibility = View.GONE
 

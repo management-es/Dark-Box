@@ -57,5 +57,12 @@
             android:label="Solicitud Instalación"
             android:theme="@style/Theme.DarkBox" />
 
+        <activity
+            android:name=".OtrasGestionesActivity"
+            android:exported="true"
+            android:label="Otras Gestiones"
+            android:theme="@style/Theme.DarkBox" />
+
+
     </application>
 </manifest>
