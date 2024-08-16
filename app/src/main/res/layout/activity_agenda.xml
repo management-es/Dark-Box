@@ -11,6 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Crear Agenda" />
+
     <LinearLayout
         android:id="@+id/date_input_layout"
         android:layout_width="match_parent"

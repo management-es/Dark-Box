@@ -94,29 +94,56 @@ class SolicitudInstalacionActivity : ComponentActivity() {
             // Crear el ID de solicitud basado en la fecha
             val idSolicitud = "${fechaSeleccionada}-sol_inst"
 
-            // Crear el objeto de datos
-            val solicitud = mapOf(
-                "nombre" to nombre,
-                "apellidos" to apellidos,
-                "direccion" to direccion,
-                "coordenadas" to coordenadas,
-                "telefono" to telefono,
-                "contactos" to contactos,
-                "observaciones" to observaciones,
-                "fecha" to fechaSeleccionada
-            )
+            // Crear el mensaje para el cuadro de confirmación
+            val mensajeConfirmacion = """
+            Nombre: $nombre
+            Apellidos: $apellidos
+            Dirección: $direccion
+            Coordenadas: $coordenadas
+            Teléfono: $telefono
+            Contactos: $contactos
+            Observaciones: $observaciones
+            Fecha: ${inputFecha.text.toString()}
+        """.trimIndent()
 
-            // Guardar los datos en Firebase
-            database.child(idSolicitud).setValue(solicitud)
-                .addOnSuccessListener {
-                    // Mostrar mensaje de éxito
-                    Toast.makeText(this, "Solicitud guardada con éxito", Toast.LENGTH_SHORT).show()
-                    finish()  // Cierra la actividad
-                }
-                .addOnFailureListener {
-                    // Mostrar mensaje de error
-                    Toast.makeText(this, "Error al guardar la solicitud", Toast.LENGTH_SHORT).show()
-                }
+            // Crear el cuadro de diálogo
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Confirmar Solicitud de Instalación")
+            builder.setMessage(mensajeConfirmacion)
+
+            // Botón de Confirmar
+            builder.setPositiveButton("Confirmar") { _, _ ->
+                // Crear el objeto de datos
+                val solicitud = mapOf(
+                    "nombre" to nombre,
+                    "apellidos" to apellidos,
+                    "direccion" to direccion,
+                    "coordenadas" to coordenadas,
+                    "telefono" to telefono,
+                    "contactos" to contactos,
+                    "observaciones" to observaciones,
+                    "fecha" to fechaSeleccionada
+                )
+
+                // Guardar los datos en Firebase
+                database.child(idSolicitud).setValue(solicitud)
+                    .addOnSuccessListener {
+                        // Mostrar mensaje de éxito
+                        Toast.makeText(this, "Solicitud guardada con éxito", Toast.LENGTH_SHORT).show()
+                        finish()  // Cierra la actividad
+                    }
+                    .addOnFailureListener {
+                        // Mostrar mensaje de error
+                        Toast.makeText(this, "Error al guardar la solicitud", Toast.LENGTH_SHORT).show()
+                    }
+            }
+
+            // Botón de Cancelar
+            builder.setNegativeButton("Cancelar", null)
+
+            // Mostrar el cuadro de diálogo
+            builder.show()
+
         } else {
             Toast.makeText(this, "Por favor complete todos los campos", Toast.LENGTH_SHORT).show()
         }

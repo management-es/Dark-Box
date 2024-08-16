@@ -50,7 +50,6 @@
 
     <string-array name="spinner_gestion_opciones">
         <item>Seleccionar</item>
-        <item>Instalación</item>
         <item>Traslado</item>
         <item>Soporte</item>
         <item>Desmonte</item>
