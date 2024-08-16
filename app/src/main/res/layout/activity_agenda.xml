@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
     tools:context=".AgendaActivity">
+
     <Button
         android:id="@+id/button_crear_agenda"
         android:layout_width="wrap_content"
@@ -19,6 +21,7 @@
         android:orientation="vertical"
         android:visibility="gone"
         android:paddingTop="16dp">
+
         <TextView
             android:id="@+id/title_crear_agenda"
             android:layout_width="wrap_content"
@@ -28,109 +31,141 @@
             android:textStyle="bold"
             android:paddingBottom="8dp" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <!-- Botones para Solicitud Instalación y Otras Gestiones -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/input_date"
+            <Button
+                android:id="@+id/button_solicitud_instalacion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Solicitud Instalación" />
+
+            <Button
+                android:id="@+id/button_otras_gestiones"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Otras Gestiones"
+                android:layout_marginStart="16dp" />
+        </LinearLayout>
+
+        <!-- Recuadro "Gestión con Usuarios" -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="8dp"
+            app:cardBackgroundColor="@color/light_gray">
+
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="none"
-                android:focusable="false"
-                android:clickable="true"
-                android:hint="Fecha" />
+                android:orientation="vertical"
+                android:padding="16dp">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <!-- Título del recuadro -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Gestión con Usuarios"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
 
-        <Button
-            android:id="@+id/button_solicitud_instalacion"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Solicitud Instalación"
-            android:layout_marginTop="16dp"
-            android:layout_gravity="center_horizontal" />
+                <!-- Contenido del recuadro -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/button_otras_gestiones"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Otras Gestiones"
-            android:layout_gravity="center"
-            android:layout_marginTop="16dp" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/input_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:focusable="false"
+                        android:clickable="true"
+                        android:hint="Fecha" />
+                </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- SearchView para buscar clientes -->
+                <SearchView
+                    android:id="@+id/search_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:queryHint="Buscar cliente..." />
 
-        <!-- SearchView para buscar clientes -->
-        <SearchView
-            android:id="@+id/search_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:queryHint="Buscar cliente..." />
+                <!-- Spinner para seleccionar el cliente -->
+                <Spinner
+                    android:id="@+id/spinner_clientes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:visibility="gone" />
 
-        <!-- Spinner para seleccionar el cliente -->
-        <Spinner
-            android:id="@+id/spinner_clientes"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:visibility="gone" />
+                <TextView
+                    android:id="@+id/text_view_nombre_cliente"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nombre del Cliente"
+                    android:layout_marginTop="16dp" />
 
-        <TextView
-            android:id="@+id/text_view_nombre_cliente"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Nombre del Cliente"
-            android:layout_marginTop="16dp" />
+                <TextView
+                    android:id="@+id/textView_gestion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Gestión"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="16dp"/>
 
-        <TextView
-            android:id="@+id/textView_gestion"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Gestión"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp"/>
+                <Spinner
+                    android:id="@+id/spinner_gestion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:visibility="visible" />
 
-        <Spinner
-            android:id="@+id/spinner_gestion"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:visibility="visible" />
+                <!-- Etiqueta para el campo de observaciones -->
+                <TextView
+                    android:id="@+id/textView_observaciones"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Observaciones"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="16dp"/>
 
-        <!-- Etiqueta para el campo de observaciones -->
-        <TextView
-            android:id="@+id/textView_observaciones"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Observaciones"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp"/>
+                <!-- Campo de texto para observaciones -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp">
 
-        <!-- Campo de texto para observaciones -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editText_observaciones"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Ingrese sus observaciones aquí" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editText_observaciones"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Ingrese sus observaciones aquí" />
+                <!-- Botón para cargar cliente -->
+                <Button
+                    android:id="@+id/button_cargar_cliente"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cargar Cliente"
+                    android:layout_marginTop="16dp"/>
 
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Botón para cargar cliente -->
-        <Button
-            android:id="@+id/button_cargar_cliente"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Cargar Cliente"
-            android:layout_marginTop="16dp"/>
-
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
     </LinearLayout>
 
