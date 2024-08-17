@@ -40,6 +40,8 @@
             android:visibility="gone"
             android:layout_marginTop="16dp">
 
+
+
             <!-- Este es el espacio para mostrar los registros -->
             <!-- Los registros se agregarán programáticamente en el código Kotlin -->
 

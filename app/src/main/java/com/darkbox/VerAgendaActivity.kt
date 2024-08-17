@@ -46,6 +46,7 @@ class VerAgendaActivity : AppCompatActivity() {
                     val id = snapshot.key
                     val tipoGestion = snapshot.child("tipoGestion").getValue(String::class.java)
                     val descripcion = snapshot.child("descripcion").getValue(String::class.java)
+                    val estado = snapshot.child("estado").getValue(String::class.java)
 
                     // Crear un nuevo CardView para cada registro
                     val cardView = CardView(this@VerAgendaActivity)
@@ -58,13 +59,29 @@ class VerAgendaActivity : AppCompatActivity() {
                     cardView.setPadding(16, 16, 16, 16)
                     cardView.radius = 8f
                     cardView.cardElevation = 4f
-                    cardView.setCardBackgroundColor(ContextCompat.getColor(this@VerAgendaActivity, R.color.cardview_background)) // Color más oscuro
+
+                    // Configurar color de fondo según el estado
+                    when (estado) {
+                        "realizado" -> cardView.setCardBackgroundColor(ContextCompat.getColor(this@VerAgendaActivity, R.color.green_pastel))
+                        "cancelado" -> cardView.setCardBackgroundColor(ContextCompat.getColor(this@VerAgendaActivity, R.color.red_pastel))
+                        else -> cardView.setCardBackgroundColor(ContextCompat.getColor(this@VerAgendaActivity, R.color.cardview_background))
+                    }
+
+                    // Crear un layout horizontal para contener el TextView y los botones
+                    val contentLayout = LinearLayout(this@VerAgendaActivity)
+                    contentLayout.orientation = LinearLayout.HORIZONTAL
+                    val contentLayoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
+                    contentLayout.layoutParams = contentLayoutParams
 
                     // Crear un TextView para el contenido del CardView
                     val textView = TextView(this@VerAgendaActivity)
                     val textParams = LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT
+                        0,
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        1f
                     )
                     textView.layoutParams = textParams
                     textView.setTextColor(ContextCompat.getColor(this@VerAgendaActivity, android.R.color.black))
@@ -108,8 +125,49 @@ class VerAgendaActivity : AppCompatActivity() {
                         }
                     }
 
-                    // Agregar el TextView al CardView y el CardView al LinearLayout
-                    cardView.addView(textView)
+                    // Crear un LinearLayout vertical para los botones
+                    val buttonLayout = LinearLayout(this@VerAgendaActivity)
+                    buttonLayout.orientation = LinearLayout.VERTICAL
+                    val buttonLayoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    )
+                    buttonLayout.layoutParams = buttonLayoutParams
+
+                    // Crear botón "Cancelado" (X roja)
+                    val buttonCancelado = Button(this@VerAgendaActivity)
+                    buttonCancelado.text = "❌"
+                    buttonCancelado.textSize = 20f
+                    buttonCancelado.setBackgroundColor(ContextCompat.getColor(this@VerAgendaActivity, R.color.red_pastel))
+                    buttonCancelado.visibility = if (estado == null) View.VISIBLE else View.GONE // Ocultar si ya se ha seleccionado un estado
+
+                    // Crear botón "Realizado" (Visto Bueno verde)
+                    val buttonRealizado = Button(this@VerAgendaActivity)
+                    buttonRealizado.text = "✔️"
+                    buttonRealizado.textSize = 20f
+                    buttonRealizado.setBackgroundColor(ContextCompat.getColor(this@VerAgendaActivity, R.color.green_pastel))
+                    buttonRealizado.visibility = if (estado == null) View.VISIBLE else View.GONE // Ocultar si ya se ha seleccionado un estado
+
+                    buttonRealizado.setOnClickListener {
+                        showConfirmationDialog(id, "realizado")
+                    }
+
+                    buttonCancelado.setOnClickListener {
+                        showCancelationDialog(id)
+                    }
+
+                    // Agregar botones al layout de botones
+                    buttonLayout.addView(buttonRealizado)
+                    buttonLayout.addView(buttonCancelado)
+
+                    // Agregar el TextView y el layout de botones al layout principal
+                    contentLayout.addView(textView)
+                    contentLayout.addView(buttonLayout)
+
+                    // Agregar el layout principal al CardView
+                    cardView.addView(contentLayout)
+
+                    // Agregar el CardView al layout principal
                     layoutAgendaResults.addView(cardView)
                 }
 
@@ -126,5 +184,62 @@ class VerAgendaActivity : AppCompatActivity() {
                 Log.e("VerAgendaActivity", "Error al cargar datos", databaseError.toException())
             }
         })
+    }
+
+    private fun showConfirmationDialog(id: String?, estado: String) {
+        val alertDialog = androidx.appcompat.app.AlertDialog.Builder(this)
+        alertDialog.setTitle("Confirmación")
+        alertDialog.setMessage("¿Está seguro de marcar esta tarea como ${if (estado == "realizado") "realizado" else "cancelado"}?")
+        alertDialog.setPositiveButton("Sí") { dialog, _ ->
+            updateTaskState(id, estado)
+            dialog.dismiss()
+        }
+        alertDialog.setNegativeButton("No") { dialog, _ ->
+            dialog.dismiss()
+        }
+        alertDialog.show()
+    }
+
+    private fun showCancelationDialog(id: String?) {
+        val alertDialog = androidx.appcompat.app.AlertDialog.Builder(this)
+        val input = EditText(this)
+        input.hint = "Ingrese una observación"
+
+        alertDialog.setTitle("Observación de Cancelación")
+        alertDialog.setMessage("Ingrese una observación para la cancelación")
+        alertDialog.setView(input)
+        alertDialog.setPositiveButton("Guardar") { dialog, _ ->
+            val observacion = input.text.toString()
+            if (observacion.isNotEmpty()) {
+                updateTaskState(id, "cancelado", observacion)
+            } else {
+                Toast.makeText(this, "Debe ingresar una observación.", Toast.LENGTH_SHORT).show()
+            }
+            dialog.dismiss()
+        }
+        alertDialog.setNegativeButton("Cancelar") { dialog, _ ->
+            dialog.dismiss()
+        }
+        alertDialog.show()
+    }
+
+    private fun updateTaskState(id: String?, estado: String, observacion: String = "") {
+        val database = FirebaseDatabase.getInstance()
+        val reference = database.getReference("agenda")
+
+        val updates = mapOf(
+            "estado" to estado,
+            "observacion-cancelacion" to observacion
+        )
+
+        id?.let {
+            reference.child(it).updateChildren(updates).addOnCompleteListener {
+                if (it.isSuccessful) {
+                    Toast.makeText(this, "Estado actualizado a '$estado'", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Error al actualizar el estado", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 }
