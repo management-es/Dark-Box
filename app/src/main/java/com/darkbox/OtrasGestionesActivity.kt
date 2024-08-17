@@ -72,30 +72,49 @@ class OtrasGestionesActivity : ComponentActivity() {
 
         // Verificar si todos los campos requeridos están llenos
         if (tipoGestion.isNotEmpty() && descripcion.isNotEmpty() && fechaSeleccionada != null) {
+            // Construir el mensaje de confirmación con los datos
+            val mensajeConfirmacion = """
+            ¿Desea guardar la siguiente gestión?
+            
+            Tipo de Gestión: $tipoGestion
+            Descripción: $descripcion
+            Fecha: $fechaSeleccionada
+        """.trimIndent()
 
-            // Crear el ID de gestión basado en la fecha y agregar el sufijo "ot-gestion"
-            val idGestion = "${fechaSeleccionada}-ot-gestion"
+            // Crear un diálogo de confirmación
+            AlertDialog.Builder(this)
+                .setTitle("Confirmar")
+                .setMessage(mensajeConfirmacion)
+                .setPositiveButton("Sí") { _, _ ->
+                    // Crear el ID de gestión basado en la fecha y agregar el sufijo "ot-gestion"
+                    val idGestion = "${fechaSeleccionada}-ot-gestion"
 
-            // Crear el objeto de datos
-            val gestion = mapOf(
-                "tipoGestion" to tipoGestion,
-                "descripcion" to descripcion,
-                "fecha" to fechaSeleccionada
-            )
+                    // Crear el objeto de datos
+                    val gestion = mapOf(
+                        "tipoGestion" to tipoGestion,
+                        "descripcion" to descripcion,
+                        "fecha" to fechaSeleccionada
+                    )
 
-            // Guardar los datos en Firebase bajo el nodo "agenda"
-            database.child(idGestion).setValue(gestion)
-                .addOnSuccessListener {
-                    // Mostrar mensaje de éxito
-                    Toast.makeText(this, "Gestión guardada con éxito", Toast.LENGTH_SHORT).show()
-                    finish()  // Cierra la actividad
+                    // Guardar los datos en Firebase bajo el nodo "agenda"
+                    database.child(idGestion).setValue(gestion)
+                        .addOnSuccessListener {
+                            // Mostrar mensaje de éxito
+                            Toast.makeText(this, "Gestión guardada con éxito", Toast.LENGTH_SHORT).show()
+                            finish()  // Cierra la actividad
+                        }
+                        .addOnFailureListener {
+                            // Mostrar mensaje de error
+                            Toast.makeText(this, "Error al guardar la gestión", Toast.LENGTH_SHORT).show()
+                        }
                 }
-                .addOnFailureListener {
-                    // Mostrar mensaje de error
-                    Toast.makeText(this, "Error al guardar la gestión", Toast.LENGTH_SHORT).show()
+                .setNegativeButton("No") { dialog, _ ->
+                    dialog.dismiss()  // Cierra el diálogo si se cancela
                 }
+                .show()
         } else {
             Toast.makeText(this, "Por favor complete todos los campos", Toast.LENGTH_SHORT).show()
         }
     }
+
 }
