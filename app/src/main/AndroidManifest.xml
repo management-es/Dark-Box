@@ -63,6 +63,13 @@
             android:label="Otras Gestiones"
             android:theme="@style/Theme.DarkBox" />
 
+        <!-- Agregar VerAgendaActivity -->
+        <activity
+            android:name=".VerAgendaActivity"
+            android:exported="true"
+            android:label="Ver Agenda"
+            android:theme="@style/Theme.DarkBox" />
+
 
     </application>
 </manifest>

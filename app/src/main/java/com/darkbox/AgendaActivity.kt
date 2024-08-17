@@ -33,6 +33,7 @@ class AgendaActivity : ComponentActivity() {
 
         // Referencias a los elementos de la UI
         val buttonCrearAgenda: Button = findViewById(R.id.button_crear_agenda)
+        val buttonVerAgenda = findViewById<Button>(R.id.button_ver_agenda)
         val dateInputLayout: View = findViewById(R.id.date_input_layout)
         val dateEditText: EditText = findViewById(R.id.input_date)
         spinnerClientes = findViewById(R.id.spinner_clientes)
@@ -50,6 +51,7 @@ class AgendaActivity : ComponentActivity() {
         buttonCargarCliente.setOnClickListener {
             mostrarDialogoConfirmacion()
         }
+
 
         // Configura el botón Solicitud Instalación
         buttonSolicitudInstalacion.setOnClickListener {
@@ -73,6 +75,12 @@ class AgendaActivity : ComponentActivity() {
             dateInputLayout.visibility = View.VISIBLE
             buttonCrearAgenda.visibility = View.GONE
             cargarClientes()  // Cargar clientes al hacer clic en "Crear Agenda"
+        }
+
+        buttonVerAgenda.setOnClickListener {
+            // Abrir la nueva actividad "Ver Agenda"
+            val intent = Intent(this, VerAgendaActivity::class.java)
+            startActivity(intent)
         }
 
         // Listener para mostrar el DatePickerDialog
