@@ -16,6 +16,14 @@
             android:layout_height="wrap_content"
             android:text="Ingresar Equipo" />
 
+        <Button
+            android:id="@+id/button_ver_inventario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ver Inventario"
+            android:layout_marginTop="16dp"/>
+
+
         <!-- Hidden layout for input fields -->
         <LinearLayout
             android:id="@+id/equipment_input_layout"

@@ -36,6 +36,12 @@
             android:label="Inventario"
             android:theme="@style/Theme.DarkBox" />
 
+        <activity
+            android:name=".VerInventarioActivity"
+            android:exported="true"
+            android:label="Ver Inventario"
+            android:theme="@style/Theme.DarkBox" />
+
         <!-- Agregar ClientesActivity -->
         <activity
             android:name=".ClientesActivity"

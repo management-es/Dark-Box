@@ -7,6 +7,8 @@ import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AlertDialog
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import android.content.Intent
+
 
 class InventoryActivity : ComponentActivity() {
 
@@ -21,6 +23,7 @@ class InventoryActivity : ComponentActivity() {
 
         // Referencias a los campos y los botones
         val buttonIngresarEquipo: Button = findViewById(R.id.button_ingresar_equipo)
+        val buttonVerInventario: Button = findViewById(R.id.button_ver_inventario)
         val equipmentInputLayout: View = findViewById(R.id.equipment_input_layout)
         val buttonSaveEquipment: Button = findViewById(R.id.button_save_equipment)
 
@@ -48,6 +51,12 @@ class InventoryActivity : ComponentActivity() {
         // Manejar el clic del botón de ingresar equipo
         buttonIngresarEquipo.setOnClickListener {
             equipmentInputLayout.visibility = View.VISIBLE
+        }
+
+        // Manejar el clic del botón Ver Inventario
+        buttonVerInventario.setOnClickListener {
+            val intent = Intent(this, VerInventarioActivity::class.java)
+            startActivity(intent)
         }
 
         // Manejar el clic del botón de guardar equipo
