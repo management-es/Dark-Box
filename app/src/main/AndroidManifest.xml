@@ -42,6 +42,12 @@
             android:label="Ver Inventario"
             android:theme="@style/Theme.DarkBox" />
 
+        <activity
+            android:name=".ActualizarEstadoActivity"
+            android:exported="true"
+            android:label="Actualizar Estado"
+            android:theme="@style/Theme.DarkBox" />
+
         <!-- Agregar ClientesActivity -->
         <activity
             android:name=".ClientesActivity"
@@ -75,6 +81,7 @@
             android:exported="true"
             android:label="Ver Agenda"
             android:theme="@style/Theme.DarkBox" />
+
 
 
     </application>

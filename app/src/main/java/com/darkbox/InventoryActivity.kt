@@ -59,6 +59,11 @@ class InventoryActivity : ComponentActivity() {
             startActivity(intent)
         }
 
+        findViewById<Button>(R.id.button_actualizar_estado).setOnClickListener {
+            val intent = Intent(this, ActualizarEstadoActivity::class.java)
+            startActivity(intent)
+        }
+
         // Manejar el clic del botón de guardar equipo
         buttonSaveEquipment.setOnClickListener {
             val equipo = spinnerEquipo.selectedItem.toString()

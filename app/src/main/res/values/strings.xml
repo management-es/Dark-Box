@@ -56,6 +56,14 @@
         <item>Otros</item>
     </string-array>
 
+    <string-array name="estado_equipos">
+        <item>Todo</item>
+        <item>Activo</item>
+        <item>Dañado</item>
+        <item>Bodega</item>
+        <item>Revisión</item>
+    </string-array>
+
 
     <!-- Otros recursos de cadena si es necesario -->
 </resources>

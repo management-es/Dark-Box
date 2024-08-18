@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:background="#FFFFFF">
+
+    <TextView
+        android:id="@+id/textView_serial"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Serial"
+        android:textSize="16sp"
+        android:padding="2dp"
+        android:textColor="#000000"/>
+
+    <TextView
+        android:id="@+id/textView_observaciones"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Observaciones"
+        android:textSize="16sp"
+        android:padding="2dp"
+        android:textColor="#000000"/>
+
+    <TextView
+        android:id="@+id/textView_zona"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Zona"
+        android:textSize="16sp"
+        android:padding="2dp"
+        android:textColor="#000000"/>
+
+    <TextView
+        android:id="@+id/textView_tecnologia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tecnología"
+        android:textSize="16sp"
+        android:padding="2dp"
+        android:textColor="#000000"/>
+
+    <TextView
+        android:id="@+id/textView_modelo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Modelo"
+        android:textSize="16sp"
+        android:padding="4dp"
+        android:textColor="#000000"/>
+
+    <!-- Línea separadora -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#000000"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"/>
+</LinearLayout>

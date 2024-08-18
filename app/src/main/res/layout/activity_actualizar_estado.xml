@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/editText_buscar_serial"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Buscar por Serial"
+        android:inputType="text" />
+
+    <Button
+        android:id="@+id/button_buscar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Buscar"
+        android:layout_marginTop="16dp" />
+
+    <!-- Contenedor para mostrar los detalles del equipo buscado -->
+    <LinearLayout
+        android:id="@+id/container_detalles"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="16dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/textView_serial"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Serial:"
+            android:textSize="16sp"
+            android:textColor="#000000"/>
+
+        <TextView
+            android:id="@+id/textView_tecnologia"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tecnología:"
+            android:textSize="16sp"
+            android:textColor="#000000"/>
+
+        <TextView
+            android:id="@+id/textView_modelo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Modelo:"
+            android:textSize="16sp"
+            android:textColor="#000000"/>
+
+        <TextView
+            android:id="@+id/textView_estado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Estado:"
+            android:textSize="16sp"
+            android:textColor="#000000"/>
+
+        <TextView
+            android:id="@+id/textView_zona"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Zona:"
+            android:textSize="16sp"
+            android:textColor="#000000"/>
+
+        <TextView
+            android:id="@+id/textView_observaciones"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Observaciones:"
+            android:textSize="16sp"
+            android:textColor="#000000"/>
+
+        <!-- Cambiar estado -->
+        <TextView
+            android:id="@+id/textView_cambiar_estado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Actulizar Estado:"
+            android:textSize="16sp"
+            android:textColor="#000000"
+            android:layout_marginTop="16dp"/>
+
+        <Spinner
+            android:id="@+id/spinner_nuevo_estado"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:entries="@array/estado_equipos"/>
+
+        <Button
+            android:id="@+id/button_guardar_estado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Guardar"
+            android:layout_marginTop="16dp" />
+    </LinearLayout>
+
+</LinearLayout>
