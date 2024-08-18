@@ -9,7 +9,7 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Button to show input fields for entering new equipment -->
+        <!-- Botón para mostrar campos de entrada de nuevo equipo -->
         <Button
             android:id="@+id/button_ingresar_equipo"
             android:layout_width="wrap_content"
@@ -31,8 +31,17 @@
             android:text="Actualizar Estado"
             android:layout_marginTop="16dp"/>
 
+        <!-- Título para ingresar equipo -->
+        <TextView
+            android:id="@+id/title_ingresar_equipo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ingresar Equipo"
+            android:textSize="18sp"
+            android:visibility="gone"
+            android:layout_marginTop="16dp"/>
 
-        <!-- Hidden layout for input fields -->
+        <!-- Layout oculto para campos de entrada -->
         <LinearLayout
             android:id="@+id/equipment_input_layout"
             android:layout_width="match_parent"
@@ -41,6 +50,7 @@
             android:visibility="gone"
             android:layout_marginTop="16dp">
 
+            <!-- Campos para ingresar información del equipo -->
             <TextView
                 android:id="@+id/label_equipo"
                 android:layout_width="wrap_content"
@@ -125,7 +135,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp" />
 
-            <!-- Save button for new equipment -->
+            <!-- Botón para guardar nuevo equipo -->
             <Button
                 android:id="@+id/button_save_equipment"
                 android:layout_width="wrap_content"

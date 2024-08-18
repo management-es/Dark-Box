@@ -9,7 +9,6 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import android.content.Intent
 
-
 class InventoryActivity : ComponentActivity() {
 
     private lateinit var database: DatabaseReference
@@ -24,7 +23,9 @@ class InventoryActivity : ComponentActivity() {
         // Referencias a los campos y los botones
         val buttonIngresarEquipo: Button = findViewById(R.id.button_ingresar_equipo)
         val buttonVerInventario: Button = findViewById(R.id.button_ver_inventario)
-        val equipmentInputLayout: View = findViewById(R.id.equipment_input_layout)
+        val buttonActualizarEstado: Button = findViewById(R.id.button_actualizar_estado)
+        val equipmentInputLayout: LinearLayout = findViewById(R.id.equipment_input_layout)
+        val titleIngresarEquipo: TextView = findViewById(R.id.title_ingresar_equipo)
         val buttonSaveEquipment: Button = findViewById(R.id.button_save_equipment)
 
         // Configura el Spinner para el campo "Equipo"
@@ -50,7 +51,12 @@ class InventoryActivity : ComponentActivity() {
 
         // Manejar el clic del botón de ingresar equipo
         buttonIngresarEquipo.setOnClickListener {
+            // Ocultar botones y mostrar el layout de entrada de equipo
+            buttonIngresarEquipo.visibility = View.GONE
+            buttonVerInventario.visibility = View.GONE
+            buttonActualizarEstado.visibility = View.GONE
             equipmentInputLayout.visibility = View.VISIBLE
+            titleIngresarEquipo.visibility = View.VISIBLE
         }
 
         // Manejar el clic del botón Ver Inventario
@@ -59,7 +65,8 @@ class InventoryActivity : ComponentActivity() {
             startActivity(intent)
         }
 
-        findViewById<Button>(R.id.button_actualizar_estado).setOnClickListener {
+        // Manejar el clic del botón Actualizar Estado
+        buttonActualizarEstado.setOnClickListener {
             val intent = Intent(this, ActualizarEstadoActivity::class.java)
             startActivity(intent)
         }
