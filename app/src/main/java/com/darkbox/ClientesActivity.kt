@@ -9,12 +9,11 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
-import android.widget.*
 import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AlertDialog
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.*
+
 
 class ClientesActivity : ComponentActivity() {
     private lateinit var database: DatabaseReference
@@ -199,8 +198,7 @@ class ClientesActivity : ComponentActivity() {
                 val zona = spinnerZona.selectedItem.toString()
                 val coordenadas = findViewById<EditText>(R.id.input_coordenadas).text.toString()
                 val serialOnu = findViewById<EditText>(R.id.input_serial_onu).text.toString()
-                val serialAntena = findViewById<EditText>(R.id.input_serial_antena).text.toString()
-                val serialRouter = findViewById<EditText>(R.id.input_serial_router).text.toString()
+
 
                 showConfirmationDialogForClient(
                     codCliente, nombres, apellidos, tipoDocumento, numeroDocumento, direccion,
@@ -213,7 +211,7 @@ class ClientesActivity : ComponentActivity() {
 
     private fun loadOnuSerials() {
         val serialOnuList = mutableListOf<String>()
-        val serialOnuAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, serialOnuList)
+
 
         database.child("inventario").orderByChild("estado").equalTo("Bodega").get().addOnSuccessListener { snapshot ->
             if (snapshot.exists()) {
@@ -249,7 +247,7 @@ class ClientesActivity : ComponentActivity() {
 
     private fun loadAntenaSerials() {
         val serialAntenaList = mutableListOf<String>()
-        val serialAntenaAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, serialAntenaList)
+
 
         database.child("inventario").orderByChild("estado").equalTo("Bodega").get().addOnSuccessListener { snapshot ->
             if (snapshot.exists()) {
@@ -284,7 +282,7 @@ class ClientesActivity : ComponentActivity() {
 
     private fun loadRouterSerials() {
         val serialRouterList = mutableListOf<String>()
-        val serialRouterAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, serialRouterList)
+
 
         database.child("inventario").orderByChild("estado").equalTo("Bodega").get().addOnSuccessListener { snapshot ->
             if (snapshot.exists()) {
