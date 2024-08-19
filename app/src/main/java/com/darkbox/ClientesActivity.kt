@@ -242,32 +242,47 @@ class ClientesActivity : ComponentActivity() {
         contactos: String, plan: String, tecnologia: String, equipos: String, ipAntena: String,
         ipRemota: String, observaciones: String, historial: String, zona: String, coordenadas: String
     ) {
-        val clientData = mapOf(
-            "nombres" to nombres,
-            "apellidos" to apellidos,
-            "tipoDocumento" to tipoDocumento,
-            "numeroDocumento" to numeroDocumento,
-            "direccion" to direccion,
-            "telefono" to telefono,
-            "correo" to correo,
-            "contactos" to contactos,
-            "plan" to plan,
-            "tecnologia" to tecnologia,
-            "equipos" to equipos,
-            "ipAntena" to ipAntena,
-            "ipRemota" to ipRemota,
-            "observaciones" to observaciones,
-            "historial" to historial,
-            "zona" to zona,
-            "coordenadas" to coordenadas
-        )
-        database.child("clientes").child(codCliente).setValue(clientData)
-            .addOnSuccessListener {
-                showMessage("Datos del cliente guardados exitosamente.")
-                finish() // Regresa al menú anterior
+        // Verifica si el código de cliente ya existe
+        database.child("clientes").child(codCliente).get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                if (task.result.exists()) {
+                    // Si el código de cliente ya existe, muestra un mensaje de error
+                    showMessage("El código de cliente ya existe. Por favor, ingresa un código diferente.")
+                } else {
+                    // Si el código de cliente no existe, guarda los datos del cliente
+                    val clientData = mapOf(
+                        "nombres" to nombres,
+                        "apellidos" to apellidos,
+                        "tipoDocumento" to tipoDocumento,
+                        "numeroDocumento" to numeroDocumento,
+                        "direccion" to direccion,
+                        "telefono" to telefono,
+                        "correo" to correo,
+                        "contactos" to contactos,
+                        "plan" to plan,
+                        "tecnologia" to tecnologia,
+                        "equipos" to equipos,
+                        "ipAntena" to ipAntena,
+                        "ipRemota" to ipRemota,
+                        "observaciones" to observaciones,
+                        "historial" to historial,
+                        "zona" to zona,
+                        "coordenadas" to coordenadas
+                    )
+
+                    database.child("clientes").child(codCliente).setValue(clientData)
+                        .addOnSuccessListener {
+                            showMessage("Datos del cliente guardados exitosamente.")
+                            finish() // Regresa al menú anterior
+                        }
+                        .addOnFailureListener {
+                            showMessage("Error al guardar los datos del cliente.")
+                        }
+                }
+            } else {
+                showMessage("Error al verificar el código de cliente. Intenta nuevamente.")
             }
-            .addOnFailureListener {
-                showMessage("Error al guardar los datos del cliente.")
-            }
+        }
     }
+
 }
