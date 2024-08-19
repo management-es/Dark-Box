@@ -1,21 +1,36 @@
 package com.darkbox
+
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
+import android.widget.Toast
+import android.widget.*
 import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AlertDialog
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
+
 class ClientesActivity : ComponentActivity() {
     private lateinit var database: DatabaseReference
+    private lateinit var inputSerialOnu: EditText
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_clientes)
+
         // Inicializa la referencia a la base de datos
         database = FirebaseDatabase.getInstance().reference
+
+
+        // Inicializa las vistas
+        inputSerialOnu = findViewById(R.id.input_serial_onu)
+
         // Referencias a los campos y botones
         val buttonIngresarCliente: Button = findViewById(R.id.button_ingresar_cliente)
         val optionsLayout: View = findViewById(R.id.options_layout)
@@ -46,11 +61,10 @@ class ClientesActivity : ComponentActivity() {
             spinnerTipoDocumento.adapter = adapter
         }
 
-
         // Configurar el adaptador para el Spinner zona
         ArrayAdapter.createFromResource(
             this,
-            R.array.zona_options, // La referencia al array de strings
+            R.array.zona_options,
             android.R.layout.simple_spinner_item
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -60,7 +74,7 @@ class ClientesActivity : ComponentActivity() {
         // Configurar el adaptador para el Spinner plan
         ArrayAdapter.createFromResource(
             this,
-            R.array.plan_options, // La referencia al array de strings
+            R.array.plan_options,
             android.R.layout.simple_spinner_item
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -78,41 +92,84 @@ class ClientesActivity : ComponentActivity() {
             spinnerTecnologia.adapter = adapter
         }
 
+        val inputSerialOnu: EditText = findViewById(R.id.input_serial_onu)
+        val inputSerialAntena: EditText = findViewById(R.id.input_serial_antena)
+        val inputSerialRouter: EditText = findViewById(R.id.input_serial_router)
+
+        // Listener para el Spinner de Tecnología
+        spinnerTecnologia.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val selectedTecnologia = spinnerTecnologia.selectedItem.toString()
+                when (selectedTecnologia) {
+                    "Fibra Óptica" -> {
+                        inputSerialOnu.visibility = View.VISIBLE
+                        inputSerialAntena.visibility = View.GONE
+                        inputSerialRouter.visibility = View.GONE
+                        loadOnuSerials() // Cargar seriales de ONUs disponibles en estado Bodega
+                    }
+                    "Radio Enlace" -> {
+                        inputSerialOnu.visibility = View.GONE
+                        inputSerialAntena.visibility = View.VISIBLE
+                        inputSerialRouter.visibility = View.VISIBLE
+                    }
+                    else -> {
+                        inputSerialOnu.visibility = View.GONE
+                        inputSerialAntena.visibility = View.GONE
+                        inputSerialRouter.visibility = View.GONE
+                    }
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                inputSerialOnu.visibility = View.GONE
+                inputSerialAntena.visibility = View.GONE
+                inputSerialRouter.visibility = View.GONE
+            }
+        }
+
+
         // Inicializa el layout de datos cliente, servicio y adicionales
         datosClienteLayout.visibility = View.GONE
         servicioLayout.visibility = View.GONE
         adicionalesLayout.visibility = View.GONE
+
         // Manejar el clic del botón de ingresar cliente
         buttonIngresarCliente.setOnClickListener {
             optionsLayout.visibility = View.VISIBLE
         }
+
         // Manejar el clic del botón de datos cliente
         buttonDatosCliente.setOnClickListener {
             datosClienteLayout.visibility = View.VISIBLE
             servicioLayout.visibility = View.GONE
             adicionalesLayout.visibility = View.GONE
         }
+
         // Manejar el clic del botón de ubicación
         buttonUbicacion.setOnClickListener {
-            // Alternar la visibilidad del layout de ubicación
             if (ubicacionLayout.visibility == View.GONE) {
                 ubicacionLayout.visibility = View.VISIBLE
             } else {
                 ubicacionLayout.visibility = View.GONE
             }
         }
+
         // Manejar el clic del botón de servicio
         buttonServicio.setOnClickListener {
             datosClienteLayout.visibility = View.GONE
             servicioLayout.visibility = View.VISIBLE
             adicionalesLayout.visibility = View.GONE
         }
+
         // Manejar el clic del botón de adicionales
         buttonAdicionales.setOnClickListener {
             datosClienteLayout.visibility = View.GONE
             servicioLayout.visibility = View.GONE
             adicionalesLayout.visibility = View.VISIBLE
         }
+
+
+
         // Manejar el clic del botón de agregar cliente
         buttonAgregarCliente.setOnClickListener {
             if (validateClientData()) {
@@ -134,155 +191,220 @@ class ClientesActivity : ComponentActivity() {
                 val historial = findViewById<EditText>(R.id.input_historial).text.toString()
                 val zona = spinnerZona.selectedItem.toString()
                 val coordenadas = findViewById<EditText>(R.id.input_coordenadas).text.toString()
+                val serialOnu = findViewById<EditText>(R.id.input_serial_onu).text.toString()
                 showConfirmationDialogForClient(
                     codCliente, nombres, apellidos, tipoDocumento, numeroDocumento, direccion,
                     telefono, correo, contactos, plan, tecnologia, equipos, ipAntena, ipRemota,
-                    observaciones, historial, zona, coordenadas
+                    observaciones, historial, zona, coordenadas, serialOnu
                 )
             }
         }
     }
+
+    private fun loadOnuSerials() {
+        val serialOnuList = mutableListOf<String>()
+        val serialOnuAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, serialOnuList)
+
+        database.child("inventario").orderByChild("estado").equalTo("Bodega").get().addOnSuccessListener { snapshot ->
+            if (snapshot.exists()) {
+                for (child in snapshot.children) {
+                    val serial = child.key // Obtener el serial desde la clave del nodo
+                    if (serial != null) {
+                        serialOnuList.add(serial)
+                    }
+                }
+
+                if (serialOnuList.isNotEmpty()) {
+                    // Mostrar el AlertDialog con los seriales
+                    val builder = AlertDialog.Builder(this)
+                    builder.setTitle("Selecciona un Serial ONU")
+                        .setItems(serialOnuList.toTypedArray()) { _, which ->
+                            val selectedSerial = serialOnuList[which]
+                            inputSerialOnu.setText(selectedSerial)
+                        }
+                        .setNegativeButton("Cancelar", null)
+                        .show()
+                } else {
+                    Toast.makeText(this, "No se encontraron ONUs en estado Bodega", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(this, "No se encontraron ONUs en estado Bodega", Toast.LENGTH_SHORT).show()
+            }
+        }.addOnFailureListener { exception ->
+            // Añadido log de error
+            Log.e("ClientesActivity", "Error al cargar los seriales de ONUs", exception)
+            Toast.makeText(this, "Error al cargar los seriales de ONUs", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+
     private fun validateClientData(): Boolean {
         val nombres = findViewById<EditText>(R.id.input_nombres).text.toString()
         val apellidos = findViewById<EditText>(R.id.input_apellidos).text.toString()
-
         val numeroDocumento = findViewById<EditText>(R.id.input_numero_documento).text.toString()
         val direccion = findViewById<EditText>(R.id.input_direccion).text.toString()
         val telefono = findViewById<EditText>(R.id.input_telefono).text.toString()
         val correo = findViewById<EditText>(R.id.input_correo).text.toString()
         val contactos = findViewById<EditText>(R.id.input_contactos).text.toString()
-
         val equipos = findViewById<EditText>(R.id.input_equipos).text.toString()
         val ipAntena = findViewById<EditText>(R.id.input_ip_antena).text.toString()
         val ipRemota = findViewById<EditText>(R.id.input_ip_remota).text.toString()
         val observaciones = findViewById<EditText>(R.id.input_observaciones).text.toString()
+        val historial = findViewById<EditText>(R.id.input_historial).text.toString()
         val coordenadas = findViewById<EditText>(R.id.input_coordenadas).text.toString()
+
         return when {
             nombres.isEmpty() -> {
-                showMessage("El campo 'Nombres' es obligatorio.")
+                Toast.makeText(this, "Por favor ingresa los nombres del cliente", Toast.LENGTH_SHORT).show()
                 false
             }
             apellidos.isEmpty() -> {
-                showMessage("El campo 'Apellidos' es obligatorio.")
+                Toast.makeText(this, "Por favor ingresa los apellidos del cliente", Toast.LENGTH_SHORT).show()
                 false
             }
-
             numeroDocumento.isEmpty() -> {
-                showMessage("El campo 'Número Documento' es obligatorio.")
+                Toast.makeText(this, "Por favor ingresa el número de documento", Toast.LENGTH_SHORT).show()
                 false
             }
             direccion.isEmpty() -> {
-                showMessage("El campo 'Dirección' es obligatorio.")
+                Toast.makeText(this, "Por favor ingresa la dirección", Toast.LENGTH_SHORT).show()
                 false
             }
             telefono.isEmpty() -> {
-                showMessage("El campo 'Teléfono' es obligatorio.")
+                Toast.makeText(this, "Por favor ingresa el teléfono", Toast.LENGTH_SHORT).show()
                 false
             }
             correo.isEmpty() -> {
-                showMessage("El campo 'Correo' es obligatorio.")
+                Toast.makeText(this, "Por favor ingresa el correo", Toast.LENGTH_SHORT).show()
                 false
             }
             contactos.isEmpty() -> {
-                showMessage("El campo 'Contactos' es obligatorio.")
+                Toast.makeText(this, "Por favor ingresa los contactos", Toast.LENGTH_SHORT).show()
                 false
             }
-
             equipos.isEmpty() -> {
-                showMessage("El campo 'Equipos' es obligatorio.")
+                Toast.makeText(this, "Por favor ingresa los equipos", Toast.LENGTH_SHORT).show()
                 false
             }
             ipAntena.isEmpty() -> {
-                showMessage("El campo 'IP Antena' es obligatorio.")
+                Toast.makeText(this, "Por favor ingresa la IP de la antena", Toast.LENGTH_SHORT).show()
                 false
             }
             ipRemota.isEmpty() -> {
-                showMessage("El campo 'IP Remota' es obligatorio.")
+                Toast.makeText(this, "Por favor ingresa la IP remota", Toast.LENGTH_SHORT).show()
                 false
             }
             observaciones.isEmpty() -> {
-                showMessage("El campo 'Observaciones' es obligatorio.")
+                Toast.makeText(this, "Por favor ingresa observaciones", Toast.LENGTH_SHORT).show()
+                false
+            }
+            historial.isEmpty() -> {
+                Toast.makeText(this, "Por favor ingresa el historial", Toast.LENGTH_SHORT).show()
                 false
             }
             coordenadas.isEmpty() -> {
-                showMessage("El campo 'Coordenadas' es obligatorio.")
+                Toast.makeText(this, "Por favor ingresa las coordenadas", Toast.LENGTH_SHORT).show()
                 false
             }
             else -> true
         }
     }
-    private fun showMessage(message: String) {
-        AlertDialog.Builder(this)
-            .setMessage(message)
-            .setPositiveButton("OK", null)
-            .show()
-    }
+
     private fun showConfirmationDialogForClient(
-        codCliente: String, nombres: String, apellidos: String, tipoDocumento: String,
-        numeroDocumento: String, direccion: String, telefono: String, correo: String,
-        contactos: String, plan: String, tecnologia: String, equipos: String, ipAntena: String,
-        ipRemota: String, observaciones: String, historial: String, zona: String, coordenadas: String
+        codCliente: String, nombres: String, apellidos: String, tipoDocumento: String, numeroDocumento: String,
+        direccion: String, telefono: String, correo: String, contactos: String, plan: String, tecnologia: String,
+        equipos: String, ipAntena: String, ipRemota: String, observaciones: String, historial: String, zona: String,
+        coordenadas: String, serialOnu: String
     ) {
+        val message = """
+            Código Cliente: $codCliente
+            Nombres: $nombres
+            Apellidos: $apellidos
+            Tipo Documento: $tipoDocumento
+            Número Documento: $numeroDocumento
+            Dirección: $direccion
+            Teléfono: $telefono
+            Correo: $correo
+            Contactos: $contactos
+            Plan: $plan
+            Tecnología: $tecnologia
+            Serial ONU: $serialOnu
+            Equipos: $equipos
+            IP Antena: $ipAntena
+            IP Remota: $ipRemota
+            Observaciones: $observaciones
+            Historial: $historial
+            Zona: $zona
+            Coordenadas: $coordenadas
+            
+        """.trimIndent()
+
         AlertDialog.Builder(this)
-            .setTitle("Confirmación")
-            .setMessage("¿Deseas guardar los datos del cliente?")
-            .setPositiveButton("Sí") { _, _ ->
+            .setTitle("Confirmar Datos")
+            .setMessage(message)
+            .setPositiveButton("Confirmar") { _, _ ->
                 saveClientData(
                     codCliente, nombres, apellidos, tipoDocumento, numeroDocumento, direccion,
                     telefono, correo, contactos, plan, tecnologia, equipos, ipAntena, ipRemota,
-                    observaciones, historial, zona, coordenadas
+                    observaciones, historial, zona, coordenadas, serialOnu
                 )
             }
-            .setNegativeButton("No", null)
+            .setNegativeButton("Cancelar", null)
             .show()
     }
-    private fun saveClientData(
-        codCliente: String, nombres: String, apellidos: String, tipoDocumento: String,
-        numeroDocumento: String, direccion: String, telefono: String, correo: String,
-        contactos: String, plan: String, tecnologia: String, equipos: String, ipAntena: String,
-        ipRemota: String, observaciones: String, historial: String, zona: String, coordenadas: String
-    ) {
-        // Verifica si el código de cliente ya existe
-        database.child("clientes").child(codCliente).get().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                if (task.result.exists()) {
-                    // Si el código de cliente ya existe, muestra un mensaje de error
-                    showMessage("El código de cliente ya existe. Por favor, ingresa un código diferente.")
-                } else {
-                    // Si el código de cliente no existe, guarda los datos del cliente
-                    val clientData = mapOf(
-                        "nombres" to nombres,
-                        "apellidos" to apellidos,
-                        "tipoDocumento" to tipoDocumento,
-                        "numeroDocumento" to numeroDocumento,
-                        "direccion" to direccion,
-                        "telefono" to telefono,
-                        "correo" to correo,
-                        "contactos" to contactos,
-                        "plan" to plan,
-                        "tecnologia" to tecnologia,
-                        "equipos" to equipos,
-                        "ipAntena" to ipAntena,
-                        "ipRemota" to ipRemota,
-                        "observaciones" to observaciones,
-                        "historial" to historial,
-                        "zona" to zona,
-                        "coordenadas" to coordenadas
-                    )
 
-                    database.child("clientes").child(codCliente).setValue(clientData)
-                        .addOnSuccessListener {
-                            showMessage("Datos del cliente guardados exitosamente.")
-                            finish() // Regresa al menú anterior
-                        }
-                        .addOnFailureListener {
-                            showMessage("Error al guardar los datos del cliente.")
-                        }
-                }
+    private fun saveClientData(
+        codCliente: String, nombres: String, apellidos: String, tipoDocumento: String, numeroDocumento: String,
+        direccion: String, telefono: String, correo: String, contactos: String, plan: String, tecnologia: String,
+        equipos: String, ipAntena: String, ipRemota: String, observaciones: String, historial: String, zona: String,
+        coordenadas: String, serialOnu: String
+    ) {
+        val clientRef = database.child("clientes").child(codCliente)
+
+        // Verificar si el cliente ya existe
+        clientRef.get().addOnSuccessListener { snapshot ->
+            if (snapshot.exists()) {
+                // El cliente ya existe, mostrar un mensaje de error
+                Toast.makeText(this, "El código de cliente ya existe", Toast.LENGTH_SHORT).show()
             } else {
-                showMessage("Error al verificar el código de cliente. Intenta nuevamente.")
+                // El cliente no existe, proceder a guardar los datos
+                val clientData = mapOf(
+                    "cod_cliente" to codCliente,
+                    "nombres" to nombres,
+                    "apellidos" to apellidos,
+                    "tipo_documento" to tipoDocumento,
+                    "numero_documento" to numeroDocumento,
+                    "direccion" to direccion,
+                    "telefono" to telefono,
+                    "correo" to correo,
+                    "contactos" to contactos,
+                    "plan" to plan,
+                    "tecnologia" to tecnologia,
+                    "equipos" to equipos,
+                    "ip_antena" to ipAntena,
+                    "ip_remota" to ipRemota,
+                    "observaciones" to observaciones,
+                    "historial" to historial,
+                    "zona" to zona,
+                    "coordenadas" to coordenadas,
+                    "serial_onu" to serialOnu
+                )
+
+                clientRef.setValue(clientData)
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Cliente agregado exitosamente", Toast.LENGTH_SHORT).show()
+                        finish() // Opcional: cierra la actividad
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this, "Error al agregar cliente", Toast.LENGTH_SHORT).show()
+                    }
             }
+        }.addOnFailureListener {
+            Toast.makeText(this, "Error al verificar el código de cliente", Toast.LENGTH_SHORT).show()
         }
     }
 
+
 }
+

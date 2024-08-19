@@ -161,6 +161,28 @@
                     android:hint="Tecnología" />
 
                 <EditText
+                    android:id="@+id/input_serial_onu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Serial ONU"
+                    android:visibility="gone" />
+
+                <EditText
+                    android:id="@+id/input_serial_antena"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Serial Antena"
+                    android:visibility="gone" />
+
+                <EditText
+                    android:id="@+id/input_serial_router"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Serial Router"
+                    android:visibility="gone" />
+
+
+                <EditText
                     android:id="@+id/input_equipos"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
