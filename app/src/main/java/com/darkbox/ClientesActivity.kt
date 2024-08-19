@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
+import android.content.Intent
 import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AlertDialog
 import com.google.firebase.database.DatabaseReference
@@ -46,6 +47,7 @@ class ClientesActivity : ComponentActivity() {
         val buttonAgregarCliente: Button = findViewById(R.id.button_agregar_cliente)
         val buttonUbicacion: Button = findViewById(R.id.button_ubicacion)
         val ubicacionLayout: View = findViewById(R.id.ubicacion_layout)
+        val btnVerCliente = findViewById<Button>(R.id.btnVerCliente)
 
         // Spinner zona
         val spinnerZona: Spinner = findViewById(R.id.spinner_zona)
@@ -73,6 +75,12 @@ class ClientesActivity : ComponentActivity() {
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinnerZona.adapter = adapter
         }
+
+        btnVerCliente.setOnClickListener {
+            val intent = Intent(this, VerClienteActivity::class.java)
+            startActivity(intent)
+        }
+
 
         // Configurar el adaptador para el Spinner plan
         ArrayAdapter.createFromResource(

@@ -64,6 +64,12 @@
         <item>Revisión</item>
     </string-array>
 
+    <string-array name="tipo_busqueda_array">
+        <item>Documento</item>
+        <item>Código Cliente</item>
+        <item>Nombre y Apellidos</item>
+    </string-array>
+
 
     <!-- Otros recursos de cadena si es necesario -->
 </resources>
