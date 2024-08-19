@@ -393,8 +393,9 @@ class ClientesActivity : ComponentActivity() {
 
                 clientRef.setValue(clientData)
                     .addOnSuccessListener {
-                        Toast.makeText(this, "Cliente agregado exitosamente", Toast.LENGTH_SHORT).show()
-                        finish() // Opcional: cierra la actividad
+                        // Actualizar el estado del equipo en el inventario
+                        updateEquipmentStatus(serialOnu)
+                        finish()
                     }
                     .addOnFailureListener {
                         Toast.makeText(this, "Error al agregar cliente", Toast.LENGTH_SHORT).show()
@@ -402,6 +403,45 @@ class ClientesActivity : ComponentActivity() {
             }
         }.addOnFailureListener {
             Toast.makeText(this, "Error al verificar el código de cliente", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun updateEquipmentStatus(serialOnu: String) {
+        // Verifica la tecnología seleccionada y actualiza el estado en el inventario
+        val selectedTecnologia = findViewById<Spinner>(R.id.spinner_tecnologia).selectedItem.toString()
+        val inventoryRef = database.child("inventario").child(serialOnu)
+
+        when (selectedTecnologia) {
+            "Fibra Óptica" -> {
+                // Para Fibra Óptica, actualiza el estado del equipo ONU
+                inventoryRef.child("estado").setValue("Activo")
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Estado de equipo ONU actualizado a Activo", Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this, "Error al actualizar el estado del equipo ONU", Toast.LENGTH_SHORT).show()
+                    }
+            }
+            "Radio Enlace" -> {
+                val serialAntena = findViewById<EditText>(R.id.input_serial_antena).text.toString()
+                val serialRouter = findViewById<EditText>(R.id.input_serial_router).text.toString()
+
+                // Actualiza el estado de la Antena y el Router
+                val updateAntena = database.child("inventario").child(serialAntena).child("estado").setValue("Activo")
+                val updateRouter = database.child("inventario").child(serialRouter).child("estado").setValue("Activo")
+
+                updateAntena.addOnSuccessListener {
+                    Toast.makeText(this, "Estado de la Antena actualizado a Activo", Toast.LENGTH_SHORT).show()
+                }.addOnFailureListener {
+                    Toast.makeText(this, "Error al actualizar el estado de la Antena", Toast.LENGTH_SHORT).show()
+                }
+
+                updateRouter.addOnSuccessListener {
+                    Toast.makeText(this, "Estado del Router actualizado a Activo", Toast.LENGTH_SHORT).show()
+                }.addOnFailureListener {
+                    Toast.makeText(this, "Error al actualizar el estado del Router", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
