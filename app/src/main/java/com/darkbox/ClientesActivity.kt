@@ -19,6 +19,8 @@ import com.google.firebase.database.*
 class ClientesActivity : ComponentActivity() {
     private lateinit var database: DatabaseReference
     private lateinit var inputSerialOnu: EditText
+    private lateinit var inputSerialAntena: EditText
+    private lateinit var inputSerialRouter: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +32,8 @@ class ClientesActivity : ComponentActivity() {
 
         // Inicializa las vistas
         inputSerialOnu = findViewById(R.id.input_serial_onu)
+        inputSerialAntena = findViewById(R.id.input_serial_antena)
+        inputSerialRouter = findViewById(R.id.input_serial_router)
 
         // Referencias a los campos y botones
         val buttonIngresarCliente: Button = findViewById(R.id.button_ingresar_cliente)
@@ -111,6 +115,8 @@ class ClientesActivity : ComponentActivity() {
                         inputSerialOnu.visibility = View.GONE
                         inputSerialAntena.visibility = View.VISIBLE
                         inputSerialRouter.visibility = View.VISIBLE
+                        loadAntenaSerials() // Cargar seriales de Antenas Cliente disponibles en estado Bodega
+                        loadRouterSerials() // Cargar seriales de Routers disponibles en estado Bodega
                     }
                     else -> {
                         inputSerialOnu.visibility = View.GONE
@@ -126,6 +132,7 @@ class ClientesActivity : ComponentActivity() {
                 inputSerialRouter.visibility = View.GONE
             }
         }
+
 
 
         // Inicializa el layout de datos cliente, servicio y adicionales
@@ -192,6 +199,9 @@ class ClientesActivity : ComponentActivity() {
                 val zona = spinnerZona.selectedItem.toString()
                 val coordenadas = findViewById<EditText>(R.id.input_coordenadas).text.toString()
                 val serialOnu = findViewById<EditText>(R.id.input_serial_onu).text.toString()
+                val serialAntena = findViewById<EditText>(R.id.input_serial_antena).text.toString()
+                val serialRouter = findViewById<EditText>(R.id.input_serial_router).text.toString()
+
                 showConfirmationDialogForClient(
                     codCliente, nombres, apellidos, tipoDocumento, numeroDocumento, direccion,
                     telefono, correo, contactos, plan, tecnologia, equipos, ipAntena, ipRemota,
@@ -208,19 +218,19 @@ class ClientesActivity : ComponentActivity() {
         database.child("inventario").orderByChild("estado").equalTo("Bodega").get().addOnSuccessListener { snapshot ->
             if (snapshot.exists()) {
                 for (child in snapshot.children) {
+                    val equipo = child.child("equipo").getValue(String::class.java)
                     val serial = child.key // Obtener el serial desde la clave del nodo
-                    if (serial != null) {
+                    if (equipo == "Onu" && serial != null) {
                         serialOnuList.add(serial)
                     }
                 }
 
                 if (serialOnuList.isNotEmpty()) {
-                    // Mostrar el AlertDialog con los seriales
                     val builder = AlertDialog.Builder(this)
                     builder.setTitle("Selecciona un Serial ONU")
                         .setItems(serialOnuList.toTypedArray()) { _, which ->
                             val selectedSerial = serialOnuList[which]
-                            inputSerialOnu.setText(selectedSerial)
+                            findViewById<EditText>(R.id.input_serial_onu).setText(selectedSerial)
                         }
                         .setNegativeButton("Cancelar", null)
                         .show()
@@ -231,12 +241,81 @@ class ClientesActivity : ComponentActivity() {
                 Toast.makeText(this, "No se encontraron ONUs en estado Bodega", Toast.LENGTH_SHORT).show()
             }
         }.addOnFailureListener { exception ->
-            // Añadido log de error
             Log.e("ClientesActivity", "Error al cargar los seriales de ONUs", exception)
             Toast.makeText(this, "Error al cargar los seriales de ONUs", Toast.LENGTH_SHORT).show()
         }
     }
 
+
+    private fun loadAntenaSerials() {
+        val serialAntenaList = mutableListOf<String>()
+        val serialAntenaAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, serialAntenaList)
+
+        database.child("inventario").orderByChild("estado").equalTo("Bodega").get().addOnSuccessListener { snapshot ->
+            if (snapshot.exists()) {
+                for (child in snapshot.children) {
+                    val equipo = child.child("equipo").getValue(String::class.java)
+                    val serial = child.key // Obtener el serial desde la clave del nodo
+                    if (equipo == "Antena Cliente" && serial != null) {
+                        serialAntenaList.add(serial)
+                    }
+                }
+
+                if (serialAntenaList.isNotEmpty()) {
+                    val builder = AlertDialog.Builder(this)
+                    builder.setTitle("Selecciona un Serial Antena Cliente")
+                        .setItems(serialAntenaList.toTypedArray()) { _, which ->
+                            val selectedSerial = serialAntenaList[which]
+                            findViewById<EditText>(R.id.input_serial_antena).setText(selectedSerial)
+                        }
+                        .setNegativeButton("Cancelar", null)
+                        .show()
+                } else {
+                    Toast.makeText(this, "No se encontraron Antenas Clientes en estado Bodega", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(this, "No se encontraron Antenas Clientes en estado Bodega", Toast.LENGTH_SHORT).show()
+            }
+        }.addOnFailureListener { exception ->
+            Log.e("ClientesActivity", "Error al cargar los seriales de Antenas Clientes", exception)
+            Toast.makeText(this, "Error al cargar los seriales de Antenas Clientes", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun loadRouterSerials() {
+        val serialRouterList = mutableListOf<String>()
+        val serialRouterAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, serialRouterList)
+
+        database.child("inventario").orderByChild("estado").equalTo("Bodega").get().addOnSuccessListener { snapshot ->
+            if (snapshot.exists()) {
+                for (child in snapshot.children) {
+                    val equipo = child.child("equipo").getValue(String::class.java)
+                    val serial = child.key // Obtener el serial desde la clave del nodo
+                    if (equipo == "Router" && serial != null) {
+                        serialRouterList.add(serial)
+                    }
+                }
+
+                if (serialRouterList.isNotEmpty()) {
+                    val builder = AlertDialog.Builder(this)
+                    builder.setTitle("Selecciona un Serial Router")
+                        .setItems(serialRouterList.toTypedArray()) { _, which ->
+                            val selectedSerial = serialRouterList[which]
+                            findViewById<EditText>(R.id.input_serial_router).setText(selectedSerial)
+                        }
+                        .setNegativeButton("Cancelar", null)
+                        .show()
+                } else {
+                    Toast.makeText(this, "No se encontraron Routers en estado Bodega", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(this, "No se encontraron Routers en estado Bodega", Toast.LENGTH_SHORT).show()
+            }
+        }.addOnFailureListener { exception ->
+            Log.e("ClientesActivity", "Error al cargar los seriales de Routers", exception)
+            Toast.makeText(this, "Error al cargar los seriales de Routers", Toast.LENGTH_SHORT).show()
+        }
+    }
 
 
     private fun validateClientData(): Boolean {
@@ -317,7 +396,11 @@ class ClientesActivity : ComponentActivity() {
         equipos: String, ipAntena: String, ipRemota: String, observaciones: String, historial: String, zona: String,
         coordenadas: String, serialOnu: String
     ) {
-        val message = """
+        val serialAntena = findViewById<EditText>(R.id.input_serial_antena).text.toString()
+        val serialRouter = findViewById<EditText>(R.id.input_serial_router).text.toString()
+
+        val message = when (tecnologia) {
+            "Fibra Óptica" -> """
             Código Cliente: $codCliente
             Nombres: $nombres
             Apellidos: $apellidos
@@ -337,8 +420,50 @@ class ClientesActivity : ComponentActivity() {
             Historial: $historial
             Zona: $zona
             Coordenadas: $coordenadas
-            
         """.trimIndent()
+            "Radio Enlace" -> """
+            Código Cliente: $codCliente
+            Nombres: $nombres
+            Apellidos: $apellidos
+            Tipo Documento: $tipoDocumento
+            Número Documento: $numeroDocumento
+            Dirección: $direccion
+            Teléfono: $telefono
+            Correo: $correo
+            Contactos: $contactos
+            Plan: $plan
+            Tecnología: $tecnologia
+            Serial Antena: $serialAntena
+            Serial Router: $serialRouter
+            Equipos: $equipos
+            IP Antena: $ipAntena
+            IP Remota: $ipRemota
+            Observaciones: $observaciones
+            Historial: $historial
+            Zona: $zona
+            Coordenadas: $coordenadas
+        """.trimIndent()
+            else -> """
+            Código Cliente: $codCliente
+            Nombres: $nombres
+            Apellidos: $apellidos
+            Tipo Documento: $tipoDocumento
+            Número Documento: $numeroDocumento
+            Dirección: $direccion
+            Teléfono: $telefono
+            Correo: $correo
+            Contactos: $contactos
+            Plan: $plan
+            Tecnología: $tecnologia
+            Equipos: $equipos
+            IP Antena: $ipAntena
+            IP Remota: $ipRemota
+            Observaciones: $observaciones
+            Historial: $historial
+            Zona: $zona
+            Coordenadas: $coordenadas
+        """.trimIndent()
+        }
 
         AlertDialog.Builder(this)
             .setTitle("Confirmar Datos")
@@ -347,28 +472,28 @@ class ClientesActivity : ComponentActivity() {
                 saveClientData(
                     codCliente, nombres, apellidos, tipoDocumento, numeroDocumento, direccion,
                     telefono, correo, contactos, plan, tecnologia, equipos, ipAntena, ipRemota,
-                    observaciones, historial, zona, coordenadas, serialOnu
+                    observaciones, historial, zona, coordenadas, serialOnu, serialAntena, serialRouter
                 )
             }
             .setNegativeButton("Cancelar", null)
             .show()
     }
 
+
+
     private fun saveClientData(
         codCliente: String, nombres: String, apellidos: String, tipoDocumento: String, numeroDocumento: String,
         direccion: String, telefono: String, correo: String, contactos: String, plan: String, tecnologia: String,
         equipos: String, ipAntena: String, ipRemota: String, observaciones: String, historial: String, zona: String,
-        coordenadas: String, serialOnu: String
+        coordenadas: String, serialOnu: String, serialAntena: String, serialRouter: String
     ) {
         val clientRef = database.child("clientes").child(codCliente)
 
-        // Verificar si el cliente ya existe
         clientRef.get().addOnSuccessListener { snapshot ->
             if (snapshot.exists()) {
-                // El cliente ya existe, mostrar un mensaje de error
                 Toast.makeText(this, "El código de cliente ya existe", Toast.LENGTH_SHORT).show()
             } else {
-                // El cliente no existe, proceder a guardar los datos
+                // Guarda los datos del cliente en Firebase
                 val clientData = mapOf(
                     "cod_cliente" to codCliente,
                     "nombres" to nombres,
@@ -388,13 +513,15 @@ class ClientesActivity : ComponentActivity() {
                     "historial" to historial,
                     "zona" to zona,
                     "coordenadas" to coordenadas,
-                    "serial_onu" to serialOnu
+                    "serial_onu" to serialOnu,
+                    "serial_antena" to if (tecnologia == "Radio Enlace") serialAntena else "",
+                    "serial_router" to if (tecnologia == "Radio Enlace") serialRouter else ""
                 )
 
                 clientRef.setValue(clientData)
                     .addOnSuccessListener {
-                        // Actualizar el estado del equipo en el inventario
-                        updateEquipmentStatus(serialOnu)
+                        // Actualiza el estado del equipo en el inventario
+                        updateEquipmentStatus(serialOnu, serialAntena, serialRouter)
                         finish()
                     }
                     .addOnFailureListener {
@@ -406,44 +533,53 @@ class ClientesActivity : ComponentActivity() {
         }
     }
 
-    private fun updateEquipmentStatus(serialOnu: String) {
-        // Verifica la tecnología seleccionada y actualiza el estado en el inventario
+
+    private fun updateEquipmentStatus(
+        serialOnu: String?,
+        serialAntena: String?,
+        serialRouter: String?
+    ) {
         val selectedTecnologia = findViewById<Spinner>(R.id.spinner_tecnologia).selectedItem.toString()
-        val inventoryRef = database.child("inventario").child(serialOnu)
+        val inventoryRef = database.child("inventario")
 
         when (selectedTecnologia) {
             "Fibra Óptica" -> {
                 // Para Fibra Óptica, actualiza el estado del equipo ONU
-                inventoryRef.child("estado").setValue("Activo")
-                    .addOnSuccessListener {
-                        Toast.makeText(this, "Estado de equipo ONU actualizado a Activo", Toast.LENGTH_SHORT).show()
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(this, "Error al actualizar el estado del equipo ONU", Toast.LENGTH_SHORT).show()
-                    }
+                if (serialOnu != null) {
+                    inventoryRef.child(serialOnu).child("estado").setValue("Activo")
+                        .addOnSuccessListener {
+                            Toast.makeText(this, "Estado de equipo ONU actualizado a Activo", Toast.LENGTH_SHORT).show()
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(this, "Error al actualizar el estado del equipo ONU", Toast.LENGTH_SHORT).show()
+                        }
+                }
             }
             "Radio Enlace" -> {
-                val serialAntena = findViewById<EditText>(R.id.input_serial_antena).text.toString()
-                val serialRouter = findViewById<EditText>(R.id.input_serial_router).text.toString()
-
                 // Actualiza el estado de la Antena y el Router
-                val updateAntena = database.child("inventario").child(serialAntena).child("estado").setValue("Activo")
-                val updateRouter = database.child("inventario").child(serialRouter).child("estado").setValue("Activo")
-
-                updateAntena.addOnSuccessListener {
-                    Toast.makeText(this, "Estado de la Antena actualizado a Activo", Toast.LENGTH_SHORT).show()
-                }.addOnFailureListener {
-                    Toast.makeText(this, "Error al actualizar el estado de la Antena", Toast.LENGTH_SHORT).show()
+                if (serialAntena != null) {
+                    inventoryRef.child(serialAntena).child("estado").setValue("Activo")
+                        .addOnSuccessListener {
+                            Toast.makeText(this, "Estado de la Antena actualizado a Activo", Toast.LENGTH_SHORT).show()
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(this, "Error al actualizar el estado de la Antena", Toast.LENGTH_SHORT).show()
+                        }
                 }
 
-                updateRouter.addOnSuccessListener {
-                    Toast.makeText(this, "Estado del Router actualizado a Activo", Toast.LENGTH_SHORT).show()
-                }.addOnFailureListener {
-                    Toast.makeText(this, "Error al actualizar el estado del Router", Toast.LENGTH_SHORT).show()
+                if (serialRouter != null) {
+                    inventoryRef.child(serialRouter).child("estado").setValue("Activo")
+                        .addOnSuccessListener {
+                            Toast.makeText(this, "Estado del Router actualizado a Activo", Toast.LENGTH_SHORT).show()
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(this, "Error al actualizar el estado del Router", Toast.LENGTH_SHORT).show()
+                        }
                 }
             }
         }
     }
+
 
 
 }
