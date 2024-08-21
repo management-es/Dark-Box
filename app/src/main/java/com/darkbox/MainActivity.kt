@@ -26,8 +26,8 @@ class MainActivity : ComponentActivity() {
                 MainScreen(
                     onInventoryClick = { navigateToInventory() },
                     onClientesClick = { navigateToClientes() },
-                    onAgendaClick = { navigateToAgenda() }
-
+                    onAgendaClick = { navigateToAgenda() },
+                    onInformesClick = { navigateToInformes() }
                 )
             }
         }
@@ -47,11 +47,21 @@ class MainActivity : ComponentActivity() {
         val intent = Intent(this, AgendaActivity::class.java)
         startActivity(intent)
     }
+
+    private fun navigateToInformes() {
+        val intent = Intent(this, InformesActivity::class.java)
+        startActivity(intent)
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(onInventoryClick: () -> Unit, onClientesClick: () -> Unit, onAgendaClick: () -> Unit) {
+fun MainScreen(
+    onInventoryClick: () -> Unit,
+    onClientesClick: () -> Unit,
+    onAgendaClick: () -> Unit,
+    onInformesClick: () -> Unit
+) {
     var expanded by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -87,8 +97,13 @@ fun MainScreen(onInventoryClick: () -> Unit, onClientesClick: () -> Unit, onAgen
                                 expanded = false
                                 onAgendaClick()
                             }
-
-
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Informes") },
+                            onClick = {
+                                expanded = false
+                                onInformesClick()
+                            }
                         )
                     }
                 }
@@ -123,7 +138,8 @@ fun GreetingPreview() {
         MainScreen(
             onInventoryClick = {},
             onClientesClick = {},
-            onAgendaClick = {}
+            onAgendaClick = {},
+            onInformesClick = {}
         )
     }
 }

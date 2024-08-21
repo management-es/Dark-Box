@@ -88,5 +88,11 @@
             android:label="Ver Cliente"
             android:theme="@style/Theme.DarkBox" />
 
+        <activity
+            android:name=".InformesActivity"
+            android:exported="true"
+            android:label="Informes"
+            android:theme="@style/Theme.DarkBox" />
+
     </application>
 </manifest>

@@ -13,4 +13,10 @@
         android:id="@+id/action_agenda"
         android:title="Agenda"
         android:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_informes"
+        android:title="Informes"
+        android:showAsAction="never" />
+
 </menu>
