@@ -14,16 +14,43 @@
         android:textStyle="bold"
         android:paddingBottom="16dp" />
 
-    <!-- Agrega aquí los campos que necesites para el formulario -->
-    <EditText
-        android:id="@+id/edtInformeDetail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Detalles del Informe" />
-
     <Button
-        android:id="@+id/btnSubmit"
+        android:id="@+id/btnInstalacion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enviar Informe" />
+        android:text="Instalación"
+        android:layout_marginBottom="8dp"
+        android:layout_gravity="center_horizontal"
+        android:backgroundTint="@color/light_gray"
+        android:textColor="@android:color/black" />
+
+    <Button
+        android:id="@+id/btnMantenimiento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mantenimiento"
+        android:layout_marginBottom="8dp"
+        android:layout_gravity="center_horizontal"
+        android:backgroundTint="@color/light_gray"
+        android:textColor="@android:color/black" />
+
+    <Button
+        android:id="@+id/btnDesmonte"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Desmonte"
+        android:layout_marginBottom="8dp"
+        android:layout_gravity="center_horizontal"
+        android:backgroundTint="@color/light_gray"
+        android:textColor="@android:color/black" />
+
+    <Button
+        android:id="@+id/btnInspeccionPreoperacional"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Inspección Preoperacional"
+        android:layout_marginBottom="8dp"
+        android:layout_gravity="center_horizontal"
+        android:backgroundTint="@color/light_gray"
+        android:textColor="@android:color/black" />
 </LinearLayout>
