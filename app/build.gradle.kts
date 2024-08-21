@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.material)
+    implementation("androidx.paging:paging-runtime:3.1.1")
     implementation("com.google.firebase:firebase-database-ktx:20.0.3")
     implementation("com.google.firebase:firebase-database-ktx:20.0.5")
     testImplementation(libs.junit)
@@ -70,6 +71,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
 
 
 }

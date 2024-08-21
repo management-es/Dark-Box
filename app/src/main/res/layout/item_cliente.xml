@@ -10,24 +10,170 @@
         android:id="@+id/txtCodCliente"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"/>
-
-    <TextView
-        android:id="@+id/txtNumeroDocumento"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"/>
+        android:textSize="16sp"
+        android:text="Cod Cliente: "/>
 
     <TextView
         android:id="@+id/txtNombres"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"/>
+        android:textSize="16sp"
+        android:text="Nombres: "/>
 
     <TextView
         android:id="@+id/txtApellidos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"/>
-</LinearLayout>
+        android:textSize="16sp"
+        android:text="Apellidos: "/>
 
+    <TextView
+        android:id="@+id/txtTipoDocumento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="Tipo Documento: "/>
+
+    <TextView
+        android:id="@+id/txtNumeroDocumento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="Número Documento: "/>
+
+    <TextView
+        android:id="@+id/txtseparador1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="______________________________________________"/>
+
+    <TextView
+        android:id="@+id/txtZona"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="Zona: "/>
+
+    <TextView
+        android:id="@+id/txtDireccion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="Dirección: "/>
+
+    <TextView
+        android:id="@+id/txtCoordenadas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="Coordenadas: "/>
+
+    <TextView
+        android:id="@+id/txtTelefonos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="Teléfono: "/>
+
+    <TextView
+        android:id="@+id/txtCorreo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="Correo: "/>
+
+    <TextView
+        android:id="@+id/txtContactos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="Contactos: "/>
+
+    <TextView
+        android:id="@+id/txtseparador2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="______________________________________________ "/>
+
+    <TextView
+        android:id="@+id/txtPlan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="Plan: "/>
+
+    <TextView
+        android:id="@+id/txtTecnologia"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="Tecnología: "/>
+
+    <TextView
+        android:id="@+id/txtSerialOnu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="Serial ONU: "/>
+
+    <TextView
+        android:id="@+id/txtSerialAntena"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="Serial Antena: "/>
+
+    <TextView
+        android:id="@+id/txtSerialRouter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="Serial Router: "/>
+
+    <TextView
+        android:id="@+id/txtEquipos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="Equipos Adicionales: "/>
+
+    <TextView
+        android:id="@+id/txtIpAntena"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="IP Antena: "/>
+
+
+    <TextView
+        android:id="@+id/txtIpRemota"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="IP Remota: "/>
+
+    <TextView
+        android:id="@+id/txtseparador3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="______________________________________________ "/>
+
+    <TextView
+        android:id="@+id/txtObservaciones"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="Observaciones: "/>
+
+    <TextView
+        android:id="@+id/txtHistorial"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="Historial: "/>
+
+
+</LinearLayout>

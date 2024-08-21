@@ -1,5 +1,7 @@
 package com.darkbox
 
+import android.view.View
+import android.widget.TextView
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -17,9 +19,25 @@ data class Cliente(
     val cod_cliente: String? = null,
     val numero_documento: String? = null,
     val nombres: String? = null,
-    val apellidos: String? = null
+    val apellidos: String? = null,
+    val contactos: String? = null,
+    val coordenadas: String? = null,
+    val correo: String? = null,
+    val direccion: String? = null,
+    val equipos: String? = null,
+    val historial: String? = null,
+    val ip_antena: String? = null,
+    val ip_remota: String? = null,
+    val observaciones: String? = null,
+    val plan: String? = null,
+    val serial_onu: String? = null,
+    val serial_router: String? = null,
+    val serial_antena: String? = null,
+    val tecnologia: String? = null,
+    val telefono: String? = null,
+    val tipo_documento: String? = null,
+    val zona: String? = null
 )
-
 
 class VerClienteActivity : AppCompatActivity() {
 
@@ -31,6 +49,7 @@ class VerClienteActivity : AppCompatActivity() {
     private lateinit var edtBusqueda: EditText
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ClienteAdapter
+    private lateinit var txtNoRecords: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +64,7 @@ class VerClienteActivity : AppCompatActivity() {
         spinnerTipoBusqueda = findViewById(R.id.spinnerTipoBusqueda)
         edtBusqueda = findViewById(R.id.edtBusqueda)
         recyclerView = findViewById(R.id.recyclerViewResultados)
+        txtNoRecords = findViewById(R.id.txtNoRecords)
 
         // Configura el RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -74,7 +94,7 @@ class VerClienteActivity : AppCompatActivity() {
                         clientes.add(cliente)
                     }
                 }
-                adapter.submitList(clientes)
+                handleResults(clientes)
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -93,7 +113,7 @@ class VerClienteActivity : AppCompatActivity() {
                         clientes.add(cliente)
                     }
                 }
-                adapter.submitList(clientes)
+                handleResults(clientes)
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -103,8 +123,6 @@ class VerClienteActivity : AppCompatActivity() {
     }
 
     private fun buscarPorNombreApellido(nombreApellido: String) {
-        // La búsqueda por nombre y apellido se puede hacer en dos pasos
-        // Primero, busca por nombres
         clientesRef.orderByChild("nombres").startAt(nombreApellido).endAt(nombreApellido + "\uf8ff").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val clientes = mutableListOf<Cliente>()
@@ -114,7 +132,7 @@ class VerClienteActivity : AppCompatActivity() {
                         clientes.add(cliente)
                     }
                 }
-                adapter.submitList(clientes)
+                handleResults(clientes)
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -123,4 +141,14 @@ class VerClienteActivity : AppCompatActivity() {
         })
     }
 
+    private fun handleResults(clientes: List<Cliente>) {
+        if (clientes.isEmpty()) {
+            recyclerView.visibility = View.GONE
+            txtNoRecords.visibility = View.VISIBLE
+        } else {
+            recyclerView.visibility = View.VISIBLE
+            txtNoRecords.visibility = View.GONE
+            adapter.submitList(clientes)
+        }
+    }
 }
