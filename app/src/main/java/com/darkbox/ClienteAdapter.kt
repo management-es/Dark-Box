@@ -1,5 +1,8 @@
 package com.darkbox
 
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,27 +47,39 @@ class ClienteAdapter : ListAdapter<Cliente, ClienteAdapter.ClienteViewHolder>(Cl
         private val txtZona: TextView = itemView.findViewById(R.id.txtZona)
 
         fun bind(cliente: Cliente) {
-            txtCodCliente.text = "Cod Cliente: ${cliente.cod_cliente ?: "N/A"}"
-            txtNumeroDocumento.text = "Número Documento: ${cliente.numero_documento ?: "N/A"}"
-            txtNombres.text = "Nombres: ${cliente.nombres ?: "N/A"}"
-            txtApellidos.text = "Apellidos: ${cliente.apellidos ?: "N/A"}"
-            txtContactos.text = "Contactos: ${cliente.contactos ?: "N/A"}"
-            txtCoordenadas.text = "Coordenadas: ${cliente.coordenadas ?: "N/A"}"
-            txtCorreo.text = "Correo: ${cliente.correo ?: "N/A"}"
-            txtDireccion.text = "Dirección: ${cliente.direccion ?: "N/A"}"
-            txtEquipos.text = "Equipos: ${cliente.equipos ?: "N/A"}"
-            txtHistorial.text = "Historial: ${cliente.historial ?: "N/A"}"
-            txtIpAntena.text = "IP Antena: ${cliente.ip_antena ?: "N/A"}"
-            txtIpRemota.text = "IP Remota: ${cliente.ip_remota ?: "N/A"}"
-            txtObservaciones.text = "Observaciones: ${cliente.observaciones ?: "N/A"}"
-            txtPlan.text = "Plan: ${cliente.plan ?: "N/A"}"
-            txtSerialOnu.text = "Serial ONU: ${cliente.serial_onu ?: "N/A"}"
-            txtSerialRouter.text = "Serial Router: ${cliente.serial_router ?: "N/A"}"
-            txtSerialAntena.text = "Serial Antena: ${cliente.serial_antena ?: "N/A"}"
-            txtTecnologia.text = "Tecnología: ${cliente.tecnologia ?: "N/A"}"
-            txtTelefonos.text = "Teléfono: ${cliente.telefono ?: "N/A"}"
-            txtTipoDocumento.text = "Tipo Documento: ${cliente.tipo_documento ?: "N/A"}"
-            txtZona.text = "Zona: ${cliente.zona ?: "N/A"}"
+            txtCodCliente.text = formatText("Cod Cliente: ", cliente.cod_cliente)
+            txtNumeroDocumento.text = formatText("Número Documento: ", cliente.numero_documento)
+            txtNombres.text = formatText("Nombres: ", cliente.nombres)
+            txtApellidos.text = formatText("Apellidos: ", cliente.apellidos)
+            txtContactos.text = formatText("Contactos: ", cliente.contactos)
+            txtCoordenadas.text = formatText("Coordenadas: ", cliente.coordenadas)
+            txtCorreo.text = formatText("Correo: ", cliente.correo)
+            txtDireccion.text = formatText("Dirección: ", cliente.direccion)
+            txtEquipos.text = formatText("Equipos: ", cliente.equipos)
+            txtHistorial.text = formatText("Historial: ", cliente.historial)
+            txtIpAntena.text = formatText("IP Antena: ", cliente.ip_antena)
+            txtIpRemota.text = formatText("IP Remota: ", cliente.ip_remota)
+            txtObservaciones.text = formatText("Observaciones: ", cliente.observaciones)
+            txtPlan.text = formatText("Plan: ", cliente.plan)
+            txtSerialOnu.text = formatText("Serial ONU: ", cliente.serial_onu)
+            txtSerialRouter.text = formatText("Serial Router: ", cliente.serial_router)
+            txtSerialAntena.text = formatText("Serial Antena: ", cliente.serial_antena)
+            txtTecnologia.text = formatText("Tecnología: ", cliente.tecnologia)
+            txtTelefonos.text = formatText("Teléfonos: ", cliente.telefono)
+            txtTipoDocumento.text = formatText("Tipo Documento: ", cliente.tipo_documento)
+            txtZona.text = formatText("Zona: ", cliente.zona)
+        }
+
+        private fun formatText(label: String, value: String?): SpannableString {
+            val spannableString = SpannableString("$label${value ?: "N/A"}")
+            val labelEnd = label.length
+            spannableString.setSpan(
+                StyleSpan(android.graphics.Typeface.BOLD),
+                0,
+                labelEnd,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            return spannableString
         }
     }
 
@@ -78,5 +93,3 @@ class ClienteAdapter : ListAdapter<Cliente, ClienteAdapter.ClienteViewHolder>(Cl
         }
     }
 }
-
-
