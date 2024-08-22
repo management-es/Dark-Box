@@ -4,12 +4,20 @@ import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
 class AccessActivity : AppCompatActivity() {
+
+    // Declarar una referencia a la base de datos
+    private lateinit var database: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_access)
+
+        // Inicializar la referencia a la base de datos
+        database = FirebaseDatabase.getInstance().reference.child("access")
 
         // Configurar Spinner para Rol
         val spinnerRol: Spinner = findViewById(R.id.spinnerRol)
@@ -26,7 +34,7 @@ class AccessActivity : AppCompatActivity() {
         val spinnerZonaCredenciales: Spinner = findViewById(R.id.zona_credenciales)
         ArrayAdapter.createFromResource(
             this,
-            R.array.zona_options,
+            R.array.zona_credenciales,
             android.R.layout.simple_spinner_item
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -77,16 +85,30 @@ class AccessActivity : AppCompatActivity() {
             val parametro: String = spinnerParametro.selectedItem.toString()
             val observaciones: String = editObservaciones.text.toString()
 
-            // Implementar la lógica para agregar credenciales aquí
+            // Crear un objeto para los datos a guardar
+            val accessData = mapOf(
+                "nombreUsuario" to nombreUsuario,
+                "usuario" to usuario,
+                "contrasena" to contrasena,
+                "rol" to rol,
+                "zona" to zona,
+                "parametro" to parametro,
+                "observaciones" to observaciones
+            )
 
-            // Ejemplo de impresión en consola (debes reemplazarlo con tu lógica)
-            println("Nombre Usuario: $nombreUsuario")
-            println("Usuario: $usuario")
-            println("Contraseña: $contrasena")
-            println("Rol: $rol")
-            println("Zona: $zona")
-            println("Parámetro: $parametro")
-            println("Observaciones: $observaciones")
+            // Generar una clave única para el nuevo registro
+            val newKey = database.push().key
+
+            if (newKey != null) {
+                // Guardar los datos en el nodo "access" bajo la clave generada
+                database.child(newKey).setValue(accessData)
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Credencial agregada exitosamente", Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this, "Error al agregar credencial", Toast.LENGTH_SHORT).show()
+                    }
+            }
         }
     }
 }
