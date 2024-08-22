@@ -1,5 +1,6 @@
 package com.darkbox
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.View
 import android.widget.*
@@ -9,7 +10,6 @@ import com.google.firebase.database.FirebaseDatabase
 
 class AccessActivity : AppCompatActivity() {
 
-    // Declarar una referencia a la base de datos
     private lateinit var database: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,14 +52,12 @@ class AccessActivity : AppCompatActivity() {
             spinnerParametro.adapter = adapter
         }
 
-        // Inicializar las vistas de observación
         val textObservaciones: TextView = findViewById(R.id.textObservaciones)
         val editObservaciones: EditText = findViewById(R.id.editObservaciones)
 
-        // Configurar el listener para el Spinner de Parámetro
         spinnerParametro.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                if (position == 1) { // Suponiendo que "Inactivo" es la segunda opción en el Spinner
+                if (position == 1) {
                     textObservaciones.visibility = View.VISIBLE
                     editObservaciones.visibility = View.VISIBLE
                 } else {
@@ -68,24 +66,29 @@ class AccessActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                // Puedes dejarlo vacío si no necesitas manejar el caso cuando nada está seleccionado
-            }
+            override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
-        // Implementación del botón para agregar credenciales
         val buttonAgregarCredencial: Button = findViewById(R.id.buttonAgregarCredencial)
         buttonAgregarCredencial.setOnClickListener {
-            // Obtener los valores de los campos
-            val nombreUsuario: String = findViewById<EditText>(R.id.nombreUsuario).text.toString()
-            val usuario: String = findViewById<EditText>(R.id.usuario).text.toString()
-            val contrasena: String = findViewById<EditText>(R.id.contrasena).text.toString()
+            val nombreUsuario: String = findViewById<EditText>(R.id.nombreUsuario).text.toString().trim()
+            val usuario: String = findViewById<EditText>(R.id.usuario).text.toString().trim()
+            val contrasena: String = findViewById<EditText>(R.id.contrasena).text.toString().trim()
             val rol: String = spinnerRol.selectedItem.toString()
             val zona: String = spinnerZonaCredenciales.selectedItem.toString()
             val parametro: String = spinnerParametro.selectedItem.toString()
-            val observaciones: String = editObservaciones.text.toString()
+            val observaciones: String = editObservaciones.text.toString().trim()
 
-            // Crear un objeto para los datos a guardar
+            // Validar el campo usuario para evitar espacios, puntos y guiones
+            if (usuario.isEmpty()) {
+                Toast.makeText(this, "El campo Usuario no puede estar vacío.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (usuario.contains(" ") || usuario.contains(".") || usuario.contains("-")) {
+                Toast.makeText(this, "El campo Usuario no puede contener espacios, puntos ni guiones.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             val accessData = mapOf(
                 "nombreUsuario" to nombreUsuario,
                 "usuario" to usuario,
@@ -96,19 +99,33 @@ class AccessActivity : AppCompatActivity() {
                 "observaciones" to observaciones
             )
 
-            // Generar una clave única para el nuevo registro
-            val newKey = database.push().key
+            val confirmMessage = """
+                ¿Deseas guardar la siguiente credencial?
+                
+                Nombre de Usuario: $nombreUsuario
+                Usuario: $usuario
+                Rol: $rol
+                Zona: $zona
+                Parámetro: $parametro
+                Observaciones: $observaciones
+            """.trimIndent()
 
-            if (newKey != null) {
-                // Guardar los datos en el nodo "access" bajo la clave generada
-                database.child(newKey).setValue(accessData)
-                    .addOnSuccessListener {
-                        Toast.makeText(this, "Credencial agregada exitosamente", Toast.LENGTH_SHORT).show()
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(this, "Error al agregar credencial", Toast.LENGTH_SHORT).show()
-                    }
-            }
+            AlertDialog.Builder(this)
+                .setTitle("Confirmar")
+                .setMessage(confirmMessage)
+                .setPositiveButton("Guardar") { _, _ ->
+                    // Usar el valor de usuario como la clave del registro en Firebase
+                    database.child(usuario).setValue(accessData)
+                        .addOnSuccessListener {
+                            Toast.makeText(this, "Credencial agregada exitosamente", Toast.LENGTH_SHORT).show()
+                            finish() // Volver al menú principal
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(this, "Error al agregar credencial", Toast.LENGTH_SHORT).show()
+                        }
+                }
+                .setNegativeButton("Cancelar", null)
+                .show()
         }
     }
 }
