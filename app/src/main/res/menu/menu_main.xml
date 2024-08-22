@@ -19,4 +19,9 @@
         android:title="Informes"
         android:showAsAction="never" />
 
+    <item
+        android:id="@+id/action_credenciales"
+        android:title="Credenciales"
+        android:showAsAction="never" />
+
 </menu>

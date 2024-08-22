@@ -94,5 +94,18 @@
             android:label="Informes"
             android:theme="@style/Theme.DarkBox" />
 
+        <activity
+            android:name=".CredencialesActivity"
+            android:exported="true"
+            android:label="Credenciales"
+            android:theme="@style/Theme.DarkBox" />
+
+        <activity
+            android:name=".AccessActivity"
+            android:exported="true"
+            android:label="Perfiles de Acceso"
+            android:theme="@style/Theme.DarkBox" />
+
+
     </application>
 </manifest>

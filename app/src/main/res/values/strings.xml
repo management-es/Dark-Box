@@ -70,6 +70,27 @@
         <item>Nombre y Apellidos</item>
     </string-array>
 
+    <string-array name="rol_options">
+        <item>Seleccionar</item>
+        <item>Directivo</item>
+        <item>Administrativo</item>
+        <item>Coordinacion</item>
+        <item>Tecnico</item>
+        <item>SupUsrDo</item>
+    </string-array>
+
+    <string-array name="zona_credenciales">
+        <item>Seleccionar</item>
+        <item>Medellín</item>
+        <item>Salgar</item>
+        <item>Amagá</item>
+        <item>Todo</item>
+    </string-array>
+
+    <string-array name="spinnerParametro">
+        <item>Activo</item>
+        <item>Inactivo</item>
+    </string-array>
 
     <!-- Otros recursos de cadena si es necesario -->
 </resources>

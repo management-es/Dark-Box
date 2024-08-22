@@ -27,7 +27,8 @@ class MainActivity : ComponentActivity() {
                     onInventoryClick = { navigateToInventory() },
                     onClientesClick = { navigateToClientes() },
                     onAgendaClick = { navigateToAgenda() },
-                    onInformesClick = { navigateToInformes() }
+                    onInformesClick = { navigateToInformes() },
+                    onCredencialesClick = { navigateToCredenciales() } // Añadir navegación a Credenciales
                 )
             }
         }
@@ -52,6 +53,11 @@ class MainActivity : ComponentActivity() {
         val intent = Intent(this, InformesActivity::class.java)
         startActivity(intent)
     }
+
+    private fun navigateToCredenciales() { // Función para navegar a Credenciales
+        val intent = Intent(this, CredencialesActivity::class.java)
+        startActivity(intent)
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -60,7 +66,8 @@ fun MainScreen(
     onInventoryClick: () -> Unit,
     onClientesClick: () -> Unit,
     onAgendaClick: () -> Unit,
-    onInformesClick: () -> Unit
+    onInformesClick: () -> Unit,
+    onCredencialesClick: () -> Unit // Añadir función de clic para Credenciales
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -105,6 +112,13 @@ fun MainScreen(
                                 onInformesClick()
                             }
                         )
+                        DropdownMenuItem(
+                            text = { Text("Credenciales") }, // Nueva opción de Credenciales
+                            onClick = {
+                                expanded = false
+                                onCredencialesClick()
+                            }
+                        )
                     }
                 }
             )
@@ -139,7 +153,8 @@ fun GreetingPreview() {
             onInventoryClick = {},
             onClientesClick = {},
             onAgendaClick = {},
-            onInformesClick = {}
+            onInformesClick = {},
+            onCredencialesClick = {} // Añadir vista previa para Credenciales
         )
     }
 }
