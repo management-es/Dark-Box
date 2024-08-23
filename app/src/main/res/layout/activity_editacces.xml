@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- ListView para mostrar los usuarios -->
+    <ListView
+        android:id="@+id/listViewUsuarios"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Campo para Nombre de Usuario -->
+    <EditText
+        android:id="@+id/editTextNombreUsuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nombre de Usuario" />
+
+    <!-- Campo para Usuario -->
+    <EditText
+        android:id="@+id/editTextUsuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Usuario" />
+
+    <!-- Campo para Contraseña -->
+    <EditText
+        android:id="@+id/editTextContrasena"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Contraseña"
+        android:inputType="textPassword" />
+
+    <!-- Spinner para Rol -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rol"
+        android:textSize="16sp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp" />
+
+    <Spinner
+        android:id="@+id/spinnerRol"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Spinner para Zona -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Zona"
+        android:textSize="16sp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp" />
+
+    <Spinner
+        android:id="@+id/spinnerZona"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Spinner para Parámetro -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Parámetro"
+        android:textSize="16sp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp" />
+
+    <Spinner
+        android:id="@+id/spinnerParametro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Campo para Observaciones -->
+    <TextView
+        android:id="@+id/textObservaciones"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Observaciones"
+        android:textSize="16sp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/editTextObservaciones"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Ingrese la observación"
+        android:visibility="visible" />
+
+    <!-- Botón para actualizar la credencial -->
+    <Button
+        android:id="@+id/buttonActualizar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Actualizar Credencial"
+        android:layout_marginTop="24dp" />
+</LinearLayout>

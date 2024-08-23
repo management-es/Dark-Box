@@ -14,4 +14,11 @@
         android:text="Agregar Credencial"
         android:layout_gravity="center" />
 
+    <Button
+        android:id="@+id/button_edit_credential"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Editar Credencial"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp" />
 </LinearLayout>

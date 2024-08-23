@@ -106,6 +106,12 @@
             android:label="Perfiles de Acceso"
             android:theme="@style/Theme.DarkBox" />
 
+        <activity
+            android:name=".EditAccesActivity"
+            android:exported="true"
+            android:label="Editar Credencial"
+            android:theme="@style/Theme.DarkBox" />
+
 
     </application>
 </manifest>
