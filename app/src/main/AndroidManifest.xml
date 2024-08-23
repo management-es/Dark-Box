@@ -108,6 +108,7 @@
 
         <activity
             android:name=".EditAccesActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden"
             android:exported="true"
             android:label="Editar Credencial"
             android:theme="@style/Theme.DarkBox" />

@@ -102,6 +102,36 @@ class EditAccesActivity : AppCompatActivity() {
             val parametro = spinnerParametro.selectedItem.toString()
             val observaciones = editTextObservaciones.text.toString().trim()
 
+            // Validación para campos vacíos
+            if (nombreUsuario.isEmpty()) {
+                editTextNombreUsuario.error = "Este campo no puede estar vacío"
+                editTextNombreUsuario.requestFocus()
+                return@setOnClickListener
+            }
+            if (usuario.isEmpty()) {
+                editTextUsuario.error = "Este campo no puede estar vacío"
+                editTextUsuario.requestFocus()
+                return@setOnClickListener
+            }
+            if (contrasena.isEmpty()) {
+                editTextContrasena.error = "Este campo no puede estar vacío"
+                editTextContrasena.requestFocus()
+                return@setOnClickListener
+            }
+            if (rol == "Seleccionar") {
+                Toast.makeText(this, "Por favor selecciona un rol", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (zona == "Seleccionar") {
+                Toast.makeText(this, "Por favor selecciona una zona", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (parametro == "Seleccionar") {
+                Toast.makeText(this, "Por favor selecciona un parámetro", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+
             val updatedData = mapOf(
                 "nombreUsuario" to nombreUsuario,
                 "usuario" to usuario,
