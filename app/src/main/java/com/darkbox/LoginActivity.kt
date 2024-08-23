@@ -1,10 +1,12 @@
 package com.darkbox
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -39,11 +41,22 @@ class LoginActivity : AppCompatActivity() {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         if (snapshot.exists()) {
                             val storedContrasena = snapshot.child("contrasena").getValue(String::class.java)
+                            val nombreUsuario = snapshot.child("nombreUsuario").getValue(String::class.java)
+                            val parametro = snapshot.child("parametro").getValue(String::class.java)
+                            val observaciones = snapshot.child("observaciones").getValue(String::class.java)
+
                             if (storedContrasena == contrasena) {
-                                // Navegar a MainActivity
-                                val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                                startActivity(intent)
-                                finish()
+                                if (parametro == "Activo") {
+                                    // Navegar a MainActivity con el nombre de usuario
+                                    val intent = Intent(this@LoginActivity, MainActivity::class.java).apply {
+                                        putExtra("NOMBRE_USUARIO", nombreUsuario)
+                                    }
+                                    startActivity(intent)
+                                    finish()
+                                } else {
+                                    // Mostrar mensaje de confirmación si el usuario está inactivo
+                                    showInactiveUserDialog(observaciones)
+                                }
                             } else {
                                 Toast.makeText(this@LoginActivity, "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
                             }
@@ -60,5 +73,16 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this, "Por favor ingrese usuario y contraseña", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun showInactiveUserDialog(observaciones: String?) {
+        AlertDialog.Builder(this)
+            .setTitle("Usuario Inactivo")
+            .setMessage("Este usuario se encuentra inactivo por: $observaciones")
+            .setPositiveButton("Aceptar", DialogInterface.OnClickListener { dialog, _ ->
+                dialog.dismiss()
+            })
+            .create()
+            .show()
     }
 }

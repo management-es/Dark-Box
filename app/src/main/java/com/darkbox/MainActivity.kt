@@ -21,9 +21,14 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // Obtener el nombre de usuario del Intent
+        val nombreUsuario = intent.getStringExtra("NOMBRE_USUARIO") ?: "Usuario"
+
         setContent {
             DarkBoxTheme {
                 MainScreen(
+                    nombreUsuario = nombreUsuario,
                     onInventoryClick = { navigateToInventory() },
                     onClientesClick = { navigateToClientes() },
                     onAgendaClick = { navigateToAgenda() },
@@ -63,6 +68,7 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
+    nombreUsuario: String,
     onInventoryClick: () -> Unit,
     onClientesClick: () -> Unit,
     onAgendaClick: () -> Unit,
@@ -75,7 +81,7 @@ fun MainScreen(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text("Dark Box") },
+                title = { Text(" $nombreUsuario") },
                 actions = {
                     IconButton(onClick = { expanded = true }) {
                         Icon(Icons.Filled.Menu, contentDescription = "Open menu")
@@ -132,7 +138,7 @@ fun MainScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Greeting(name = "Android")
+            Greeting(name = nombreUsuario)
         }
     }
 }
@@ -150,6 +156,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 fun GreetingPreview() {
     DarkBoxTheme {
         MainScreen(
+            nombreUsuario = "Usuario",
             onInventoryClick = {},
             onClientesClick = {},
             onAgendaClick = {},
