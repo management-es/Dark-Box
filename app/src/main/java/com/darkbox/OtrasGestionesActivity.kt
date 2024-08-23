@@ -4,7 +4,9 @@ import android.app.DatePickerDialog
 import android.app.AlertDialog
 import android.os.Bundle
 import android.widget.Button
+import android.widget.Spinner
 import android.widget.Toast
+import android.widget.ArrayAdapter
 import androidx.activity.ComponentActivity
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.database.DatabaseReference
@@ -17,6 +19,7 @@ class OtrasGestionesActivity : ComponentActivity() {
     private lateinit var inputTipoGestion: TextInputEditText
     private lateinit var inputDescripcion: TextInputEditText
     private lateinit var inputFechaGestion: TextInputEditText
+    private lateinit var spinnerZona: Spinner
     private lateinit var buttonGuardarGestion: Button
     private var fechaSeleccionada: String? = null
     private lateinit var database: DatabaseReference
@@ -32,6 +35,7 @@ class OtrasGestionesActivity : ComponentActivity() {
         inputTipoGestion = findViewById(R.id.input_tipo_gestion)
         inputDescripcion = findViewById(R.id.input_descripcion)
         inputFechaGestion = findViewById(R.id.input_fecha_gestion)
+        spinnerZona = findViewById(R.id.spinner_zona)
         buttonGuardarGestion = findViewById(R.id.button_guardar_gestion)
 
         // Configurar el campo de fecha
@@ -43,6 +47,12 @@ class OtrasGestionesActivity : ComponentActivity() {
         buttonGuardarGestion.setOnClickListener {
             guardarGestion()
         }
+
+        // Configurar el Spinner para la zona
+        val zonaOptions = arrayOf("Seleccionar", "Medellín", "Salgar", "Amagá")
+        val zonaAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, zonaOptions)
+        zonaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerZona.adapter = zonaAdapter
     }
 
     private fun showDatePickerDialog() {
@@ -69,9 +79,10 @@ class OtrasGestionesActivity : ComponentActivity() {
     private fun guardarGestion() {
         val tipoGestion = inputTipoGestion.text.toString()
         val descripcion = inputDescripcion.text.toString()
+        val zona = spinnerZona.selectedItem.toString()
 
         // Verificar si todos los campos requeridos están llenos
-        if (tipoGestion.isNotEmpty() && descripcion.isNotEmpty() && fechaSeleccionada != null) {
+        if (tipoGestion.isNotEmpty() && descripcion.isNotEmpty() && fechaSeleccionada != null && zona != "Seleccionar") {
             // Construir el mensaje de confirmación con los datos
             val mensajeConfirmacion = """
             ¿Desea guardar la siguiente gestión?
@@ -79,6 +90,7 @@ class OtrasGestionesActivity : ComponentActivity() {
             Tipo de Gestión: $tipoGestion
             Descripción: $descripcion
             Fecha: $fechaSeleccionada
+            Zona: $zona
         """.trimIndent()
 
             // Crear un diálogo de confirmación
@@ -93,7 +105,8 @@ class OtrasGestionesActivity : ComponentActivity() {
                     val gestion = mapOf(
                         "tipoGestion" to tipoGestion,
                         "descripcion" to descripcion,
-                        "fecha" to fechaSeleccionada
+                        "fecha" to fechaSeleccionada,
+                        "zona" to zona
                     )
 
                     // Guardar los datos en Firebase bajo el nodo "agenda"
@@ -116,5 +129,4 @@ class OtrasGestionesActivity : ComponentActivity() {
             Toast.makeText(this, "Por favor complete todos los campos", Toast.LENGTH_SHORT).show()
         }
     }
-
 }

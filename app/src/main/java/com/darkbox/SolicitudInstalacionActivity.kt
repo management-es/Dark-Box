@@ -4,10 +4,11 @@ import android.app.DatePickerDialog
 import android.app.AlertDialog
 import android.os.Bundle
 import android.widget.Button
+import android.widget.Spinner
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import java.text.SimpleDateFormat
@@ -23,6 +24,7 @@ class SolicitudInstalacionActivity : ComponentActivity() {
     private lateinit var inputContactos: TextInputEditText
     private lateinit var inputObservaciones: TextInputEditText
     private lateinit var inputFecha: TextInputEditText
+    private lateinit var spinnerZona: Spinner
     private lateinit var buttonGuardarSolicitud: Button
     private var fechaSeleccionada: String? = null
     private lateinit var database: DatabaseReference
@@ -43,7 +45,18 @@ class SolicitudInstalacionActivity : ComponentActivity() {
         inputContactos = findViewById(R.id.input_contactos_cliente)
         inputObservaciones = findViewById(R.id.input_observaciones)
         inputFecha = findViewById(R.id.input_fecha)
+        spinnerZona = findViewById(R.id.spinner_zona)
         buttonGuardarSolicitud = findViewById(R.id.button_guardar_solicitud)
+
+        // Configurar el Spinner para Zona
+        ArrayAdapter.createFromResource(
+            this,
+            R.array.zona_options,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinnerZona.adapter = adapter
+        }
 
         // Configurar el campo de fecha
         inputFecha.setOnClickListener {
@@ -85,6 +98,7 @@ class SolicitudInstalacionActivity : ComponentActivity() {
         val telefono = inputTelefono.text.toString()
         val contactos = inputContactos.text.toString()
         val observaciones = inputObservaciones.text.toString()
+        val zona = spinnerZona.selectedItem.toString()
 
         // Verificar si todos los campos requeridos están llenos
         if (nombre.isNotEmpty() && apellidos.isNotEmpty() && direccion.isNotEmpty() &&
@@ -102,6 +116,7 @@ class SolicitudInstalacionActivity : ComponentActivity() {
             Coordenadas: $coordenadas
             Teléfono: $telefono
             Contactos: $contactos
+            Zona: $zona
             Observaciones: $observaciones
             Fecha: ${inputFecha.text.toString()}
         """.trimIndent()
@@ -122,6 +137,7 @@ class SolicitudInstalacionActivity : ComponentActivity() {
                     "telefono" to telefono,
                     "contactos" to contactos,
                     "observaciones" to observaciones,
+                    "zona" to zona,
                     "fecha" to fechaSeleccionada
                 )
 

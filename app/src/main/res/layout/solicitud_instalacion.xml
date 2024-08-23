@@ -84,6 +84,20 @@
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <TextView
+        android:id="@+id/textview_zona"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Zona"
+        android:textSize="16sp"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Spinner para seleccionar la Zona -->
+    <Spinner
+        android:id="@+id/spinner_zona"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
     <!-- Campo para Observaciones -->
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
@@ -96,6 +110,7 @@
             android:lines="4"
             android:inputType="textMultiLine" />
     </com.google.android.material.textfield.TextInputLayout>
+
 
     <!-- Botón para Guardar Solicitud -->
     <Button

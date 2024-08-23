@@ -152,11 +152,12 @@ class AgendaActivity : ComponentActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val nombreCliente = snapshot.child("nombres").getValue(String::class.java)
                 val apellidosCliente = snapshot.child("apellidos").getValue(String::class.java)
-                val numeroDocumento = snapshot.child("numeroDocumento").getValue(String::class.java)
+                val numeroDocumento = snapshot.child("numero_documento").getValue(String::class.java)
                 val direccion = snapshot.child("direccion").getValue(String::class.java)
                 val coordenadas = snapshot.child("coordenadas").getValue(String::class.java)
                 val telefono = snapshot.child("telefono").getValue(String::class.java)
                 val contactos = snapshot.child("contactos").getValue(String::class.java)
+                val zona = snapshot.child("zona").getValue(String::class.java)
 
                 val informacionCliente = """
                 Nombre: ${nombreCliente ?: "Nombre no encontrado"}
@@ -166,6 +167,7 @@ class AgendaActivity : ComponentActivity() {
                 Coordenadas: ${coordenadas ?: "Coordenadas no encontradas"}
                 Teléfono: ${telefono ?: "Teléfono no encontrado"}
                 Contactos: ${contactos ?: "Contactos no encontrados"}
+                Zona: ${zona ?: "Zona no encontrada"}
             """.trimIndent()
 
                 textViewNombreCliente.text = informacionCliente
@@ -224,11 +226,12 @@ class AgendaActivity : ComponentActivity() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val nombreCliente = snapshot.child("nombres").getValue(String::class.java)
                     val apellidosCliente = snapshot.child("apellidos").getValue(String::class.java)
-                    val numeroDocumento = snapshot.child("numeroDocumento").getValue(String::class.java)
+                    val numeroDocumento = snapshot.child("numero_documento").getValue(String::class.java)
                     val direccion = snapshot.child("direccion").getValue(String::class.java)
                     val coordenadas = snapshot.child("coordenadas").getValue(String::class.java)
                     val telefono = snapshot.child("telefono").getValue(String::class.java)
                     val contactos = snapshot.child("contactos").getValue(String::class.java)
+                    val zona = snapshot.child("zona").getValue(String::class.java)
 
                     val datosConfirmacion = """
                         Cliente: $clienteSeleccionado
@@ -239,9 +242,11 @@ class AgendaActivity : ComponentActivity() {
                         Coordenadas: ${coordenadas ?: "Coordenadas no encontradas"}
                         Teléfono: ${telefono ?: "Teléfono no encontrado"}
                         Contactos: ${contactos ?: "Contactos no encontrados"}
+                        Zona: ${zona ?: "Zona no encontrada"}
                         Fecha: $fechaSeleccionada
                         Gestión: $gestionSeleccionada
                         Observaciones: $observaciones
+                        
                     """.trimIndent()
 
                     // Mostrar cuadro de diálogo de confirmación
@@ -270,11 +275,12 @@ class AgendaActivity : ComponentActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val nombreCliente = snapshot.child("nombres").getValue(String::class.java)
                 val apellidosCliente = snapshot.child("apellidos").getValue(String::class.java)
-                val numeroDocumento = snapshot.child("numeroDocumento").getValue(String::class.java)
+                val numeroDocumento = snapshot.child("numero_documento").getValue(String::class.java)
                 val direccion = snapshot.child("direccion").getValue(String::class.java)
                 val coordenadas = snapshot.child("coordenadas").getValue(String::class.java)
                 val telefono = snapshot.child("telefono").getValue(String::class.java)
                 val contactos = snapshot.child("contactos").getValue(String::class.java)
+                val zona = snapshot.child("zona").getValue(String::class.java)
 
                 // Crear la clave única combinando fecha y codCliente
                 val claveUnica = "$fechaSeleccionada-$clienteSeleccionado"
@@ -289,7 +295,8 @@ class AgendaActivity : ComponentActivity() {
                     "telefono" to telefono,
                     "contactos" to contactos,
                     "gestion" to gestionSeleccionada,
-                    "observaciones" to observaciones
+                    "observaciones" to observaciones,
+                    "zona" to zona
                 )
 
                 // Guardar los datos en Firebase Realtime Database con la clave única
