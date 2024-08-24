@@ -63,10 +63,11 @@
             android:layout_marginBottom="8dp" />
 
         <Spinner
-            android:id="@+id/spinnerZona"
+            android:id="@+id/zona_credenciales"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp" />
+            android:entries="@array/zona_options" />
+
 
         <!-- Spinner para Parámetro -->
         <TextView

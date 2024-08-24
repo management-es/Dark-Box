@@ -18,7 +18,7 @@ class EditAccesActivity : AppCompatActivity() {
     private lateinit var editTextUsuario: EditText
     private lateinit var editTextContrasena: EditText
     private lateinit var spinnerRol: Spinner
-    private lateinit var spinnerZona: Spinner
+    private lateinit var zonaCredenciales: Spinner
     private lateinit var spinnerParametro: Spinner
     private lateinit var editTextObservaciones: EditText
     private lateinit var buttonActualizar: Button
@@ -34,7 +34,7 @@ class EditAccesActivity : AppCompatActivity() {
         editTextUsuario = findViewById(R.id.editTextUsuario)
         editTextContrasena = findViewById(R.id.editTextContrasena)
         spinnerRol = findViewById(R.id.spinnerRol)
-        spinnerZona = findViewById(R.id.spinnerZona)
+        zonaCredenciales = findViewById(R.id.zona_credenciales) // ID correcto
         spinnerParametro = findViewById(R.id.spinnerParametro)
         editTextObservaciones = findViewById(R.id.editTextObservaciones)
         buttonActualizar = findViewById(R.id.buttonActualizar)
@@ -52,11 +52,11 @@ class EditAccesActivity : AppCompatActivity() {
         // Configurar Spinner para Zona
         ArrayAdapter.createFromResource(
             this,
-            R.array.zona_options,
+            R.array.zona_credenciales,
             android.R.layout.simple_spinner_item
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            spinnerZona.adapter = adapter
+            zonaCredenciales.adapter = adapter
         }
 
         // Configurar Spinner para Parámetro
@@ -98,7 +98,7 @@ class EditAccesActivity : AppCompatActivity() {
             val usuario = editTextUsuario.text.toString().trim()
             val contrasena = editTextContrasena.text.toString().trim()
             val rol = spinnerRol.selectedItem.toString()
-            val zona = spinnerZona.selectedItem.toString()
+            val zona = zonaCredenciales.selectedItem.toString()
             val parametro = spinnerParametro.selectedItem.toString()
             val observaciones = editTextObservaciones.text.toString().trim()
 
@@ -130,7 +130,6 @@ class EditAccesActivity : AppCompatActivity() {
                 Toast.makeText(this, "Por favor selecciona un parámetro", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-
 
             val updatedData = mapOf(
                 "nombreUsuario" to nombreUsuario,
@@ -181,7 +180,12 @@ class EditAccesActivity : AppCompatActivity() {
                 editTextUsuario.setText(dataSnapshot.child("usuario").getValue(String::class.java))
                 editTextContrasena.setText(dataSnapshot.child("contrasena").getValue(String::class.java))
                 spinnerRol.setSelection((spinnerRol.adapter as ArrayAdapter<String>).getPosition(dataSnapshot.child("rol").getValue(String::class.java)))
-                spinnerZona.setSelection((spinnerZona.adapter as ArrayAdapter<String>).getPosition(dataSnapshot.child("zona").getValue(String::class.java)))
+
+                // Manejar valor de zona
+                val zona = dataSnapshot.child("zona").getValue(String::class.java) ?: "Seleccionar"
+                val zonaPosition = (zonaCredenciales.adapter as ArrayAdapter<String>).getPosition(zona)
+                zonaCredenciales.setSelection(zonaPosition)
+
                 spinnerParametro.setSelection((spinnerParametro.adapter as ArrayAdapter<String>).getPosition(dataSnapshot.child("parametro").getValue(String::class.java)))
                 editTextObservaciones.setText(dataSnapshot.child("observaciones").getValue(String::class.java))
             }
