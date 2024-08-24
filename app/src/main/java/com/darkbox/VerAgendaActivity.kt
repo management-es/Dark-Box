@@ -47,6 +47,7 @@ class VerAgendaActivity : AppCompatActivity() {
                     val tipoGestion = snapshot.child("tipoGestion").getValue(String::class.java)
                     val descripcion = snapshot.child("descripcion").getValue(String::class.java)
                     val estado = snapshot.child("estado").getValue(String::class.java)
+                    val zona = snapshot.child("zona").getValue(String::class.java) // Obtener la zona
 
                     // Crear un nuevo CardView para cada registro
                     val cardView = CardView(this@VerAgendaActivity)
@@ -99,14 +100,18 @@ class VerAgendaActivity : AppCompatActivity() {
                             Teléfono: ${snapshot.child("telefono").getValue(String::class.java)}
                             Contacto: ${snapshot.child("contactos").getValue(String::class.java)}
                             Gestión: Instalación
+                            Zona: $zona
                             Observaciones: ${snapshot.child("observaciones").getValue(String::class.java)}
+                            
                             """.trimIndent()
                         }
                         id?.contains("ot") == true -> {
                             """
                             ID: $id
                             Tipo de Gestión: $tipoGestion
+                            Zona: $zona
                             Descripción: $descripcion
+                            
                             """.trimIndent()
                         }
                         else -> {
@@ -120,7 +125,9 @@ class VerAgendaActivity : AppCompatActivity() {
                             Teléfono: ${snapshot.child("telefono").getValue(String::class.java)}
                             Contactos: ${snapshot.child("contactos").getValue(String::class.java)}
                             Gestión: ${snapshot.child("gestion").getValue(String::class.java)}
+                            Zona: $zona
                             Observaciones: ${snapshot.child("observaciones").getValue(String::class.java)}
+                            
                             """.trimIndent()
                         }
                     }
@@ -212,10 +219,10 @@ class VerAgendaActivity : AppCompatActivity() {
             val observacion = input.text.toString()
             if (observacion.isNotEmpty()) {
                 updateTaskState(id, "cancelado", observacion)
+                dialog.dismiss()
             } else {
-                Toast.makeText(this, "Debe ingresar una observación.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Debe ingresar una observación", Toast.LENGTH_SHORT).show()
             }
-            dialog.dismiss()
         }
         alertDialog.setNegativeButton("Cancelar") { dialog, _ ->
             dialog.dismiss()
@@ -223,23 +230,17 @@ class VerAgendaActivity : AppCompatActivity() {
         alertDialog.show()
     }
 
-    private fun updateTaskState(id: String?, estado: String, observacion: String = "") {
+    private fun updateTaskState(id: String?, estado: String, observacion: String? = null) {
         val database = FirebaseDatabase.getInstance()
-        val reference = database.getReference("agenda")
+        val reference = database.getReference("agenda").child(id ?: return)
 
-        val updates = mapOf(
-            "estado" to estado,
-            "observacion-cancelacion" to observacion
-        )
-
-        id?.let {
-            reference.child(it).updateChildren(updates).addOnCompleteListener {
-                if (it.isSuccessful) {
-                    Toast.makeText(this, "Estado actualizado a '$estado'", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(this, "Error al actualizar el estado", Toast.LENGTH_SHORT).show()
-                }
-            }
+        reference.child("estado").setValue(estado)
+        observacion?.let {
+            reference.child("observaciones").setValue(it)
         }
+
+        Toast.makeText(this, "Estado actualizado a $estado", Toast.LENGTH_SHORT).show()
+        // Regresar al menú principal
+        finish()
     }
 }
