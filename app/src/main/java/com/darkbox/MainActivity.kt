@@ -22,18 +22,22 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        // Obtener el nombre de usuario del Intent
+        // Obtener el nombre de usuario, rol y zona del Intent
         val nombreUsuario = intent.getStringExtra("NOMBRE_USUARIO") ?: "Usuario"
+        val rolUsuario = intent.getStringExtra("ROL_USUARIO") ?: "Rol no especificado"
+        val zonaUsuario = intent.getStringExtra("ZONA_USUARIO") ?: "Zona no especificada"
 
         setContent {
             DarkBoxTheme {
                 MainScreen(
                     nombreUsuario = nombreUsuario,
+                    rolUsuario = rolUsuario,
+                    zonaUsuario = zonaUsuario,
                     onInventoryClick = { navigateToInventory() },
                     onClientesClick = { navigateToClientes() },
                     onAgendaClick = { navigateToAgenda() },
                     onInformesClick = { navigateToInformes() },
-                    onCredencialesClick = { navigateToCredenciales() } // Añadir navegación a Credenciales
+                    onCredencialesClick = { navigateToCredenciales() } // Navegación a Credenciales
                 )
             }
         }
@@ -59,7 +63,7 @@ class MainActivity : ComponentActivity() {
         startActivity(intent)
     }
 
-    private fun navigateToCredenciales() { // Función para navegar a Credenciales
+    private fun navigateToCredenciales() {
         val intent = Intent(this, CredencialesActivity::class.java)
         startActivity(intent)
     }
@@ -69,6 +73,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainScreen(
     nombreUsuario: String,
+    rolUsuario: String,
+    zonaUsuario: String,
     onInventoryClick: () -> Unit,
     onClientesClick: () -> Unit,
     onAgendaClick: () -> Unit,
@@ -81,7 +87,13 @@ fun MainScreen(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text(" $nombreUsuario") },
+                title = {
+                    Column {
+                        Text(text = nombreUsuario)
+                        Text(text = rolUsuario, style = MaterialTheme.typography.bodySmall)
+                        Text(text = zonaUsuario, style = MaterialTheme.typography.bodySmall)
+                    }
+                },
                 actions = {
                     IconButton(onClick = { expanded = true }) {
                         Icon(Icons.Filled.Menu, contentDescription = "Open menu")
@@ -119,7 +131,7 @@ fun MainScreen(
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("Credenciales") }, // Nueva opción de Credenciales
+                            text = { Text("Credenciales") }, // Opción de Credenciales
                             onClick = {
                                 expanded = false
                                 onCredencialesClick()
@@ -157,11 +169,13 @@ fun GreetingPreview() {
     DarkBoxTheme {
         MainScreen(
             nombreUsuario = "Usuario",
+            rolUsuario = "Rol",
+            zonaUsuario = "Zona",
             onInventoryClick = {},
             onClientesClick = {},
             onAgendaClick = {},
             onInformesClick = {},
-            onCredencialesClick = {} // Añadir vista previa para Credenciales
+            onCredencialesClick = {}
         )
     }
 }

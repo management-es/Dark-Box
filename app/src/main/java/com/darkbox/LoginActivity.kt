@@ -42,14 +42,18 @@ class LoginActivity : AppCompatActivity() {
                         if (snapshot.exists()) {
                             val storedContrasena = snapshot.child("contrasena").getValue(String::class.java)
                             val nombreUsuario = snapshot.child("nombreUsuario").getValue(String::class.java)
+                            val rol = snapshot.child("rol").getValue(String::class.java)
+                            val zona = snapshot.child("zona").getValue(String::class.java) // Obteniendo la zona
                             val parametro = snapshot.child("parametro").getValue(String::class.java)
                             val observaciones = snapshot.child("observaciones").getValue(String::class.java)
 
                             if (storedContrasena == contrasena) {
                                 if (parametro == "Activo") {
-                                    // Navegar a MainActivity con el nombre de usuario
+                                    // Navegar a MainActivity con el nombre de usuario, rol y zona
                                     val intent = Intent(this@LoginActivity, MainActivity::class.java).apply {
                                         putExtra("NOMBRE_USUARIO", nombreUsuario)
+                                        putExtra("ROL_USUARIO", rol)
+                                        putExtra("ZONA_USUARIO", zona) // Pasar la zona
                                     }
                                     startActivity(intent)
                                     finish()
