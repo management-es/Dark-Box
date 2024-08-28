@@ -119,7 +119,7 @@ class VerAgendaActivity : AppCompatActivity() {
                             ID: $id
                             Nombre: ${snapshot.child("nombre").getValue(String::class.java)}
                             Apellidos: ${snapshot.child("apellidos").getValue(String::class.java)}
-                            Documento: ${snapshot.child("documento").getValue(String::class.java)}
+                            Documento: ${snapshot.child("numeroDocumento").getValue(String::class.java)}
                             Dirección: ${snapshot.child("direccion").getValue(String::class.java)}
                             Coordenadas: ${snapshot.child("coordenadas").getValue(String::class.java)}
                             Teléfono: ${snapshot.child("telefono").getValue(String::class.java)}
