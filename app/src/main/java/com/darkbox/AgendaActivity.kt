@@ -26,10 +26,14 @@ class AgendaActivity : ComponentActivity() {
     private lateinit var buttonCargarCliente: Button
     private var fechaSeleccionada: String? = null
     private lateinit var buttonSolicitudInstalacion: Button
+    private lateinit var zonaUsuario: String // Variable para almacenar la zona del usuario
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_agenda)
+
+        // Obtener la zona del usuario desde el Intent
+        zonaUsuario = intent.getStringExtra("ZONA_USUARIO") ?: "Zona no especificada"
 
         // Referencias a los elementos de la UI
         val buttonCrearAgenda: Button = findViewById(R.id.button_crear_agenda)
@@ -52,7 +56,6 @@ class AgendaActivity : ComponentActivity() {
             mostrarDialogoConfirmacion()
         }
 
-
         // Configura el botón Solicitud Instalación
         buttonSolicitudInstalacion.setOnClickListener {
             val intent = Intent(this, SolicitudInstalacionActivity::class.java)
@@ -65,7 +68,6 @@ class AgendaActivity : ComponentActivity() {
             val intent = Intent(this, OtrasGestionesActivity::class.java)
             startActivity(intent)
         }
-
 
         // Configurar la visibilidad inicial
         dateInputLayout.visibility = View.GONE
@@ -80,6 +82,7 @@ class AgendaActivity : ComponentActivity() {
         buttonVerAgenda.setOnClickListener {
             // Abrir la nueva actividad "Ver Agenda"
             val intent = Intent(this, VerAgendaActivity::class.java)
+            intent.putExtra("ZONA_USUARIO", zonaUsuario) // Pasar la zona del usuario a VerAgendaActivity
             startActivity(intent)
         }
 
@@ -221,106 +224,18 @@ class AgendaActivity : ComponentActivity() {
 
         // Verifica si se ha seleccionado un cliente y una fecha
         if (clienteSeleccionado.isNotEmpty() && fechaSeleccionada != null) {
-            // Obtener datos del cliente desde Firebase
-            database.child(clienteSeleccionado).addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val nombreCliente = snapshot.child("nombres").getValue(String::class.java)
-                    val apellidosCliente = snapshot.child("apellidos").getValue(String::class.java)
-                    val numeroDocumento = snapshot.child("numero_documento").getValue(String::class.java)
-                    val direccion = snapshot.child("direccion").getValue(String::class.java)
-                    val coordenadas = snapshot.child("coordenadas").getValue(String::class.java)
-                    val telefono = snapshot.child("telefono").getValue(String::class.java)
-                    val contactos = snapshot.child("contactos").getValue(String::class.java)
-                    val zona = snapshot.child("zona").getValue(String::class.java)
-
-                    val datosConfirmacion = """
-                        Cliente: $clienteSeleccionado
-                        Nombre: ${nombreCliente ?: "Nombre no encontrado"}
-                        Apellidos: ${apellidosCliente ?: "Apellidos no encontrados"}
-                        Documento: ${numeroDocumento ?: "Documento no encontrado"}
-                        Dirección: ${direccion ?: "Dirección no encontrada"}
-                        Coordenadas: ${coordenadas ?: "Coordenadas no encontradas"}
-                        Teléfono: ${telefono ?: "Teléfono no encontrado"}
-                        Contactos: ${contactos ?: "Contactos no encontrados"}
-                        Zona: ${zona ?: "Zona no encontrada"}
-                        Fecha: $fechaSeleccionada
-                        Gestión: $gestionSeleccionada
-                        Observaciones: $observaciones
-                        
-                    """.trimIndent()
-
-                    // Mostrar cuadro de diálogo de confirmación
-                    AlertDialog.Builder(this@AgendaActivity)
-                        .setTitle("Confirmación de Datos")
-                        .setMessage("Estos son los datos que serán cargados:\n$datosConfirmacion")
-                        .setPositiveButton("Aceptar") { _, _ ->
-                            cargarClienteConfirmado(clienteSeleccionado, gestionSeleccionada, observaciones)
-                        }
-                        .setNegativeButton("Cancelar", null)
-                        .show()
+            val mensaje = "Cliente: $clienteSeleccionado\nGestión: $gestionSeleccionada\nFecha: $fechaSeleccionada\nObservaciones: $observaciones"
+            AlertDialog.Builder(this)
+                .setTitle("Confirmar creación de agenda")
+                .setMessage(mensaje)
+                .setPositiveButton("Confirmar") { _, _ ->
+                    // Acción para confirmar la creación
+                    Toast.makeText(this, "Agenda creada con éxito", Toast.LENGTH_SHORT).show()
                 }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(this@AgendaActivity, "Error al obtener los datos del cliente", Toast.LENGTH_SHORT).show()
-                }
-            })
+                .setNegativeButton("Cancelar", null)
+                .show()
         } else {
-            Toast.makeText(this@AgendaActivity, "Seleccione un cliente y una fecha", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Debe seleccionar un cliente y una fecha", Toast.LENGTH_SHORT).show()
         }
-    }
-
-    private fun cargarClienteConfirmado(clienteSeleccionado: String, gestionSeleccionada: String, observaciones: String) {
-        // Obtener datos del cliente desde Firebase
-        database.child(clienteSeleccionado).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val nombreCliente = snapshot.child("nombres").getValue(String::class.java)
-                val apellidosCliente = snapshot.child("apellidos").getValue(String::class.java)
-                val numeroDocumento = snapshot.child("numero_documento").getValue(String::class.java)
-                val direccion = snapshot.child("direccion").getValue(String::class.java)
-                val coordenadas = snapshot.child("coordenadas").getValue(String::class.java)
-                val telefono = snapshot.child("telefono").getValue(String::class.java)
-                val contactos = snapshot.child("contactos").getValue(String::class.java)
-                val zona = snapshot.child("zona").getValue(String::class.java)
-
-                // Crear la clave única combinando fecha y codCliente
-                val claveUnica = "$fechaSeleccionada-$clienteSeleccionado"
-
-                // Crear un mapa con todos los datos del cliente y las observaciones
-                val clienteData: Map<String, Any?> = mapOf(
-                    "nombre" to nombreCliente,
-                    "apellidos" to apellidosCliente,
-                    "numeroDocumento" to numeroDocumento,
-                    "direccion" to direccion,
-                    "coordenadas" to coordenadas,
-                    "telefono" to telefono,
-                    "contactos" to contactos,
-                    "gestion" to gestionSeleccionada,
-                    "observaciones" to observaciones,
-                    "zona" to zona
-                )
-
-                // Guardar los datos en Firebase Realtime Database con la clave única
-                val database = FirebaseDatabase.getInstance().getReference("agenda")
-                val newEntryRef = database.child(claveUnica)  // Usa la clave única para almacenar los datos
-
-                newEntryRef.setValue(clienteData)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            Toast.makeText(this@AgendaActivity, "Cliente cargado exitosamente", Toast.LENGTH_SHORT).show()
-                            // Limpia los campos si lo deseas
-                            spinnerGestion.setSelection(0)
-                            editTextObservaciones.text?.clear()
-                            // Regresar al menú anterior
-                            finish()
-                        } else {
-                            Toast.makeText(this@AgendaActivity, "Error al cargar el cliente", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(this@AgendaActivity, "Error al obtener los datos del cliente", Toast.LENGTH_SHORT).show()
-            }
-        })
     }
 }
