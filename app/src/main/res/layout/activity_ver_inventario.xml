@@ -2,99 +2,109 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:orientation="vertical">
 
-    <!-- Spinner para seleccionar el estado del equipo -->
-    <Spinner
-        android:id="@+id/spinner_estado"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:padding="12dp"
-        android:layout_marginBottom="16dp"
-        android:entries="@array/estado_equipos"/>
-
-    <!-- Contenedor para los botones -->
-    <LinearLayout
-        android:id="@+id/container_buttons"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:padding="16dp">
 
-        <!-- Botones estilizados en columna para seleccionar tipo de equipo -->
-        <Button
-            android:id="@+id/button_antena_cliente"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Antena Cliente"
-            android:layout_gravity="center_horizontal"
-            android:padding="12dp"
-            android:layout_marginBottom="8dp"/>
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/button_router"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Router"
-            android:layout_gravity="center_horizontal"
-            android:padding="12dp"
-            android:layout_marginBottom="8dp"/>
+            <!-- Spinner para seleccionar el estado del equipo -->
+            <Spinner
+                android:id="@+id/spinner_estado"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:padding="12dp"
+                android:layout_marginBottom="16dp"
+                android:entries="@array/estado_equipos"/>
 
-        <Button
-            android:id="@+id/button_onu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Onu"
-            android:layout_gravity="center_horizontal"
-            android:padding="12dp"
-            android:layout_marginBottom="8dp"/>
+            <!-- Contenedor para los botones -->
+            <LinearLayout
+                android:id="@+id/container_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <Button
-            android:id="@+id/button_enlace"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Enlace"
-            android:layout_gravity="center_horizontal"
-            android:padding="12dp"
-            android:layout_marginBottom="8dp"/>
+                <!-- Botones estilizados en columna para seleccionar tipo de equipo -->
+                <Button
+                    android:id="@+id/button_antena_cliente"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Antena Cliente"
+                    android:layout_gravity="center_horizontal"
+                    android:padding="12dp"
+                    android:layout_marginBottom="8dp"/>
 
-        <Button
-            android:id="@+id/button_sector"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sector"
-            android:layout_gravity="center_horizontal"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"/>
-    </LinearLayout>
+                <Button
+                    android:id="@+id/button_router"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Router"
+                    android:layout_gravity="center_horizontal"
+                    android:padding="12dp"
+                    android:layout_marginBottom="8dp"/>
 
-    <!-- Título con el equipo y estado seleccionado -->
-    <TextView
-        android:id="@+id/textView_titulo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:layout_gravity="center_horizontal"
-        android:visibility="gone"
-        android:layout_marginBottom="16dp"/>
+                <Button
+                    android:id="@+id/button_onu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Onu"
+                    android:layout_gravity="center_horizontal"
+                    android:padding="12dp"
+                    android:layout_marginBottom="8dp"/>
 
+                <Button
+                    android:id="@+id/button_enlace"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Enlace"
+                    android:layout_gravity="center_horizontal"
+                    android:padding="12dp"
+                    android:layout_marginBottom="8dp"/>
 
-    <!-- Contenedor para mostrar la información específica debajo del botón clicado -->
-    <LinearLayout
-        android:id="@+id/container_informacion"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone"/>
+                <Button
+                    android:id="@+id/button_sector"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sector"
+                    android:layout_gravity="center_horizontal"
+                    android:padding="12dp"
+                    android:layout_marginBottom="16dp"/>
+            </LinearLayout>
 
-    <TextView
-        android:id="@+id/textView_total"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:layout_gravity="center_horizontal"
-        android:visibility="gone"
-        android:textColor="#000000"
-        android:padding="8dp"/>
+            <!-- Título con el equipo y estado seleccionado -->
+            <TextView
+                android:id="@+id/textView_titulo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:layout_gravity="center_horizontal"
+                android:visibility="gone"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Contenedor para mostrar la información específica debajo del botón clicado -->
+            <LinearLayout
+                android:id="@+id/container_informacion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/textView_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_gravity="center_horizontal"
+                android:visibility="gone"
+                android:textColor="#000000"
+                android:padding="8dp"/>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

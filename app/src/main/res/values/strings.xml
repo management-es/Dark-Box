@@ -7,6 +7,7 @@
         <item>Inactivo</item>
         <item>Retirado</item>
     </string-array>
+
     <string-array name="zona_options">
         <item>Seleccionar</item>
         <item>Medellín</item>

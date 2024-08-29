@@ -1,6 +1,7 @@
 package com.darkbox
 
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import android.view.View
 import android.widget.*
 import androidx.activity.ComponentActivity
@@ -14,10 +15,21 @@ class VerInventarioActivity : ComponentActivity() {
     private lateinit var containerButtons: LinearLayout
     private lateinit var textViewTitulo: TextView
     private lateinit var textViewTotal: TextView
+    private lateinit var zonaUsuario: String // Variable para almacenar la zona del usuario
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ver_inventario)
+
+        // Obtener la zona del usuario desde el intent
+        zonaUsuario = intent.getStringExtra("ZONA_USUARIO") ?: "Zona no especificada"
+
+        // Mostrar mensaje de alerta con la zona del usuario
+        AlertDialog.Builder(this)
+            .setTitle("Zona del Usuario")
+            .setMessage("Estás viendo el inventario para la zona: $zonaUsuario")
+            .setPositiveButton("Aceptar", null)
+            .show()
 
         // Inicializa la referencia a la base de datos
         database = FirebaseDatabase.getInstance().getReference("inventario")
@@ -47,6 +59,8 @@ class VerInventarioActivity : ComponentActivity() {
         }
     }
 
+
+
     private fun mostrarEquiposFiltrados(tipoEquipo: String) {
         val estadoSeleccionado = estadoSpinner.selectedItem.toString()
         containerInformacion.removeAllViews() // Limpia el contenedor
@@ -62,10 +76,12 @@ class VerInventarioActivity : ComponentActivity() {
                 if (snapshot.exists()) {
                     for (itemSnapshot in snapshot.children) {
                         val estado = itemSnapshot.child("estado").value.toString()
-                        if (estado == estadoSeleccionado || estadoSeleccionado == "Todo") {
+                        val zona = itemSnapshot.child("zona").value.toString() // Obtén la zona del equipo
+
+                        // Filtrar por estado y zona del usuario
+                        if ((estado == estadoSeleccionado || estadoSeleccionado == "Todo") && zona == zonaUsuario) {
                             val serial = itemSnapshot.child("serial").value.toString()
                             val observaciones = itemSnapshot.child("observaciones").value.toString()
-                            val zona = itemSnapshot.child("zona").value.toString()
                             val tecnologia = itemSnapshot.child("tecnologia").value.toString()
                             val modelo = itemSnapshot.child("modelo").value.toString()
 
@@ -100,4 +116,5 @@ class VerInventarioActivity : ComponentActivity() {
             }
         })
     }
+
 }

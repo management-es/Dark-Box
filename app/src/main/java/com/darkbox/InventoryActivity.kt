@@ -12,10 +12,14 @@ import android.content.Intent
 class InventoryActivity : ComponentActivity() {
 
     private lateinit var database: DatabaseReference
+    private lateinit var zonaUsuario: String // Variable para almacenar la zona del usuario
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_inventario)
+
+        // Obtener la zona del usuario desde el Intent
+        zonaUsuario = intent.getStringExtra("ZONA_USUARIO") ?: "Zona no especificada"
 
         // Inicializa la referencia a la base de datos
         database = FirebaseDatabase.getInstance().reference
@@ -42,10 +46,13 @@ class InventoryActivity : ComponentActivity() {
         estadoAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerEstado.adapter = estadoAdapter
 
-        // Configura el Spinner para el campo "Zona"
+        // Configura el Spinner para el campo "Zona" utilizando el string-array del archivo strings.xml
         val spinnerZona: Spinner = findViewById(R.id.input_zona)
-        val zonaOptions = arrayOf("Seleccionar", "Medellin", "Salgar", "Amaga")
-        val zonaAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, zonaOptions)
+        val zonaAdapter = ArrayAdapter.createFromResource(
+            this,
+            R.array.zona_options, // Nombre del string-array en strings.xml
+            android.R.layout.simple_spinner_item
+        )
         zonaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerZona.adapter = zonaAdapter
 
@@ -62,6 +69,7 @@ class InventoryActivity : ComponentActivity() {
         // Manejar el clic del botón Ver Inventario
         buttonVerInventario.setOnClickListener {
             val intent = Intent(this, VerInventarioActivity::class.java)
+            intent.putExtra("ZONA_USUARIO", zonaUsuario) // Pasar la zona del usuario
             startActivity(intent)
         }
 

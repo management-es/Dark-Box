@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:padding="10dp"
     tools:context=".AgendaActivity">
 
     <Button
@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Ver Agenda"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="6dp"/>
 
     <LinearLayout
         android:id="@+id/date_input_layout"
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:visibility="gone"
-        android:paddingTop="16dp">
+        android:paddingTop="10dp">
 
         <TextView
             android:id="@+id/title_crear_agenda"
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="10dp">
 
             <Button
                 android:id="@+id/button_solicitud_instalacion"
@@ -57,14 +57,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Otras Gestiones"
-                android:layout_marginStart="16dp" />
+                android:layout_marginStart="10dp" />
         </LinearLayout>
 
         <!-- Recuadro "Gestión con Usuarios" -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="16dp"
             app:cardElevation="4dp"
             app:cardCornerRadius="8dp"
@@ -75,7 +75,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="10dp">
 
                 <!-- Título del recuadro -->
                 <TextView
@@ -114,7 +114,7 @@
                     android:id="@+id/spinner_clientes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="10dp"
                     android:visibility="gone" />
 
                 <TextView
@@ -122,7 +122,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Nombre del Cliente"
-                    android:layout_marginTop="16dp" />
+                    android:layout_marginTop="10dp" />
 
                 <TextView
                     android:id="@+id/textView_gestion"
@@ -131,13 +131,13 @@
                     android:text="Gestión"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:layout_marginTop="16dp"/>
+                    android:layout_marginTop="10dp"/>
 
                 <Spinner
                     android:id="@+id/spinner_gestion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="10dp"
                     android:visibility="visible" />
 
                 <!-- Etiqueta para el campo de observaciones -->
@@ -148,7 +148,7 @@
                     android:text="Observaciones"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:layout_marginTop="16dp"/>
+                    android:layout_marginTop="10dp"/>
 
                 <!-- Campo de texto para observaciones -->
                 <com.google.android.material.textfield.TextInputLayout
@@ -169,7 +169,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Cargar Cliente"
-                    android:layout_marginTop="16dp"/>
+                    android:layout_marginTop="10dp"/>
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
