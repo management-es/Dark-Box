@@ -27,11 +27,15 @@ class SolicitudInstalacionActivity : ComponentActivity() {
     private lateinit var spinnerZona: Spinner
     private lateinit var buttonGuardarSolicitud: Button
     private var fechaSeleccionada: String? = null
+    private lateinit var inputNumeroDocumento: TextInputEditText
+
     private lateinit var database: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.solicitud_instalacion)
+
+        inputNumeroDocumento = findViewById(R.id.input_numero_documento_cliente)
 
         // Inicializar Firebase Database
         database = FirebaseDatabase.getInstance().getReference("agenda")
@@ -93,6 +97,7 @@ class SolicitudInstalacionActivity : ComponentActivity() {
     private fun guardarSolicitudInstalacion() {
         val nombre = inputNombre.text.toString()
         val apellidos = inputApellidos.text.toString()
+        val numeroDocumento = inputNumeroDocumento.text.toString()
         val direccion = inputDireccion.text.toString()
         val coordenadas = inputCoordenadas.text.toString()
         val telefono = inputTelefono.text.toString()
@@ -100,66 +105,83 @@ class SolicitudInstalacionActivity : ComponentActivity() {
         val observaciones = inputObservaciones.text.toString()
         val zona = spinnerZona.selectedItem.toString()
 
-        // Verificar si todos los campos requeridos están llenos
-        if (nombre.isNotEmpty() && apellidos.isNotEmpty() && direccion.isNotEmpty() &&
+        if (nombre.isNotEmpty() && apellidos.isNotEmpty() && numeroDocumento.isNotEmpty() && direccion.isNotEmpty() &&
             coordenadas.isNotEmpty() && telefono.isNotEmpty() && contactos.isNotEmpty() &&
             observaciones.isNotEmpty() && fechaSeleccionada != null) {
 
-            // Crear el ID de solicitud basado en la fecha
-            val idSolicitud = "${fechaSeleccionada}-sol_inst"
+            // Base del ID
+            val baseIdSolicitud = "${fechaSeleccionada}-sol_inst"
 
-            // Crear el mensaje para el cuadro de confirmación
-            val mensajeConfirmacion = """
-            Nombre: $nombre
-            Apellidos: $apellidos
-            Dirección: $direccion
-            Coordenadas: $coordenadas
-            Teléfono: $telefono
-            Contactos: $contactos
-            Zona: $zona
-            Observaciones: $observaciones
-            Fecha: ${inputFecha.text.toString()}
-        """.trimIndent()
+            // Buscar solicitudes existentes con el mismo formato de ID
+            database.orderByKey().startAt(baseIdSolicitud).endAt("${baseIdSolicitud}\uf8ff")
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    // Determinar el siguiente número disponible
+                    val maxSuffix = snapshot.children.mapNotNull { solicitudSnapshot ->
+                        val id = solicitudSnapshot.key ?: return@mapNotNull null
+                        val suffix = id.removePrefix(baseIdSolicitud).toIntOrNull()
+                        suffix ?: 0
+                    }.maxOrNull() ?: 0
 
-            // Crear el cuadro de diálogo
-            val builder = AlertDialog.Builder(this)
-            builder.setTitle("Confirmar Solicitud de Instalación")
-            builder.setMessage(mensajeConfirmacion)
+                    // Crear el nuevo ID con el siguiente número disponible
+                    val idSolicitud = "$baseIdSolicitud${maxSuffix + 1}"
 
-            // Botón de Confirmar
-            builder.setPositiveButton("Confirmar") { _, _ ->
-                // Crear el objeto de datos
-                val solicitud = mapOf(
-                    "nombre" to nombre,
-                    "apellidos" to apellidos,
-                    "direccion" to direccion,
-                    "coordenadas" to coordenadas,
-                    "telefono" to telefono,
-                    "contactos" to contactos,
-                    "observaciones" to observaciones,
-                    "zona" to zona,
-                    "fecha" to fechaSeleccionada
-                )
+                    // Crear el mensaje para el cuadro de confirmación
+                    val mensajeConfirmacion = """
+                    Nombre: $nombre
+                    Apellidos: $apellidos
+                    Número de Documento: $numeroDocumento
+                    Dirección: $direccion
+                    Coordenadas: $coordenadas
+                    Teléfono: $telefono
+                    Contactos: $contactos
+                    Zona: $zona
+                    Observaciones: $observaciones
+                    Fecha: ${inputFecha.text.toString()}
+                """.trimIndent()
 
-                // Guardar los datos en Firebase
-                database.child(idSolicitud).setValue(solicitud)
-                    .addOnSuccessListener {
-                        // Mostrar mensaje de éxito
-                        Toast.makeText(this, "Solicitud guardada con éxito", Toast.LENGTH_SHORT).show()
-                        finish()  // Cierra la actividad
+                    // Crear el cuadro de diálogo
+                    val builder = AlertDialog.Builder(this)
+                    builder.setTitle("Confirmar Solicitud de Instalación")
+                    builder.setMessage(mensajeConfirmacion)
+
+                    // Botón de Confirmar
+                    builder.setPositiveButton("Confirmar") { _, _ ->
+                        // Crear el objeto de datos
+                        val solicitud = mapOf(
+                            "nombre" to nombre,
+                            "apellidos" to apellidos,
+                            "numero_documento" to numeroDocumento,
+                            "direccion" to direccion,
+                            "coordenadas" to coordenadas,
+                            "telefono" to telefono,
+                            "contactos" to contactos,
+                            "observaciones" to observaciones,
+                            "zona" to zona,
+                            "fecha" to fechaSeleccionada
+                        )
+
+                        // Guardar los datos en Firebase
+                        database.child(idSolicitud).setValue(solicitud)
+                            .addOnSuccessListener {
+                                Toast.makeText(this, "Solicitud guardada con éxito", Toast.LENGTH_SHORT).show()
+                                finish()  // Cierra la actividad
+                            }
+                            .addOnFailureListener {
+                                Toast.makeText(this, "Error al guardar la solicitud", Toast.LENGTH_SHORT).show()
+                            }
                     }
-                    .addOnFailureListener {
-                        // Mostrar mensaje de error
-                        Toast.makeText(this, "Error al guardar la solicitud", Toast.LENGTH_SHORT).show()
-                    }
-            }
 
-            // Botón de Cancelar
-            builder.setNegativeButton("Cancelar", null)
+                    // Botón de Cancelar
+                    builder.setNegativeButton("Cancelar", null)
 
-            // Mostrar el cuadro de diálogo
-            builder.show()
+                    // Mostrar el cuadro de diálogo
+                    builder.show()
 
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this, "Error al verificar solicitudes existentes", Toast.LENGTH_SHORT).show()
+                }
         } else {
             Toast.makeText(this, "Por favor complete todos los campos", Toast.LENGTH_SHORT).show()
         }

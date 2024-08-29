@@ -81,52 +81,70 @@ class OtrasGestionesActivity : ComponentActivity() {
         val descripcion = inputDescripcion.text.toString()
         val zona = spinnerZona.selectedItem.toString()
 
-        // Verificar si todos los campos requeridos están llenos
         if (tipoGestion.isNotEmpty() && descripcion.isNotEmpty() && fechaSeleccionada != null && zona != "Seleccionar") {
-            // Construir el mensaje de confirmación con los datos
-            val mensajeConfirmacion = """
-            ¿Desea guardar la siguiente gestión?
-            
-            Tipo de Gestión: $tipoGestion
-            Descripción: $descripcion
-            Fecha: $fechaSeleccionada
-            Zona: $zona
-        """.trimIndent()
+            // Base del ID
+            val baseIdGestion = "${fechaSeleccionada}-ot-gestion"
 
-            // Crear un diálogo de confirmación
-            AlertDialog.Builder(this)
-                .setTitle("Confirmar")
-                .setMessage(mensajeConfirmacion)
-                .setPositiveButton("Sí") { _, _ ->
-                    // Crear el ID de gestión basado en la fecha y agregar el sufijo "ot-gestion"
-                    val idGestion = "${fechaSeleccionada}-ot-gestion"
+            // Buscar gestiones existentes con el mismo formato de ID
+            database.orderByKey().startAt(baseIdGestion).endAt("${baseIdGestion}\uf8ff")
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    // Determinar el siguiente número disponible
+                    val maxSuffix = snapshot.children.mapNotNull { gestionSnapshot ->
+                        val id = gestionSnapshot.key ?: return@mapNotNull null
+                        val suffix = id.removePrefix(baseIdGestion).toIntOrNull()
+                        suffix ?: 0
+                    }.maxOrNull() ?: 0
 
-                    // Crear el objeto de datos
-                    val gestion = mapOf(
-                        "tipoGestion" to tipoGestion,
-                        "descripcion" to descripcion,
-                        "fecha" to fechaSeleccionada,
-                        "zona" to zona
-                    )
+                    // Crear el nuevo ID con el siguiente número disponible
+                    val idGestion = "$baseIdGestion${maxSuffix + 1}"
 
-                    // Guardar los datos en Firebase bajo el nodo "agenda"
-                    database.child(idGestion).setValue(gestion)
-                        .addOnSuccessListener {
-                            // Mostrar mensaje de éxito
-                            Toast.makeText(this, "Gestión guardada con éxito", Toast.LENGTH_SHORT).show()
-                            finish()  // Cierra la actividad
+                    // Crear el mensaje de confirmación con los datos
+                    val mensajeConfirmacion = """
+                    ¿Desea guardar la siguiente gestión?
+                    
+                    Tipo de Gestión: $tipoGestion
+                    Descripción: $descripcion
+                    Fecha: $fechaSeleccionada
+                    Zona: $zona
+                """.trimIndent()
+
+                    // Crear un diálogo de confirmación
+                    AlertDialog.Builder(this)
+                        .setTitle("Confirmar")
+                        .setMessage(mensajeConfirmacion)
+                        .setPositiveButton("Sí") { _, _ ->
+                            // Crear el objeto de datos
+                            val gestion = mapOf(
+                                "tipoGestion" to tipoGestion,
+                                "descripcion" to descripcion,
+                                "fecha" to fechaSeleccionada,
+                                "zona" to zona
+                            )
+
+                            // Guardar los datos en Firebase bajo el nodo "agenda"
+                            database.child(idGestion).setValue(gestion)
+                                .addOnSuccessListener {
+                                    // Mostrar mensaje de éxito
+                                    Toast.makeText(this, "Gestión guardada con éxito", Toast.LENGTH_SHORT).show()
+                                    finish()  // Cierra la actividad
+                                }
+                                .addOnFailureListener {
+                                    // Mostrar mensaje de error
+                                    Toast.makeText(this, "Error al guardar la gestión", Toast.LENGTH_SHORT).show()
+                                }
                         }
-                        .addOnFailureListener {
-                            // Mostrar mensaje de error
-                            Toast.makeText(this, "Error al guardar la gestión", Toast.LENGTH_SHORT).show()
+                        .setNegativeButton("No") { dialog, _ ->
+                            dialog.dismiss()  // Cierra el diálogo si se cancela
                         }
+                        .show()
                 }
-                .setNegativeButton("No") { dialog, _ ->
-                    dialog.dismiss()  // Cierra el diálogo si se cancela
+                .addOnFailureListener {
+                    Toast.makeText(this, "Error al verificar gestiones existentes", Toast.LENGTH_SHORT).show()
                 }
-                .show()
         } else {
             Toast.makeText(this, "Por favor complete todos los campos", Toast.LENGTH_SHORT).show()
         }
     }
+
 }
