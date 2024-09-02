@@ -224,18 +224,94 @@ class AgendaActivity : ComponentActivity() {
 
         // Verifica si se ha seleccionado un cliente y una fecha
         if (clienteSeleccionado.isNotEmpty() && fechaSeleccionada != null) {
-            val mensaje = "Cliente: $clienteSeleccionado\nGestión: $gestionSeleccionada\nFecha: $fechaSeleccionada\nObservaciones: $observaciones"
-            AlertDialog.Builder(this)
-                .setTitle("Confirmar creación de agenda")
-                .setMessage(mensaje)
-                .setPositiveButton("Confirmar") { _, _ ->
-                    // Acción para confirmar la creación
-                    Toast.makeText(this, "Agenda creada con éxito", Toast.LENGTH_SHORT).show()
+            database.child(clienteSeleccionado).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val nombreCliente = snapshot.child("nombres").getValue(String::class.java)
+                    val apellidosCliente = snapshot.child("apellidos").getValue(String::class.java)
+                    val numeroDocumento = snapshot.child("numero_documento").getValue(String::class.java)
+                    val direccion = snapshot.child("direccion").getValue(String::class.java)
+                    val coordenadas = snapshot.child("coordenadas").getValue(String::class.java)
+                    val telefono = snapshot.child("telefono").getValue(String::class.java)
+                    val contactos = snapshot.child("contactos").getValue(String::class.java)
+                    val zona = snapshot.child("zona").getValue(String::class.java)
+
+                    val informacionCliente = """
+                        Nombre: ${nombreCliente ?: "Nombre no encontrado"}
+                        Apellidos: ${apellidosCliente ?: "Apellidos no encontrados"}
+                        Documento: ${numeroDocumento ?: "Documento no encontrado"}
+                        Dirección: ${direccion ?: "Dirección no encontrada"}
+                        Coordenadas: ${coordenadas ?: "Coordenadas no encontradas"}
+                        Teléfono: ${telefono ?: "Teléfono no encontrado"}
+                        Contactos: ${contactos ?: "Contactos no encontrados"}
+                        Zona: ${zona ?: "Zona no encontrada"}
+                    """.trimIndent()
+
+                    val mensaje = """
+                        Cliente: $clienteSeleccionado
+                        Gestión: $gestionSeleccionada
+                        Fecha: $fechaSeleccionada
+                        Observaciones: $observaciones
+                        $informacionCliente
+                    """.trimIndent()
+
+                    AlertDialog.Builder(this@AgendaActivity)
+                        .setTitle("Confirmar creación de agenda")
+                        .setMessage(mensaje)
+                        .setPositiveButton("Confirmar") { _, _ ->
+                            // Acción para confirmar la creación
+                            guardarAgenda(clienteSeleccionado, gestionSeleccionada, observaciones, nombreCliente, apellidosCliente, numeroDocumento, direccion, coordenadas, telefono, contactos, zona)
+                        }
+                        .setNegativeButton("Cancelar", null)
+                        .show()
                 }
-                .setNegativeButton("Cancelar", null)
-                .show()
+
+                override fun onCancelled(error: DatabaseError) {
+                    Toast.makeText(this@AgendaActivity, "Error al obtener los datos del cliente", Toast.LENGTH_SHORT).show()
+                }
+            })
         } else {
             Toast.makeText(this, "Debe seleccionar un cliente y una fecha", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun guardarAgenda(
+        clienteSeleccionado: String,
+        gestionSeleccionada: String,
+        observaciones: String,
+        nombreCliente: String?,
+        apellidosCliente: String?,
+        numeroDocumento: String?,
+        direccion: String?,
+        coordenadas: String?,
+        telefono: String?,
+        contactos: String?,
+        zona: String?
+    ) {
+        val agendaId = "$fechaSeleccionada-$clienteSeleccionado" // ID basado en fecha y código del cliente
+        val agendaData = mapOf(
+            "cliente" to clienteSeleccionado,
+            "gestion" to gestionSeleccionada,
+            "fecha" to fechaSeleccionada,
+            "observaciones" to observaciones,
+            "nombre" to nombreCliente,
+            "apellidos" to apellidosCliente,
+            "documento" to numeroDocumento,
+            "direccion" to direccion,
+            "coordenadas" to coordenadas,
+            "telefono" to telefono,
+            "contactos" to contactos,
+            "zona" to zona
+        )
+
+        val database = FirebaseDatabase.getInstance().getReference("agenda/$agendaId")
+        database.setValue(agendaData)
+            .addOnSuccessListener {
+                Log.d("AgendaActivity", "Agenda creada con éxito: $agendaData")
+                Toast.makeText(this, "Agenda creada con éxito", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { e ->
+                Log.e("AgendaActivity", "Error al crear la agenda: ${e.message}")
+                Toast.makeText(this, "Error al crear la agenda: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 }

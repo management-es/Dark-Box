@@ -9,8 +9,8 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.google.firebase.database.*
 
-class VerAgendaActivity : AppCompatActivity() {
 
+class VerAgendaActivity : AppCompatActivity() {
     private lateinit var datePicker: DatePicker
     private lateinit var buttonFiltrar: Button
     private lateinit var layoutAgendaResults: LinearLayout
@@ -19,10 +19,12 @@ class VerAgendaActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ver_agenda)
-
         datePicker = findViewById(R.id.date_picker)
         buttonFiltrar = findViewById(R.id.button_filtrar)
         layoutAgendaResults = findViewById(R.id.layout_agenda_results)
+        buttonFiltrar.setOnClickListener {
+            filterByDate()
+        }
 
         // Obtener la zona del usuario desde el intent
         zonaUsuario = intent.getStringExtra("ZONA_USUARIO") ?: "Zona no especificada"
@@ -46,29 +48,30 @@ class VerAgendaActivity : AppCompatActivity() {
         alertDialog.show()
     }
 
+
     private fun filterByDate() {
         val selectedYear = datePicker.year
         val selectedMonth = datePicker.month + 1 // Meses en DatePicker son base 0
         val selectedDay = datePicker.dayOfMonth
-
         val selectedDate = String.format("%04d%02d%02d", selectedYear, selectedMonth, selectedDay) // Formato YYYYMMDD
-
         val database = FirebaseDatabase.getInstance()
         val reference = database.getReference("agenda")
 
         reference.orderByKey().startAt("$selectedDate-").endAt("$selectedDate~").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 layoutAgendaResults.removeAllViews() // Limpiar los resultados anteriores
-
                 for (snapshot in dataSnapshot.children) {
                     val id = snapshot.key
                     val tipoGestion = snapshot.child("tipoGestion").getValue(String::class.java)
                     val descripcion = snapshot.child("descripcion").getValue(String::class.java)
                     val estado = snapshot.child("estado").getValue(String::class.java)
-                    val zona = snapshot.child("zona").getValue(String::class.java) // Obtener la zona del registro
+                    val zona = snapshot.child("zona")
+                        .getValue(String::class.java) // Obtener la zona del registro
 
                     // Filtrar por zona del usuario
                     if (zonaUsuario == "Zona no especificada" || zona == zonaUsuario) {
+
+
                         // Crear un nuevo CardView para cada registro
                         val cardView = CardView(this@VerAgendaActivity)
                         val cardParams = LinearLayout.LayoutParams(
@@ -83,9 +86,26 @@ class VerAgendaActivity : AppCompatActivity() {
 
                         // Configurar color de fondo según el estado
                         when (estado) {
-                            "realizado" -> cardView.setCardBackgroundColor(ContextCompat.getColor(this@VerAgendaActivity, R.color.green_pastel))
-                            "cancelado" -> cardView.setCardBackgroundColor(ContextCompat.getColor(this@VerAgendaActivity, R.color.red_pastel))
-                            else -> cardView.setCardBackgroundColor(ContextCompat.getColor(this@VerAgendaActivity, R.color.cardview_background))
+                            "realizado" -> cardView.setCardBackgroundColor(
+                                ContextCompat.getColor(
+                                    this@VerAgendaActivity,
+                                    R.color.green_pastel
+                                )
+                            )
+
+                            "cancelado" -> cardView.setCardBackgroundColor(
+                                ContextCompat.getColor(
+                                    this@VerAgendaActivity,
+                                    R.color.red_pastel
+                                )
+                            )
+
+                            else -> cardView.setCardBackgroundColor(
+                                ContextCompat.getColor(
+                                    this@VerAgendaActivity,
+                                    R.color.cardview_background
+                                )
+                            )
                         }
 
                         // Crear un layout horizontal para contener el TextView y los botones
@@ -105,51 +125,64 @@ class VerAgendaActivity : AppCompatActivity() {
                             1f
                         )
                         textView.layoutParams = textParams
-                        textView.setTextColor(ContextCompat.getColor(this@VerAgendaActivity, android.R.color.black))
+                        textView.setTextColor(
+                            ContextCompat.getColor(
+                                this@VerAgendaActivity,
+                                android.R.color.black
+                            )
+                        )
                         textView.textSize = 16f
-
                         // Establecer el contenido basado en el tipo de ID
                         textView.text = when {
                             id?.contains("sol_inst") == true -> {
                                 """
-                                ID: $id
-                                Nombre: ${snapshot.child("nombre").getValue(String::class.java)}
-                                Apellidos: ${snapshot.child("apellidos").getValue(String::class.java)}
-                                Documento: ${snapshot.child("numero_documento").getValue(String::class.java)}
-                                Dirección: ${snapshot.child("direccion").getValue(String::class.java)}
-                                Coordenadas: ${snapshot.child("coordenadas").getValue(String::class.java)}
-                                Teléfono: ${snapshot.child("telefono").getValue(String::class.java)}
-                                Contacto: ${snapshot.child("contactos").getValue(String::class.java)}
-                                Gestión: Instalación
-                                Zona: $zona
-                                Observaciones: ${snapshot.child("observaciones").getValue(String::class.java)}
-                                
-                                """.trimIndent()
+                            ID: $id
+                            Nombre: ${snapshot.child("nombre").getValue(String::class.java)}
+                            Apellidos: ${snapshot.child("apellidos").getValue(String::class.java)}
+                            Documento: ${
+                                    snapshot.child("numero_documento").getValue(String::class.java)
+                                }
+                            Dirección: ${snapshot.child("direccion").getValue(String::class.java)}
+                            Coordenadas: ${
+                                    snapshot.child("coordenadas").getValue(String::class.java)
+                                }
+                            Teléfono: ${snapshot.child("telefono").getValue(String::class.java)}
+                            Contacto: ${snapshot.child("contactos").getValue(String::class.java)}
+                            Gestión: Instalación
+                            Zona: $zona
+                            Observaciones: ${
+                                    snapshot.child("observaciones").getValue(String::class.java)
+                                }
+                            """.trimIndent()
                             }
+
                             id?.contains("ot") == true -> {
                                 """
-                                ID: $id
-                                Tipo de Gestión: $tipoGestion
-                                Zona: $zona
-                                Descripción: $descripcion
-                                
-                                """.trimIndent()
+                            ID: $id
+                            Tipo de Gestión: $tipoGestion
+                            Zona: $zona
+                            Descripción: $descripcion
+                            """.trimIndent()
                             }
+
                             else -> {
                                 """
-                                ID: $id
-                                Nombre: ${snapshot.child("nombre").getValue(String::class.java)}
-                                Apellidos: ${snapshot.child("apellidos").getValue(String::class.java)}
-                                Documento: ${snapshot.child("numeroDocumento").getValue(String::class.java)}
-                                Dirección: ${snapshot.child("direccion").getValue(String::class.java)}
-                                Coordenadas: ${snapshot.child("coordenadas").getValue(String::class.java)}
-                                Teléfono: ${snapshot.child("telefono").getValue(String::class.java)}
-                                Contactos: ${snapshot.child("contactos").getValue(String::class.java)}
-                                Gestión: ${snapshot.child("gestion").getValue(String::class.java)}
-                                Zona: $zona
-                                Observaciones: ${snapshot.child("observaciones").getValue(String::class.java)}
-                                
-                                """.trimIndent()
+                            ID: $id
+                            Nombre: ${snapshot.child("nombre").getValue(String::class.java)}
+                            Apellidos: ${snapshot.child("apellidos").getValue(String::class.java)}
+                            Documento: ${snapshot.child("documento").getValue(String::class.java)}
+                            Dirección: ${snapshot.child("direccion").getValue(String::class.java)}
+                            Coordenadas: ${
+                                    snapshot.child("coordenadas").getValue(String::class.java)
+                                }
+                            Teléfono: ${snapshot.child("telefono").getValue(String::class.java)}
+                            Contactos: ${snapshot.child("contactos").getValue(String::class.java)}
+                            Gestión: ${snapshot.child("gestion").getValue(String::class.java)}
+                            Zona: $zona
+                            Observaciones: ${
+                                    snapshot.child("observaciones").getValue(String::class.java)
+                                }
+                            """.trimIndent()
                             }
                         }
 
@@ -166,15 +199,27 @@ class VerAgendaActivity : AppCompatActivity() {
                         val buttonCancelado = Button(this@VerAgendaActivity)
                         buttonCancelado.text = "❌"
                         buttonCancelado.textSize = 20f
-                        buttonCancelado.setBackgroundColor(ContextCompat.getColor(this@VerAgendaActivity, R.color.red_pastel))
-                        buttonCancelado.visibility = if (estado == null) View.VISIBLE else View.GONE // Ocultar si ya se ha seleccionado un estado
+                        buttonCancelado.setBackgroundColor(
+                            ContextCompat.getColor(
+                                this@VerAgendaActivity,
+                                R.color.red_pastel
+                            )
+                        )
+                        buttonCancelado.visibility =
+                            if (estado == null) View.VISIBLE else View.GONE // Ocultar si ya se ha seleccionado un estado
 
                         // Crear botón "Realizado" (Visto Bueno verde)
                         val buttonRealizado = Button(this@VerAgendaActivity)
                         buttonRealizado.text = "✔️"
                         buttonRealizado.textSize = 20f
-                        buttonRealizado.setBackgroundColor(ContextCompat.getColor(this@VerAgendaActivity, R.color.green_pastel))
-                        buttonRealizado.visibility = if (estado == null) View.VISIBLE else View.GONE // Ocultar si ya se ha seleccionado un estado
+                        buttonRealizado.setBackgroundColor(
+                            ContextCompat.getColor(
+                                this@VerAgendaActivity,
+                                R.color.green_pastel
+                            )
+                        )
+                        buttonRealizado.visibility =
+                            if (estado == null) View.VISIBLE else View.GONE // Ocultar si ya se ha seleccionado un estado
 
                         buttonRealizado.setOnClickListener {
                             showConfirmationDialog(id, "realizado")
@@ -208,22 +253,22 @@ class VerAgendaActivity : AppCompatActivity() {
                     Toast.makeText(this@VerAgendaActivity, "No se encontraron resultados para la fecha seleccionada.", Toast.LENGTH_SHORT).show()
                 }
             }
-
             override fun onCancelled(databaseError: DatabaseError) {
-                Log.e("VerAgendaActivity", "Error al obtener datos: ${databaseError.message}")
+                Log.e("VerAgendaActivity", "Error al cargar datos", databaseError.toException())
             }
         })
     }
 
+
     private fun showConfirmationDialog(id: String?, estado: String) {
         val alertDialog = androidx.appcompat.app.AlertDialog.Builder(this)
         alertDialog.setTitle("Confirmación")
-        alertDialog.setMessage("¿Deseas marcar este registro como $estado?")
-        alertDialog.setPositiveButton("Confirmar") { dialog, _ ->
-            updateEstado(id, estado)
+        alertDialog.setMessage("¿Está seguro de marcar esta tarea como ${if (estado == "realizado") "realizado" else "cancelado"}?")
+        alertDialog.setPositiveButton("Sí") { dialog, _ ->
+            updateTaskState(id, estado)
             dialog.dismiss()
         }
-        alertDialog.setNegativeButton("Cancelar") { dialog, _ ->
+        alertDialog.setNegativeButton("No") { dialog, _ ->
             dialog.dismiss()
         }
         alertDialog.show()
@@ -231,10 +276,19 @@ class VerAgendaActivity : AppCompatActivity() {
 
     private fun showCancelationDialog(id: String?) {
         val alertDialog = androidx.appcompat.app.AlertDialog.Builder(this)
-        alertDialog.setTitle("Confirmación")
-        alertDialog.setMessage("¿Deseas cancelar este registro?")
-        alertDialog.setPositiveButton("Confirmar") { dialog, _ ->
-            deleteRegistro(id)
+        val input = EditText(this)
+        input.hint = "Ingrese una observación"
+
+        alertDialog.setTitle("Observación de Cancelación")
+        alertDialog.setMessage("Ingrese una observación para la cancelación")
+        alertDialog.setView(input)
+        alertDialog.setPositiveButton("Guardar") { dialog, _ ->
+            val observacion = input.text.toString()
+            if (observacion.isNotEmpty()) {
+                updateTaskState(id, "cancelado", observacion)
+            } else {
+                Toast.makeText(this, "Debe ingresar una observación.", Toast.LENGTH_SHORT).show()
+            }
             dialog.dismiss()
         }
         alertDialog.setNegativeButton("Cancelar") { dialog, _ ->
@@ -243,26 +297,22 @@ class VerAgendaActivity : AppCompatActivity() {
         alertDialog.show()
     }
 
-    private fun updateEstado(id: String?, estado: String) {
+    private fun updateTaskState(id: String?, estado: String, observacion: String = "") {
         val database = FirebaseDatabase.getInstance()
-        val reference = database.getReference("agenda").child(id ?: return)
-        reference.child("estado").setValue(estado).addOnCompleteListener {
-            if (it.isSuccessful) {
-                Toast.makeText(this, "Estado actualizado a $estado.", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "Error al actualizar el estado.", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
+        val reference = database.getReference("agenda")
 
-    private fun deleteRegistro(id: String?) {
-        val database = FirebaseDatabase.getInstance()
-        val reference = database.getReference("agenda").child(id ?: return)
-        reference.removeValue().addOnCompleteListener {
-            if (it.isSuccessful) {
-                Toast.makeText(this, "Registro eliminado.", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "Error al eliminar el registro.", Toast.LENGTH_SHORT).show()
+        val updates = mapOf(
+            "estado" to estado,
+            "observacion-cancelacion" to observacion
+        )
+
+        id?.let {
+            reference.child(it).updateChildren(updates).addOnCompleteListener {
+                if (it.isSuccessful) {
+                    Toast.makeText(this, "Estado actualizado a '$estado'", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Error al actualizar el estado", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
