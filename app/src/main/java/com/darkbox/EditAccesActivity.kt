@@ -2,6 +2,8 @@ package com.darkbox
 
 import android.os.Bundle
 import android.widget.*
+import android.view.View
+import android.widget.AdapterView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.DatabaseReference
@@ -13,7 +15,7 @@ import com.google.firebase.database.DatabaseError
 class EditAccesActivity : AppCompatActivity() {
 
     private lateinit var database: DatabaseReference
-    private lateinit var listViewUsuarios: ListView
+    private lateinit var spinnerUsuarios: Spinner
     private lateinit var editTextNombreUsuario: EditText
     private lateinit var editTextUsuario: EditText
     private lateinit var editTextContrasena: EditText
@@ -29,7 +31,7 @@ class EditAccesActivity : AppCompatActivity() {
 
         database = FirebaseDatabase.getInstance().reference.child("access")
 
-        listViewUsuarios = findViewById(R.id.listViewUsuarios)
+        spinnerUsuarios = findViewById(R.id.spinnerUsuarios)
         editTextNombreUsuario = findViewById(R.id.editTextNombreUsuario)
         editTextUsuario = findViewById(R.id.editTextUsuario)
         editTextContrasena = findViewById(R.id.editTextContrasena)
@@ -79,8 +81,10 @@ class EditAccesActivity : AppCompatActivity() {
                         usuarios.add(usuario)
                     }
                 }
-                val adapter = ArrayAdapter(this@EditAccesActivity, android.R.layout.simple_list_item_1, usuarios)
-                listViewUsuarios.adapter = adapter
+                val adapter = ArrayAdapter(this@EditAccesActivity, android.R.layout.simple_spinner_item, usuarios)
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                spinnerUsuarios.adapter = adapter
+
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -88,10 +92,17 @@ class EditAccesActivity : AppCompatActivity() {
             }
         })
 
-        listViewUsuarios.setOnItemClickListener { _, _, position, _ ->
-            val selectedUser = listViewUsuarios.getItemAtPosition(position) as String
-            loadUserData(selectedUser)
+        spinnerUsuarios.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val selectedUser = parent.getItemAtPosition(position) as String
+                loadUserData(selectedUser)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // No hacer nada si no se selecciona ningún usuario
+            }
         }
+
 
         buttonActualizar.setOnClickListener {
             val nombreUsuario = editTextNombreUsuario.text.toString().trim()

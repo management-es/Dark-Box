@@ -65,12 +65,10 @@ class VerAgendaActivity : AppCompatActivity() {
                     val tipoGestion = snapshot.child("tipoGestion").getValue(String::class.java)
                     val descripcion = snapshot.child("descripcion").getValue(String::class.java)
                     val estado = snapshot.child("estado").getValue(String::class.java)
-                    val zona = snapshot.child("zona")
-                        .getValue(String::class.java) // Obtener la zona del registro
+                    val zona = snapshot.child("zona").getValue(String::class.java) // Obtener la zona del registro
 
-                    // Filtrar por zona del usuario
-                    if (zonaUsuario == "Zona no especificada" || zona == zonaUsuario) {
-
+                    // Si la zona del usuario es "Set-Admin", se muestra toda la información sin filtrar por zona
+                    if (zonaUsuario == "Set-Admin" || zonaUsuario == "Zona no especificada" || zona == zonaUsuario) {
 
                         // Crear un nuevo CardView para cada registro
                         val cardView = CardView(this@VerAgendaActivity)
@@ -139,20 +137,14 @@ class VerAgendaActivity : AppCompatActivity() {
                             ID: $id
                             Nombre: ${snapshot.child("nombre").getValue(String::class.java)}
                             Apellidos: ${snapshot.child("apellidos").getValue(String::class.java)}
-                            Documento: ${
-                                    snapshot.child("numero_documento").getValue(String::class.java)
-                                }
+                            Documento: ${snapshot.child("numero_documento").getValue(String::class.java)}
                             Dirección: ${snapshot.child("direccion").getValue(String::class.java)}
-                            Coordenadas: ${
-                                    snapshot.child("coordenadas").getValue(String::class.java)
-                                }
+                            Coordenadas: ${snapshot.child("coordenadas").getValue(String::class.java)}
                             Teléfono: ${snapshot.child("telefono").getValue(String::class.java)}
                             Contacto: ${snapshot.child("contactos").getValue(String::class.java)}
                             Gestión: Instalación
                             Zona: $zona
-                            Observaciones: ${
-                                    snapshot.child("observaciones").getValue(String::class.java)
-                                }
+                            Observaciones: ${snapshot.child("observaciones").getValue(String::class.java)}
                             """.trimIndent()
                             }
 
@@ -172,16 +164,12 @@ class VerAgendaActivity : AppCompatActivity() {
                             Apellidos: ${snapshot.child("apellidos").getValue(String::class.java)}
                             Documento: ${snapshot.child("documento").getValue(String::class.java)}
                             Dirección: ${snapshot.child("direccion").getValue(String::class.java)}
-                            Coordenadas: ${
-                                    snapshot.child("coordenadas").getValue(String::class.java)
-                                }
+                            Coordenadas: ${snapshot.child("coordenadas").getValue(String::class.java)}
                             Teléfono: ${snapshot.child("telefono").getValue(String::class.java)}
                             Contactos: ${snapshot.child("contactos").getValue(String::class.java)}
                             Gestión: ${snapshot.child("gestion").getValue(String::class.java)}
                             Zona: $zona
-                            Observaciones: ${
-                                    snapshot.child("observaciones").getValue(String::class.java)
-                                }
+                            Observaciones: ${snapshot.child("observaciones").getValue(String::class.java)}
                             """.trimIndent()
                             }
                         }
