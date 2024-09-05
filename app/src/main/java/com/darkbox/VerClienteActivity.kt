@@ -98,12 +98,18 @@ class VerClienteActivity : AppCompatActivity() {
     }
 
     private fun buscarPorDocumento(documento: String) {
-        clientesRef.orderByChild("numero_documento").equalTo(documento).addValueEventListener(object : ValueEventListener {
+        val query = if (zonaUsuario == "Set-Admin") {
+            clientesRef.orderByChild("numero_documento").equalTo(documento)
+        } else {
+            clientesRef.orderByChild("numero_documento").equalTo(documento)
+        }
+
+        query.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val clientes = mutableListOf<Cliente>()
                 for (child in snapshot.children) {
                     val cliente = child.getValue(Cliente::class.java)
-                    if (cliente != null && cliente.zona == zonaUsuario) {
+                    if (cliente != null && (zonaUsuario == "Set-Admin" || cliente.zona == zonaUsuario)) {
                         clientes.add(cliente)
                     }
                 }
@@ -117,12 +123,18 @@ class VerClienteActivity : AppCompatActivity() {
     }
 
     private fun buscarPorCodigoCliente(codigo: String) {
-        clientesRef.orderByChild("cod_cliente").equalTo(codigo).addValueEventListener(object : ValueEventListener {
+        val query = if (zonaUsuario == "Set-Admin") {
+            clientesRef.orderByChild("cod_cliente").equalTo(codigo)
+        } else {
+            clientesRef.orderByChild("cod_cliente").equalTo(codigo)
+        }
+
+        query.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val clientes = mutableListOf<Cliente>()
                 for (child in snapshot.children) {
                     val cliente = child.getValue(Cliente::class.java)
-                    if (cliente != null && cliente.zona == zonaUsuario) {
+                    if (cliente != null && (zonaUsuario == "Set-Admin" || cliente.zona == zonaUsuario)) {
                         clientes.add(cliente)
                     }
                 }
@@ -136,12 +148,18 @@ class VerClienteActivity : AppCompatActivity() {
     }
 
     private fun buscarPorNombreApellido(nombreApellido: String) {
-        clientesRef.orderByChild("nombres").startAt(nombreApellido).endAt(nombreApellido + "\uf8ff").addValueEventListener(object : ValueEventListener {
+        val query = if (zonaUsuario == "Set-Admin") {
+            clientesRef.orderByChild("nombres").startAt(nombreApellido).endAt(nombreApellido + "\uf8ff")
+        } else {
+            clientesRef.orderByChild("nombres").startAt(nombreApellido).endAt(nombreApellido + "\uf8ff")
+        }
+
+        query.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val clientes = mutableListOf<Cliente>()
                 for (child in snapshot.children) {
                     val cliente = child.getValue(Cliente::class.java)
-                    if (cliente != null && cliente.zona == zonaUsuario) {
+                    if (cliente != null && (zonaUsuario == "Set-Admin" || cliente.zona == zonaUsuario)) {
                         clientes.add(cliente)
                     }
                 }
