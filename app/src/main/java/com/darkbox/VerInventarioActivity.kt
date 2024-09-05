@@ -59,8 +59,6 @@ class VerInventarioActivity : ComponentActivity() {
         }
     }
 
-
-
     private fun mostrarEquiposFiltrados(tipoEquipo: String) {
         val estadoSeleccionado = estadoSpinner.selectedItem.toString()
         containerInformacion.removeAllViews() // Limpia el contenedor
@@ -71,7 +69,59 @@ class VerInventarioActivity : ComponentActivity() {
 
         var totalEquipos = 0
 
-        database.orderByChild("equipo").equalTo(tipoEquipo).addListenerForSingleValueEvent(object : ValueEventListener {
+        val query = if (zonaUsuario == "Set-Admin") {
+            // Si la zona es "Set-Admin", muestra todo el inventario
+            database.orderByChild("equipo").equalTo(tipoEquipo)
+        } else {
+            // Si no es "Set-Admin", filtra por zona
+            database.orderByChild("equipo").equalTo(tipoEquipo).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        for (itemSnapshot in snapshot.children) {
+                            val estado = itemSnapshot.child("estado").value.toString()
+                            val zona = itemSnapshot.child("zona").value.toString() // Obtén la zona del equipo
+
+                            // Filtrar por estado y zona del usuario
+                            if ((estado == estadoSeleccionado || estadoSeleccionado == "Todo") && zona == zonaUsuario) {
+                                val serial = itemSnapshot.child("serial").value.toString()
+                                val observaciones = itemSnapshot.child("observaciones").value.toString()
+                                val tecnologia = itemSnapshot.child("tecnologia").value.toString()
+                                val modelo = itemSnapshot.child("modelo").value.toString()
+
+                                val itemView = View.inflate(this@VerInventarioActivity, R.layout.item_informacion, null)
+                                val serialTextView = itemView.findViewById<TextView>(R.id.textView_serial)
+                                val observacionesTextView = itemView.findViewById<TextView>(R.id.textView_observaciones)
+                                val zonaTextView = itemView.findViewById<TextView>(R.id.textView_zona)
+                                val tecnologiaTextView = itemView.findViewById<TextView>(R.id.textView_tecnologia)
+                                val modeloTextView = itemView.findViewById<TextView>(R.id.textView_modelo)
+
+                                serialTextView.text = "Serial: $serial"
+                                observacionesTextView.text = "Observaciones: $observaciones"
+                                zonaTextView.text = "Zona: $zona"
+                                tecnologiaTextView.text = "Tecnología: $tecnologia"
+                                modeloTextView.text = "Modelo: $modelo"
+
+                                containerInformacion.addView(itemView)
+                                totalEquipos++
+                            }
+                        }
+                        textViewTotal.text = "Total $tipoEquipo $estadoSeleccionado: $totalEquipos"
+                        textViewTotal.visibility = View.VISIBLE
+                        containerInformacion.visibility = View.VISIBLE
+                    } else {
+                        containerInformacion.visibility = View.GONE
+                        textViewTotal.visibility = View.GONE
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    error.toException().printStackTrace()
+                }
+            })
+            return
+        }
+
+        query.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     for (itemSnapshot in snapshot.children) {
@@ -79,7 +129,7 @@ class VerInventarioActivity : ComponentActivity() {
                         val zona = itemSnapshot.child("zona").value.toString() // Obtén la zona del equipo
 
                         // Filtrar por estado y zona del usuario
-                        if ((estado == estadoSeleccionado || estadoSeleccionado == "Todo") && zona == zonaUsuario) {
+                        if ((estado == estadoSeleccionado || estadoSeleccionado == "Todo") && (zonaUsuario == "Set-Admin" || zona == zonaUsuario)) {
                             val serial = itemSnapshot.child("serial").value.toString()
                             val observaciones = itemSnapshot.child("observaciones").value.toString()
                             val tecnologia = itemSnapshot.child("tecnologia").value.toString()
@@ -116,5 +166,4 @@ class VerInventarioActivity : ComponentActivity() {
             }
         })
     }
-
 }
