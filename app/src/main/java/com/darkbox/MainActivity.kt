@@ -5,11 +5,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import com.darkbox.ui.theme.DarkBoxTheme
@@ -37,7 +39,8 @@ class MainActivity : ComponentActivity() {
                     onClientesClick = { navigateToClientes(zonaUsuario) },
                     onAgendaClick = { navigateToAgenda(zonaUsuario) },
                     onInformesClick = { navigateToInformes() },
-                    onCredencialesClick = { navigateToCredenciales() } // Navegación a Credenciales
+                    onCredencialesClick = { navigateToCredenciales() },
+                    onLogoutClick = { handleLogout() } // Añadir función de cierre de sesión
                 )
             }
         }
@@ -49,21 +52,17 @@ class MainActivity : ComponentActivity() {
         startActivity(intent)
     }
 
-
     private fun navigateToClientes(zona: String) {
         val intent = Intent(this, ClientesActivity::class.java)
         intent.putExtra("ZONA_USUARIO", zona) // Pasa la zona directamente al Intent
         startActivity(intent)
     }
 
-
     private fun navigateToAgenda(zona: String) {
         val intent = Intent(this, AgendaActivity::class.java)
         intent.putExtra("ZONA_USUARIO", zona) // Pasa la zona directamente al Intent
         startActivity(intent)
     }
-
-
 
     private fun navigateToInformes() {
         val intent = Intent(this, InformesActivity::class.java)
@@ -73,6 +72,12 @@ class MainActivity : ComponentActivity() {
     private fun navigateToCredenciales() {
         val intent = Intent(this, CredencialesActivity::class.java)
         startActivity(intent)
+    }
+
+    private fun handleLogout() {
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        finish() // Opcionalmente, terminar la actividad actual
     }
 }
 
@@ -86,7 +91,8 @@ fun MainScreen(
     onClientesClick: () -> Unit,
     onAgendaClick: () -> Unit,
     onInformesClick: () -> Unit,
-    onCredencialesClick: () -> Unit // Añadir función de clic para Credenciales
+    onCredencialesClick: () -> Unit,
+    onLogoutClick: () -> Unit // Añadir función de clic para Cerrar sesión
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -138,7 +144,7 @@ fun MainScreen(
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("Credenciales") }, // Opción de Credenciales
+                            text = { Text("Credenciales") },
                             onClick = {
                                 expanded = false
                                 onCredencialesClick()
@@ -155,9 +161,26 @@ fun MainScreen(
                 .padding(innerPadding)
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.SpaceBetween // Ajuste para colocar el botón en la parte inferior
         ) {
             Greeting(name = nombreUsuario)
+
+            // Espacio flexible que empuja el contenido hacia arriba
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Botón de Cerrar sesión en la parte inferior
+            Button(
+                onClick = { onLogoutClick() },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFE0E0E0), // Color gris claro
+                    contentColor = Color.Black // Color del texto del botón
+                ),
+                modifier = Modifier
+                    .padding(top = 16.dp)
+                    .background(Color(0xFFE0E0E0), shape = MaterialTheme.shapes.medium) // Color y forma del botón
+            ) {
+                Text(text = "Cerrar Sesión")
+            }
         }
     }
 }
@@ -182,7 +205,8 @@ fun GreetingPreview() {
             onClientesClick = {},
             onAgendaClick = {},
             onInformesClick = {},
-            onCredencialesClick = {}
+            onCredencialesClick = {},
+            onLogoutClick = {} // Añadir función de clic para Cerrar sesión en la vista previa
         )
     }
 }
