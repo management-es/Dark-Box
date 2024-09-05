@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
                     rolUsuario = rolUsuario,
                     zonaUsuario = zonaUsuario,
                     onInventoryClick = { navigateToInventory(zonaUsuario) },
-                    onClientesClick = { navigateToClientes() },
+                    onClientesClick = { navigateToClientes(zonaUsuario) },
                     onAgendaClick = { navigateToAgenda(zonaUsuario) },
                     onInformesClick = { navigateToInformes() },
                     onCredencialesClick = { navigateToCredenciales() } // Navegación a Credenciales
@@ -50,8 +50,9 @@ class MainActivity : ComponentActivity() {
     }
 
 
-    private fun navigateToClientes() {
+    private fun navigateToClientes(zona: String) {
         val intent = Intent(this, ClientesActivity::class.java)
+        intent.putExtra("ZONA_USUARIO", zona) // Pasa la zona directamente al Intent
         startActivity(intent)
     }
 

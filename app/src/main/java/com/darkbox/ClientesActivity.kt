@@ -21,10 +21,14 @@ class ClientesActivity : ComponentActivity() {
     private lateinit var inputSerialOnu: EditText
     private lateinit var inputSerialAntena: EditText
     private lateinit var inputSerialRouter: EditText
+    private lateinit var zonaUsuario: String // Variable para almacenar la zona del usuario
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_clientes)
+
+        // Obtener la zona del usuario desde el Intent
+        zonaUsuario = intent.getStringExtra("ZONA_USUARIO") ?: "Zona no especificada"
 
         // Inicializa la referencia a la base de datos
         database = FirebaseDatabase.getInstance().reference
@@ -78,6 +82,7 @@ class ClientesActivity : ComponentActivity() {
 
         btnVerCliente.setOnClickListener {
             val intent = Intent(this, VerClienteActivity::class.java)
+            intent.putExtra("ZONA_USUARIO", zonaUsuario) // Pasar la zona del usuario a VerAgendaActivity
             startActivity(intent)
         }
 

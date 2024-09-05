@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -51,9 +52,14 @@ class VerClienteActivity : AppCompatActivity() {
     private lateinit var adapter: ClienteAdapter
     private lateinit var txtNoRecords: TextView
 
+    private lateinit var zonaUsuario: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ver_cliente)
+
+        // Obtener la zona del usuario desde el Intent
+        zonaUsuario = intent.getStringExtra("ZONA_USUARIO") ?: "Zona no especificada"
 
         // Inicializa Firebase
         database = FirebaseDatabase.getInstance()
@@ -70,6 +76,13 @@ class VerClienteActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         adapter = ClienteAdapter()
         recyclerView.adapter = adapter
+
+        // Mostrar un AlertDialog con la zona del usuario
+        AlertDialog.Builder(this)
+            .setTitle("Acceso Restringido")
+            .setMessage("Solamente tienes acceso a los clientes de la zona: $zonaUsuario")
+            .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+            .show()
 
         btnBuscar.setOnClickListener {
             val searchType = spinnerTipoBusqueda.selectedItem.toString()
@@ -90,7 +103,7 @@ class VerClienteActivity : AppCompatActivity() {
                 val clientes = mutableListOf<Cliente>()
                 for (child in snapshot.children) {
                     val cliente = child.getValue(Cliente::class.java)
-                    if (cliente != null) {
+                    if (cliente != null && cliente.zona == zonaUsuario) {
                         clientes.add(cliente)
                     }
                 }
@@ -109,7 +122,7 @@ class VerClienteActivity : AppCompatActivity() {
                 val clientes = mutableListOf<Cliente>()
                 for (child in snapshot.children) {
                     val cliente = child.getValue(Cliente::class.java)
-                    if (cliente != null) {
+                    if (cliente != null && cliente.zona == zonaUsuario) {
                         clientes.add(cliente)
                     }
                 }
@@ -128,7 +141,7 @@ class VerClienteActivity : AppCompatActivity() {
                 val clientes = mutableListOf<Cliente>()
                 for (child in snapshot.children) {
                     val cliente = child.getValue(Cliente::class.java)
-                    if (cliente != null) {
+                    if (cliente != null && cliente.zona == zonaUsuario) {
                         clientes.add(cliente)
                     }
                 }
