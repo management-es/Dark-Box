@@ -308,6 +308,7 @@ class AgendaActivity : ComponentActivity() {
             .addOnSuccessListener {
                 Log.d("AgendaActivity", "Agenda creada con éxito: $agendaData")
                 Toast.makeText(this, "Agenda creada con éxito", Toast.LENGTH_SHORT).show()
+                finish()
             }
             .addOnFailureListener { e ->
                 Log.e("AgendaActivity", "Error al crear la agenda: ${e.message}")
