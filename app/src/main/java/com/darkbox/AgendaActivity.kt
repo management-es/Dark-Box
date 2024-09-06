@@ -27,6 +27,7 @@ class AgendaActivity : ComponentActivity() {
     private var fechaSeleccionada: String? = null
     private lateinit var buttonSolicitudInstalacion: Button
     private lateinit var zonaUsuario: String // Variable para almacenar la zona del usuario
+    private lateinit var rolUsuario: String  // Variable para almacenar el rol del usuario
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +35,7 @@ class AgendaActivity : ComponentActivity() {
 
         // Obtener la zona del usuario desde el Intent
         zonaUsuario = intent.getStringExtra("ZONA_USUARIO") ?: "Zona no especificada"
+        rolUsuario = intent.getStringExtra("ROL_USUARIO") ?: "Rol no especificado"
 
         // Referencias a los elementos de la UI
         val buttonCrearAgenda: Button = findViewById(R.id.button_crear_agenda)
@@ -74,9 +76,13 @@ class AgendaActivity : ComponentActivity() {
 
         // Listener para el botón Crear Agenda
         buttonCrearAgenda.setOnClickListener {
-            dateInputLayout.visibility = View.VISIBLE
-            buttonCrearAgenda.visibility = View.GONE
-            cargarClientes()  // Cargar clientes al hacer clic en "Crear Agenda"
+            if (rolUsuario == "Tecnico") {
+                showAccessDeniedDialog() // Mostrar alerta si es técnico
+            } else {
+                dateInputLayout.visibility = View.VISIBLE
+                buttonCrearAgenda.visibility = View.GONE
+                cargarClientes()  // Cargar clientes al hacer clic en "Crear Agenda"
+            }
         }
 
         buttonVerAgenda.setOnClickListener {
@@ -115,6 +121,18 @@ class AgendaActivity : ComponentActivity() {
                 textViewNombreCliente.text = ""
             }
         }
+    }
+
+    // Función para mostrar el mensaje de acceso denegado
+    private fun showAccessDeniedDialog() {
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Acceso Denegado")
+            .setMessage("Su usuario no tiene acceso a esta función")
+            .setPositiveButton("OK") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+            .show()
     }
 
     private fun cargarClientes() {

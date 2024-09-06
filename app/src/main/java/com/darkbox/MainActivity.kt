@@ -20,14 +20,19 @@ import androidx.compose.material.icons.filled.Menu
 
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
+
+    private lateinit var nombreUsuario: String
+    private lateinit var rolUsuario: String
+    private lateinit var zonaUsuario: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         // Obtener el nombre de usuario, rol y zona del Intent
-        val nombreUsuario = intent.getStringExtra("NOMBRE_USUARIO") ?: "Usuario"
-        val rolUsuario = intent.getStringExtra("ROL_USUARIO") ?: "Rol no especificado"
-        val zonaUsuario = intent.getStringExtra("ZONA_USUARIO") ?: "Zona no especificada"
+        nombreUsuario = intent.getStringExtra("NOMBRE_USUARIO") ?: "Usuario"
+        rolUsuario = intent.getStringExtra("ROL_USUARIO") ?: "Rol no especificado"
+        zonaUsuario = intent.getStringExtra("ZONA_USUARIO") ?: "Zona no especificada"
 
         setContent {
             DarkBoxTheme {
@@ -35,9 +40,9 @@ class MainActivity : ComponentActivity() {
                     nombreUsuario = nombreUsuario,
                     rolUsuario = rolUsuario,
                     zonaUsuario = zonaUsuario,
-                    onInventoryClick = { navigateToInventory(zonaUsuario) },
-                    onClientesClick = { navigateToClientes(zonaUsuario) },
-                    onAgendaClick = { navigateToAgenda(zonaUsuario) },
+                    onInventoryClick = { navigateToInventory(zonaUsuario, rolUsuario) },
+                    onClientesClick = { navigateToClientes(zonaUsuario, rolUsuario) },
+                    onAgendaClick = { navigateToAgenda(zonaUsuario, rolUsuario) },
                     onInformesClick = { navigateToInformes() },
                     onCredencialesClick = { navigateToCredenciales() },
                     onLogoutClick = { handleLogout() } // Añadir función de cierre de sesión
@@ -46,21 +51,24 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun navigateToInventory(zona: String) {
+    private fun navigateToInventory(zona: String, rol: String) {
         val intent = Intent(this, InventoryActivity::class.java)
         intent.putExtra("ZONA_USUARIO", zona) // Pasa la zona directamente al Intent
+        intent.putExtra("ROL_USUARIO", rol) // Pasa el rol directamente al Intent
         startActivity(intent)
     }
 
-    private fun navigateToClientes(zona: String) {
+    private fun navigateToClientes(zona: String, rol: String) {
         val intent = Intent(this, ClientesActivity::class.java)
         intent.putExtra("ZONA_USUARIO", zona) // Pasa la zona directamente al Intent
+        intent.putExtra("ROL_USUARIO", rol) // Pasa el rol directamente al Intent
         startActivity(intent)
     }
 
-    private fun navigateToAgenda(zona: String) {
+    private fun navigateToAgenda(zona: String, rol: String) {
         val intent = Intent(this, AgendaActivity::class.java)
         intent.putExtra("ZONA_USUARIO", zona) // Pasa la zona directamente al Intent
+        intent.putExtra("ROL_USUARIO", rol) // Pasa el rol directamente al Intent
         startActivity(intent)
     }
 
@@ -70,8 +78,26 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun navigateToCredenciales() {
-        val intent = Intent(this, CredencialesActivity::class.java)
-        startActivity(intent)
+        if (rolUsuario.trim().equals("SupUsrDo", ignoreCase = true)) {
+            // Iniciar CredencialesActivity si el rol es SupUsrDo
+            val intent = Intent(this, CredencialesActivity::class.java)
+            startActivity(intent)
+        } else {
+            // Mostrar mensaje de acceso denegado si el rol no es SupUsrDo
+            showAccessDeniedDialog()
+        }
+    }
+
+    private fun showAccessDeniedDialog() {
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Acceso Denegado")
+            .setMessage("Su usuario no tiene acceso a esta función")
+            .setPositiveButton("OK") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setCancelable(false) // Previene que el diálogo se cierre al tocar fuera de él
+            .create()
+            .show()
     }
 
     private fun handleLogout() {
@@ -188,7 +214,7 @@ fun MainScreen(
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
-        text = "Hello $name!",
+        text = "Bienvenido $name!",
         modifier = modifier
     )
 }

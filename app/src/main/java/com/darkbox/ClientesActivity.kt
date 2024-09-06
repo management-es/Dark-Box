@@ -22,6 +22,7 @@ class ClientesActivity : ComponentActivity() {
     private lateinit var inputSerialAntena: EditText
     private lateinit var inputSerialRouter: EditText
     private lateinit var zonaUsuario: String // Variable para almacenar la zona del usuario
+    private lateinit var rolUsuario: String  // Variable para almacenar el rol del usuario
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +30,7 @@ class ClientesActivity : ComponentActivity() {
 
         // Obtener la zona del usuario desde el Intent
         zonaUsuario = intent.getStringExtra("ZONA_USUARIO") ?: "Zona no especificada"
+        rolUsuario = intent.getStringExtra("ROL_USUARIO") ?: "Rol no especificado"
 
         // Inicializa la referencia a la base de datos
         database = FirebaseDatabase.getInstance().reference
@@ -146,7 +148,6 @@ class ClientesActivity : ComponentActivity() {
         }
 
 
-
         // Inicializa el layout de datos cliente, servicio y adicionales
         datosClienteLayout.visibility = View.GONE
         servicioLayout.visibility = View.GONE
@@ -154,7 +155,11 @@ class ClientesActivity : ComponentActivity() {
 
         // Manejar el clic del botón de ingresar cliente
         buttonIngresarCliente.setOnClickListener {
-            optionsLayout.visibility = View.VISIBLE
+            if (rolUsuario == "Tecnico") {
+                showAccessDeniedDialog() // Mostrar alerta si es técnico
+            } else {
+                optionsLayout.visibility = View.VISIBLE
+            }
         }
 
         // Manejar el clic del botón de datos cliente
@@ -220,6 +225,18 @@ class ClientesActivity : ComponentActivity() {
                 )
             }
         }
+    }
+
+    // Función para mostrar el mensaje de acceso denegado
+    private fun showAccessDeniedDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Acceso Denegado")
+            .setMessage("Su usuario no tiene acceso a esta función")
+            .setPositiveButton("OK") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+            .show()
     }
 
     private fun loadOnuSerials() {

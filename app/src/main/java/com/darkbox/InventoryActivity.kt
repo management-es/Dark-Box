@@ -13,13 +13,16 @@ class InventoryActivity : ComponentActivity() {
 
     private lateinit var database: DatabaseReference
     private lateinit var zonaUsuario: String // Variable para almacenar la zona del usuario
+    private lateinit var rolUsuario: String  // Variable para almacenar el rol del usuario
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_inventario)
 
-        // Obtener la zona del usuario desde el Intent
+        // Obtener la rol y zona del usuario desde el Intent
         zonaUsuario = intent.getStringExtra("ZONA_USUARIO") ?: "Zona no especificada"
+        rolUsuario = intent.getStringExtra("ROL_USUARIO") ?: "Rol no especificado"
+
 
         // Inicializa la referencia a la base de datos
         database = FirebaseDatabase.getInstance().reference
@@ -56,14 +59,19 @@ class InventoryActivity : ComponentActivity() {
         zonaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerZona.adapter = zonaAdapter
 
-        // Manejar el clic del botón de ingresar equipo
+
+        // Manejar el clic del botón Ingresar Equipo
         buttonIngresarEquipo.setOnClickListener {
-            // Ocultar botones y mostrar el layout de entrada de equipo
-            buttonIngresarEquipo.visibility = View.GONE
-            buttonVerInventario.visibility = View.GONE
-            buttonActualizarEstado.visibility = View.GONE
-            equipmentInputLayout.visibility = View.VISIBLE
-            titleIngresarEquipo.visibility = View.VISIBLE
+            if (rolUsuario == "Tecnico") {
+                showAccessDeniedDialog() // Mostrar alerta si es técnico
+            } else {
+                // Ocultar botones y mostrar el layout de entrada de equipo
+                buttonIngresarEquipo.visibility = View.GONE
+                buttonVerInventario.visibility = View.GONE
+                buttonActualizarEstado.visibility = View.GONE
+                equipmentInputLayout.visibility = View.VISIBLE
+                titleIngresarEquipo.visibility = View.VISIBLE
+            }
         }
 
         // Manejar el clic del botón Ver Inventario
@@ -75,8 +83,12 @@ class InventoryActivity : ComponentActivity() {
 
         // Manejar el clic del botón Actualizar Estado
         buttonActualizarEstado.setOnClickListener {
-            val intent = Intent(this, ActualizarEstadoActivity::class.java)
-            startActivity(intent)
+            if (rolUsuario == "Tecnico") {
+                showAccessDeniedDialog() // Mostrar alerta si es técnico
+            } else {
+                val intent = Intent(this, ActualizarEstadoActivity::class.java)
+                startActivity(intent)
+            }
         }
 
         // Manejar el clic del botón de guardar equipo
@@ -92,6 +104,19 @@ class InventoryActivity : ComponentActivity() {
             showConfirmationDialogForEquipment(equipo, serial, tecnologia, modelo, estado, zona, observaciones)
         }
     }
+
+    // Función para mostrar el mensaje de acceso denegado
+    private fun showAccessDeniedDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Acceso Denegado")
+            .setMessage("Su usuario no tiene acceso a esta función")
+            .setPositiveButton("OK") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+            .show()
+    }
+
 
     private fun showConfirmationDialogForEquipment(equipo: String, serial: String, tecnologia: String, modelo: String, estado: String, zona: String, observaciones: String) {
         val builder = AlertDialog.Builder(this)
