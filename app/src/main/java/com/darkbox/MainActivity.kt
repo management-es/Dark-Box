@@ -2,6 +2,9 @@ package com.darkbox
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -17,6 +20,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.darkbox.ui.theme.DarkBoxTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.ui.text.font.FontWeight
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
@@ -118,7 +123,7 @@ fun MainScreen(
     onAgendaClick: () -> Unit,
     onInformesClick: () -> Unit,
     onCredencialesClick: () -> Unit,
-    onLogoutClick: () -> Unit // Añadir función de clic para Cerrar sesión
+    onLogoutClick: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -126,51 +131,47 @@ fun MainScreen(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = {
-                    Column {
-                        Text(text = nombreUsuario)
-                        Text(text = rolUsuario, style = MaterialTheme.typography.bodySmall)
-                        Text(text = zonaUsuario, style = MaterialTheme.typography.bodySmall)
-                    }
-                },
+                title = { Text("DarkBox") },
                 actions = {
                     IconButton(onClick = { expanded = true }) {
                         Icon(Icons.Filled.Menu, contentDescription = "Open menu")
                     }
                     DropdownMenu(
                         expanded = expanded,
-                        onDismissRequest = { expanded = false }
+                        onDismissRequest = { expanded = false },
+                        modifier = Modifier
+                            .width(200.dp)
                     ) {
                         DropdownMenuItem(
-                            text = { Text("Inventario") },
+                            text = { Text("Inventario", fontSize = 20.sp) },
                             onClick = {
                                 expanded = false
                                 onInventoryClick()
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("Clientes") },
+                            text = { Text("Clientes", fontSize = 20.sp) },
                             onClick = {
                                 expanded = false
                                 onClientesClick()
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("Agenda") },
+                            text = { Text("Agenda", fontSize = 20.sp) },
                             onClick = {
                                 expanded = false
                                 onAgendaClick()
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("Informes") },
+                            text = { Text("Informes", fontSize = 20.sp) },
                             onClick = {
                                 expanded = false
                                 onInformesClick()
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("Credenciales") },
+                            text = { Text("Credenciales", fontSize = 20.sp) },
                             onClick = {
                                 expanded = false
                                 onCredencialesClick()
@@ -187,26 +188,63 @@ fun MainScreen(
                 .padding(innerPadding)
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween // Ajuste para colocar el botón en la parte inferior
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Greeting(name = nombreUsuario)
+            // Nombre del usuario en negrita
+            Column(
+                modifier = Modifier.weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = nombreUsuario,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold // Negrita para el nombre
+                )
+                Text(text = rolUsuario, style = MaterialTheme.typography.bodyLarge)
+                Text(text = zonaUsuario, style = MaterialTheme.typography.bodyLarge)
 
-            // Espacio flexible que empuja el contenido hacia arriba
-            Spacer(modifier = Modifier.weight(1f))
+                // Mensaje de bienvenida en un recuadro
+                Box(
+                    modifier = Modifier
+                        .padding(top = 50.dp) // Mayor separación del contenido anterior
+                        .background(Color(0xFFE0E0E0), RoundedCornerShape(8.dp))
+                        .padding(16.dp)
+                ) {
+                    Text(
+                        text = "Bienvenido a la aplicación de gestión Técnico-Administrativa de Telecco",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = Color.Black,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
 
-            // Botón de Cerrar sesión en la parte inferior
             Button(
                 onClick = { onLogoutClick() },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFE0E0E0), // Color gris claro
-                    contentColor = Color.Black // Color del texto del botón
+                    containerColor = Color(0xFFE0E0E0),
+                    contentColor = Color.Black
                 ),
                 modifier = Modifier
                     .padding(top = 16.dp)
-                    .background(Color(0xFFE0E0E0), shape = MaterialTheme.shapes.medium) // Color y forma del botón
+                    .background(Color(0xFFE0E0E0), shape = MaterialTheme.shapes.medium)
             ) {
                 Text(text = "Cerrar Sesión")
             }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Copyright en la parte inferior
+            Text(
+                text = "© 2024 KerneliX Software",
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.Gray,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.CenterHorizontally)
+            )
         }
     }
 }
