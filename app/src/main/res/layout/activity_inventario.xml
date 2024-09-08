@@ -1,37 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="match_parent"
+        android:padding="50dp">
+
+        <!-- Título de la página -->
+        <TextView
+            android:id="@+id/title_gestion_inventario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gestión de Inventario"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/animationView"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Animación -->
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/animationView"
+            android:layout_width="165dp"
+            android:layout_height="153dp"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toTopOf="@id/button_ingresar_equipo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title_gestion_inventario"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/ver_inventario" />
 
         <!-- Botón para mostrar campos de entrada de nuevo equipo -->
         <Button
             android:id="@+id/button_ingresar_equipo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ingresar Equipo" />
+            android:text="Ingresar Equipo"
+            app:layout_constraintTop_toBottomOf="@id/animationView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/button_ver_inventario"
+            android:layout_marginBottom="16dp"/>
 
+        <!-- Botón para ver inventario -->
         <Button
             android:id="@+id/button_ver_inventario"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Ver Inventario"
-            android:layout_marginTop="16dp"/>
+            app:layout_constraintTop_toBottomOf="@id/button_ingresar_equipo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/button_actualizar_estado"
+            android:layout_marginBottom="16dp"/>
 
-        <!-- Nuevo botón para actualizar estado -->
+        <!-- Botón para actualizar estado -->
+
         <Button
             android:id="@+id/button_actualizar_estado"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:text="Actualizar Estado"
-            android:layout_marginTop="16dp"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/button_ver_inventario" />
 
-        <!-- Título para ingresar equipo -->
         <TextView
             android:id="@+id/title_ingresar_equipo"
             android:layout_width="wrap_content"
@@ -39,16 +82,20 @@
             android:text="Ingresar Equipo"
             android:textSize="18sp"
             android:visibility="gone"
-            android:layout_marginTop="16dp"/>
+            app:layout_constraintTop_toBottomOf="@id/button_actualizar_estado"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
-        <!-- Layout oculto para campos de entrada -->
         <LinearLayout
             android:id="@+id/equipment_input_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:visibility="gone"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/title_ingresar_equipo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
             <!-- Campos para ingresar información del equipo -->
             <TextView
@@ -135,12 +182,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp" />
 
-            <!-- Botón para guardar nuevo equipo -->
             <Button
                 android:id="@+id/button_save_equipment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Guardar" />
         </LinearLayout>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
