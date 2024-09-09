@@ -63,7 +63,6 @@
             android:layout_marginBottom="16dp"/>
 
         <!-- Botón para actualizar estado -->
-
         <Button
             android:id="@+id/button_actualizar_estado"
             android:layout_width="wrap_content"
@@ -75,118 +74,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/button_ver_inventario" />
 
-        <TextView
-            android:id="@+id/title_ingresar_equipo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ingresar Equipo"
-            android:textSize="18sp"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/button_actualizar_estado"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
-        <LinearLayout
-            android:id="@+id/equipment_input_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone"
-            android:layout_marginTop="16dp"
-            app:layout_constraintTop_toBottomOf="@id/title_ingresar_equipo"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <!-- Campos para ingresar información del equipo -->
-            <TextView
-                android:id="@+id/label_equipo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Equipo:" />
-
-            <Spinner
-                android:id="@+id/input_equipo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp" />
-
-            <TextView
-                android:id="@+id/label_serial"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Serial:" />
-
-            <EditText
-                android:id="@+id/input_serial"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp" />
-
-            <TextView
-                android:id="@+id/label_tecnologia"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tecnología:" />
-
-            <EditText
-                android:id="@+id/input_tecnologia"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp" />
-
-            <TextView
-                android:id="@+id/label_modelo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Modelo:" />
-
-            <EditText
-                android:id="@+id/input_modelo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp" />
-
-            <TextView
-                android:id="@+id/label_estado"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Estado:" />
-
-            <Spinner
-                android:id="@+id/input_estado"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp" />
-
-            <TextView
-                android:id="@+id/label_zona"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Zona:" />
-
-            <Spinner
-                android:id="@+id/input_zona"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp" />
-
-            <TextView
-                android:id="@+id/label_observaciones"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Observaciones:" />
-
-            <EditText
-                android:id="@+id/input_observaciones"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp" />
-
-            <Button
-                android:id="@+id/button_save_equipment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Guardar" />
-        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 </ScrollView>

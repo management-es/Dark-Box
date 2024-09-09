@@ -37,6 +37,12 @@
             android:theme="@style/Theme.DarkBox" />
 
         <activity
+            android:name=".IngresarEquipoActivity"
+            android:exported="true"
+            android:label="Ingresar Equipo"
+            android:theme="@style/Theme.DarkBox" />
+
+        <activity
             android:name=".VerInventarioActivity"
             android:exported="true"
             android:label="Ver Inventario"
@@ -112,6 +118,9 @@
             android:exported="true"
             android:label="Editar Credencial"
             android:theme="@style/Theme.DarkBox" />
+
+
+
 
 
     </application>
