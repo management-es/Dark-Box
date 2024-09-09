@@ -159,56 +159,60 @@ fun MainScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            TopAppBar(
-                title = { Text("DarkBox") },
-                actions = {
-                    IconButton(onClick = { expanded = true }) {
-                        Icon(Icons.Filled.Menu, contentDescription = "Open menu")
+            // Mover el TopAppBar más abajo
+            Column {
+                Spacer(modifier = Modifier.height(16.dp)) // Ajusta la altura según sea necesario
+                TopAppBar(
+                    title = { Text("DarkBox") },
+                    actions = {
+                        IconButton(onClick = { expanded = true }) {
+                            Icon(Icons.Filled.Menu, contentDescription = "Open menu")
+                        }
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false },
+                            modifier = Modifier
+                                .width(200.dp)
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("Inventario", fontSize = 20.sp) },
+                                onClick = {
+                                    expanded = false
+                                    onInventoryClick()
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Clientes", fontSize = 20.sp) },
+                                onClick = {
+                                    expanded = false
+                                    onClientesClick()
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Agenda", fontSize = 20.sp) },
+                                onClick = {
+                                    expanded = false
+                                    onAgendaClick()
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Informes", fontSize = 20.sp) },
+                                onClick = {
+                                    expanded = false
+                                    onInformesClick()
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Credenciales", fontSize = 20.sp) },
+                                onClick = {
+                                    expanded = false
+                                    onCredencialesClick()
+                                }
+                            )
+                        }
                     }
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false },
-                        modifier = Modifier
-                            .width(200.dp)
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text("Inventario", fontSize = 20.sp) },
-                            onClick = {
-                                expanded = false
-                                onInventoryClick()
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Clientes", fontSize = 20.sp) },
-                            onClick = {
-                                expanded = false
-                                onClientesClick()
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Agenda", fontSize = 20.sp) },
-                            onClick = {
-                                expanded = false
-                                onAgendaClick()
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Informes", fontSize = 20.sp) },
-                            onClick = {
-                                expanded = false
-                                onInformesClick()
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Credenciales", fontSize = 20.sp) },
-                            onClick = {
-                                expanded = false
-                                onCredencialesClick()
-                            }
-                        )
-                    }
-                }
-            )
+                )
+            }
         }
     ) { innerPadding ->
         Column(
@@ -217,13 +221,13 @@ fun MainScreen(
                 .padding(innerPadding)
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween
+            verticalArrangement = Arrangement.SpaceBetween // Ajuste para distribuir espacio
         ) {
-            // Nombre del usuario en negrita
+            // Información del usuario y botón de cerrar sesión
             Column(
-                modifier = Modifier.weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.Center,
+                modifier = Modifier.weight(1f) // Ocupa el espacio disponible
             ) {
                 Text(
                     text = nombreUsuario,
@@ -236,7 +240,7 @@ fun MainScreen(
                 // Mensaje de bienvenida en un recuadro
                 Box(
                     modifier = Modifier
-                        .padding(top = 50.dp) // Mayor separación del contenido anterior
+                        .padding(top = 20.dp) // Mayor separación del contenido anterior
                         .background(Color(0xFFE0E0E0), RoundedCornerShape(8.dp))
                         .padding(16.dp)
                 ) {
@@ -250,6 +254,7 @@ fun MainScreen(
                 }
             }
 
+            // Botón de cerrar sesión
             Button(
                 onClick = { onLogoutClick() },
                 colors = ButtonDefaults.buttonColors(
@@ -263,7 +268,7 @@ fun MainScreen(
                 Text(text = "Cerrar Sesión")
             }
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(16.dp)) // Espacio entre el botón y el copyright
 
             // Copyright en la parte inferior
             Text(

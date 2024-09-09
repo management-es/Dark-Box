@@ -2,7 +2,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="16dp">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animationView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        app:lottie_rawRes="@raw/inicio_sesion"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="16dp"/>
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -17,6 +28,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
+
 
             <!-- Título de la página -->
             <TextView
