@@ -2,26 +2,25 @@ package com.darkbox
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.sp
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.tooling.preview.Preview
-import com.darkbox.ui.theme.DarkBoxTheme
+import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.ui.text.font.FontWeight
-
+import com.darkbox.ui.theme.DarkBoxTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
@@ -29,6 +28,8 @@ class MainActivity : ComponentActivity() {
     private lateinit var nombreUsuario: String
     private lateinit var rolUsuario: String
     private lateinit var zonaUsuario: String
+
+    private var shouldExit = false // Flag para controlar el cierre
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,30 +51,38 @@ class MainActivity : ComponentActivity() {
                     onAgendaClick = { navigateToAgenda(zonaUsuario, rolUsuario) },
                     onInformesClick = { navigateToInformes() },
                     onCredencialesClick = { navigateToCredenciales() },
-                    onLogoutClick = { handleLogout() } // Añadir función de cierre de sesión
+                    onLogoutClick = { showLogoutConfirmationDialog() } // Mostrar diálogo de confirmación al hacer logout
                 )
             }
         }
     }
 
+    override fun onBackPressed() {
+        if (!shouldExit) {
+            showLogoutConfirmationDialog()
+        } else {
+            super.onBackPressed()
+        }
+    }
+
     private fun navigateToInventory(zona: String, rol: String) {
         val intent = Intent(this, InventoryActivity::class.java)
-        intent.putExtra("ZONA_USUARIO", zona) // Pasa la zona directamente al Intent
-        intent.putExtra("ROL_USUARIO", rol) // Pasa el rol directamente al Intent
+        intent.putExtra("ZONA_USUARIO", zona)
+        intent.putExtra("ROL_USUARIO", rol)
         startActivity(intent)
     }
 
     private fun navigateToClientes(zona: String, rol: String) {
         val intent = Intent(this, ClientesActivity::class.java)
-        intent.putExtra("ZONA_USUARIO", zona) // Pasa la zona directamente al Intent
-        intent.putExtra("ROL_USUARIO", rol) // Pasa el rol directamente al Intent
+        intent.putExtra("ZONA_USUARIO", zona)
+        intent.putExtra("ROL_USUARIO", rol)
         startActivity(intent)
     }
 
     private fun navigateToAgenda(zona: String, rol: String) {
         val intent = Intent(this, AgendaActivity::class.java)
-        intent.putExtra("ZONA_USUARIO", zona) // Pasa la zona directamente al Intent
-        intent.putExtra("ROL_USUARIO", rol) // Pasa el rol directamente al Intent
+        intent.putExtra("ZONA_USUARIO", zona)
+        intent.putExtra("ROL_USUARIO", rol)
         startActivity(intent)
     }
 
@@ -84,31 +93,51 @@ class MainActivity : ComponentActivity() {
 
     private fun navigateToCredenciales() {
         if (rolUsuario.trim().equals("SupUsrDo", ignoreCase = true)) {
-            // Iniciar CredencialesActivity si el rol es SupUsrDo
             val intent = Intent(this, CredencialesActivity::class.java)
             startActivity(intent)
         } else {
-            // Mostrar mensaje de acceso denegado si el rol no es SupUsrDo
             showAccessDeniedDialog()
         }
     }
 
     private fun showAccessDeniedDialog() {
-        androidx.appcompat.app.AlertDialog.Builder(this)
+        AlertDialog.Builder(this)
             .setTitle("Acceso Denegado")
             .setMessage("Su usuario no tiene acceso a esta función")
             .setPositiveButton("OK") { dialog, _ ->
                 dialog.dismiss()
             }
-            .setCancelable(false) // Previene que el diálogo se cierre al tocar fuera de él
+            .setCancelable(false)
             .create()
             .show()
+    }
+
+    private fun showLogoutConfirmationDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Cerrar Sesión")
+        builder.setMessage("¿Estás seguro que deseas cerrar sesión?")
+        builder.setPositiveButton("Sí") { _, _ ->
+            handleLogout()
+        }
+        builder.setNegativeButton("No") { dialog, _ ->
+            dialog.dismiss()
+            shouldExit = false // Restablece el flag si el usuario decide no cerrar sesión
+        }
+        builder.setOnDismissListener {
+            // Manejar el caso en que se desee cerrar la actividad
+            if (shouldExit) {
+                super.onBackPressed()
+            }
+        }
+        builder.setCancelable(false)
+        builder.create().show()
+        shouldExit = true // Activa el flag para cerrar la actividad
     }
 
     private fun handleLogout() {
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
-        finish() // Opcionalmente, terminar la actividad actual
+        finish()
     }
 }
 
@@ -246,31 +275,5 @@ fun MainScreen(
                     .align(Alignment.CenterHorizontally)
             )
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Bienvenido $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    DarkBoxTheme {
-        MainScreen(
-            nombreUsuario = "Usuario",
-            rolUsuario = "Rol",
-            zonaUsuario = "Zona",
-            onInventoryClick = {},
-            onClientesClick = {},
-            onAgendaClick = {},
-            onInformesClick = {},
-            onCredencialesClick = {},
-            onLogoutClick = {} // Añadir función de clic para Cerrar sesión en la vista previa
-        )
     }
 }
