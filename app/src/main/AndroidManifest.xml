@@ -61,6 +61,13 @@
             android:label="Clientes"
             android:theme="@style/Theme.DarkBox" />
 
+        <activity
+            android:name=".IngresarClienteActivity"
+            android:exported="true"
+            android:label="Ingresar Cliente"
+            android:theme="@style/Theme.DarkBox" />
+
+
         <!-- Agregar AgendaActivity -->
         <activity
             android:name=".AgendaActivity"
