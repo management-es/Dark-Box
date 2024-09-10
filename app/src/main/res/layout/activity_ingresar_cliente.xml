@@ -16,7 +16,8 @@
             android:text="Ingresar Cliente"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:layout_margin="16dp" />
+            android:layout_margin="16dp"
+            android:layout_gravity="center_horizontal"/>
 
         <!-- Button to show more options -->
         <Button

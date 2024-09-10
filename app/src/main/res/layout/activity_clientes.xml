@@ -2,24 +2,56 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:gravity="center">
 
-    <!-- Button to view client -->
-    <Button
-        android:id="@+id/btnVerCliente"
+    <!-- Titulo centrado en la parte superior -->
+    <TextView
+        android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Ver Cliente" />
+        android:text="Gestion De Clientes"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"
+        android:layout_gravity="center_horizontal"/>
 
-    <!-- Button to show additional options -->
-    <Button
-        android:id="@+id/button_ingresar_cliente"
-        android:layout_width="wrap_content"
+    <!-- Animación Lottie -->
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animationView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        app:lottie_rawRes="@raw/clientes"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Contenedor para los botones -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Ingresar Cliente" />
+        android:orientation="vertical"
+        android:gravity="center">
 
-    <!-- Hidden layout for additional options -->
+        <!-- Botón para ver cliente -->
+        <Button
+            android:id="@+id/btnVerCliente"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ver Cliente"
+            android:layout_marginBottom="20dp" />
+
+        <!-- Botón para ingresar cliente -->
+        <Button
+            android:id="@+id/button_ingresar_cliente"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ingresar Cliente" />
+    </LinearLayout>
+
+    <!-- Diseño oculto para opciones adicionales -->
     <LinearLayout
         android:id="@+id/options_layout"
         android:layout_width="match_parent"
@@ -27,7 +59,7 @@
         android:orientation="vertical"
         android:visibility="gone">
 
-        <!-- Additional options UI elements go here -->
+        <!-- Elementos de UI adicionales van aquí -->
 
     </LinearLayout>
 </LinearLayout>
