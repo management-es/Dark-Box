@@ -88,6 +88,14 @@
             android:label="Otras Gestiones"
             android:theme="@style/Theme.DarkBox" />
 
+
+        <!-- Agregar CrearAgendaActivity -->
+        <activity
+            android:name=".CrearAgendaActivity"
+            android:exported="true"
+            android:label="Crear Agenda"
+            android:theme="@style/Theme.DarkBox" />
+
         <!-- Agregar VerAgendaActivity -->
         <activity
             android:name=".VerAgendaActivity"

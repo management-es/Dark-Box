@@ -54,198 +54,204 @@ class VerAgendaActivity : AppCompatActivity() {
         val selectedMonth = datePicker.month + 1 // Meses en DatePicker son base 0
         val selectedDay = datePicker.dayOfMonth
         val selectedDate = String.format("%04d%02d%02d", selectedYear, selectedMonth, selectedDay) // Formato YYYYMMDD
+
+        val startKey = "$selectedDate-"
+        val endKey = "$selectedDate~" // Asegúrate de que el carácter `~` cubre el rango necesario
+
         val database = FirebaseDatabase.getInstance()
         val reference = database.getReference("agenda")
 
-        reference.orderByKey().startAt("$selectedDate-").endAt("$selectedDate~").addValueEventListener(object : ValueEventListener {
+        reference.orderByKey().startAt(startKey).endAt(endKey).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 layoutAgendaResults.removeAllViews() // Limpiar los resultados anteriores
-                for (snapshot in dataSnapshot.children) {
-                    val id = snapshot.key
-                    val tipoGestion = snapshot.child("tipoGestion").getValue(String::class.java)
-                    val descripcion = snapshot.child("descripcion").getValue(String::class.java)
-                    val estado = snapshot.child("estado").getValue(String::class.java)
-                    val zona = snapshot.child("zona").getValue(String::class.java) // Obtener la zona del registro
 
-                    // Si la zona del usuario es "Set-Admin", se muestra toda la información sin filtrar por zona
-                    if (zonaUsuario == "Set-Admin" || zonaUsuario == "Zona no especificada" || zona == zonaUsuario) {
+                if (dataSnapshot.exists()) {
+                    for (snapshot in dataSnapshot.children) {
+                        val id = snapshot.key
+                        val tipoGestion = snapshot.child("tipoGestion").getValue(String::class.java)
+                        val descripcion = snapshot.child("descripcion").getValue(String::class.java)
+                        val estado = snapshot.child("estado").getValue(String::class.java)
+                        val zona = snapshot.child("zona").getValue(String::class.java) // Obtener la zona del registro
 
-                        // Crear un nuevo CardView para cada registro
-                        val cardView = CardView(this@VerAgendaActivity)
-                        val cardParams = LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.MATCH_PARENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT
-                        )
-                        cardParams.setMargins(0, 0, 0, 16)
-                        cardView.layoutParams = cardParams
-                        cardView.setPadding(16, 16, 16, 16)
-                        cardView.radius = 8f
-                        cardView.cardElevation = 4f
+                        // Si la zona del usuario es "Set-Admin", se muestra toda la información sin filtrar por zona
+                        if (zonaUsuario == "Set-Admin" || zonaUsuario == "Zona no especificada" || zona == zonaUsuario) {
+                            // Crear un nuevo CardView para cada registro
+                            val cardView = CardView(this@VerAgendaActivity)
+                            val cardParams = LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT
+                            )
+                            cardParams.setMargins(0, 0, 0, 16)
+                            cardView.layoutParams = cardParams
+                            cardView.setPadding(16, 16, 16, 16)
+                            cardView.radius = 8f
+                            cardView.cardElevation = 4f
 
-                        // Configurar color de fondo según el estado
-                        when (estado) {
-                            "realizado" -> cardView.setCardBackgroundColor(
+                            // Configurar color de fondo según el estado
+                            when (estado) {
+                                "realizado" -> cardView.setCardBackgroundColor(
+                                    ContextCompat.getColor(
+                                        this@VerAgendaActivity,
+                                        R.color.green_pastel
+                                    )
+                                )
+                                "cancelado" -> cardView.setCardBackgroundColor(
+                                    ContextCompat.getColor(
+                                        this@VerAgendaActivity,
+                                        R.color.red_pastel
+                                    )
+                                )
+                                else -> cardView.setCardBackgroundColor(
+                                    ContextCompat.getColor(
+                                        this@VerAgendaActivity,
+                                        R.color.cardview_background
+                                    )
+                                )
+                            }
+
+                            // Crear un layout horizontal para contener el TextView y los botones
+                            val contentLayout = LinearLayout(this@VerAgendaActivity)
+                            contentLayout.orientation = LinearLayout.HORIZONTAL
+                            val contentLayoutParams = LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT
+                            )
+                            contentLayout.layoutParams = contentLayoutParams
+
+                            // Crear un TextView para el contenido del CardView
+                            val textView = TextView(this@VerAgendaActivity)
+                            val textParams = LinearLayout.LayoutParams(
+                                0,
+                                LinearLayout.LayoutParams.WRAP_CONTENT,
+                                1f
+                            )
+                            textView.layoutParams = textParams
+                            textView.setTextColor(
                                 ContextCompat.getColor(
                                     this@VerAgendaActivity,
-                                    R.color.green_pastel
+                                    android.R.color.black
                                 )
                             )
+                            textView.textSize = 16f
+                            // Establecer el contenido basado en el tipo de ID
+                            textView.text = when {
+                                id?.contains("sol_inst") == true -> {
+                                    """
+                                ID: $id
+                                Nombre: ${snapshot.child("nombre").getValue(String::class.java)}
+                                Apellidos: ${snapshot.child("apellidos").getValue(String::class.java)}
+                                Documento: ${snapshot.child("numero_documento").getValue(String::class.java)}
+                                Dirección: ${snapshot.child("direccion").getValue(String::class.java)}
+                                Coordenadas: ${snapshot.child("coordenadas").getValue(String::class.java)}
+                                Teléfono: ${snapshot.child("telefono").getValue(String::class.java)}
+                                Contacto: ${snapshot.child("contactos").getValue(String::class.java)}
+                                Gestión: Instalación
+                                Zona: $zona
+                                Observaciones: ${snapshot.child("observaciones").getValue(String::class.java)}
+                                """.trimIndent()
+                                }
+                                id?.contains("ot") == true -> {
+                                    """
+                                ID: $id
+                                Tipo de Gestión: $tipoGestion
+                                Zona: $zona
+                                Descripción: $descripcion
+                                """.trimIndent()
+                                }
+                                else -> {
+                                    """
+                                ID: $id
+                                Nombre: ${snapshot.child("nombre").getValue(String::class.java)}
+                                Apellidos: ${snapshot.child("apellidos").getValue(String::class.java)}
+                                Documento: ${snapshot.child("documento").getValue(String::class.java)}
+                                Dirección: ${snapshot.child("direccion").getValue(String::class.java)}
+                                Coordenadas: ${snapshot.child("coordenadas").getValue(String::class.java)}
+                                Teléfono: ${snapshot.child("telefono").getValue(String::class.java)}
+                                Contactos: ${snapshot.child("contactos").getValue(String::class.java)}
+                                Gestión: ${snapshot.child("gestion").getValue(String::class.java)}
+                                Zona: $zona
+                                Observaciones: ${snapshot.child("observaciones").getValue(String::class.java)}
+                                """.trimIndent()
+                                }
+                            }
 
-                            "cancelado" -> cardView.setCardBackgroundColor(
+                            // Crear un LinearLayout vertical para los botones
+                            val buttonLayout = LinearLayout(this@VerAgendaActivity)
+                            buttonLayout.orientation = LinearLayout.VERTICAL
+                            val buttonLayoutParams = LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.WRAP_CONTENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT
+                            )
+                            buttonLayout.layoutParams = buttonLayoutParams
+
+                            // Crear botón "Cancelado" (X roja)
+                            val buttonCancelado = Button(this@VerAgendaActivity)
+                            buttonCancelado.text = "❌"
+                            buttonCancelado.textSize = 20f
+                            buttonCancelado.setBackgroundColor(
                                 ContextCompat.getColor(
                                     this@VerAgendaActivity,
                                     R.color.red_pastel
                                 )
                             )
+                            buttonCancelado.visibility =
+                                if (estado == null) View.VISIBLE else View.GONE // Ocultar si ya se ha seleccionado un estado
 
-                            else -> cardView.setCardBackgroundColor(
+                            // Crear botón "Realizado" (Visto Bueno verde)
+                            val buttonRealizado = Button(this@VerAgendaActivity)
+                            buttonRealizado.text = "✔️"
+                            buttonRealizado.textSize = 20f
+                            buttonRealizado.setBackgroundColor(
                                 ContextCompat.getColor(
                                     this@VerAgendaActivity,
-                                    R.color.cardview_background
+                                    R.color.green_pastel
                                 )
                             )
-                        }
+                            buttonRealizado.visibility =
+                                if (estado == null) View.VISIBLE else View.GONE // Ocultar si ya se ha seleccionado un estado
 
-                        // Crear un layout horizontal para contener el TextView y los botones
-                        val contentLayout = LinearLayout(this@VerAgendaActivity)
-                        contentLayout.orientation = LinearLayout.HORIZONTAL
-                        val contentLayoutParams = LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.MATCH_PARENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT
-                        )
-                        contentLayout.layoutParams = contentLayoutParams
-
-                        // Crear un TextView para el contenido del CardView
-                        val textView = TextView(this@VerAgendaActivity)
-                        val textParams = LinearLayout.LayoutParams(
-                            0,
-                            LinearLayout.LayoutParams.WRAP_CONTENT,
-                            1f
-                        )
-                        textView.layoutParams = textParams
-                        textView.setTextColor(
-                            ContextCompat.getColor(
-                                this@VerAgendaActivity,
-                                android.R.color.black
-                            )
-                        )
-                        textView.textSize = 16f
-                        // Establecer el contenido basado en el tipo de ID
-                        textView.text = when {
-                            id?.contains("sol_inst") == true -> {
-                                """
-                            ID: $id
-                            Nombre: ${snapshot.child("nombre").getValue(String::class.java)}
-                            Apellidos: ${snapshot.child("apellidos").getValue(String::class.java)}
-                            Documento: ${snapshot.child("numero_documento").getValue(String::class.java)}
-                            Dirección: ${snapshot.child("direccion").getValue(String::class.java)}
-                            Coordenadas: ${snapshot.child("coordenadas").getValue(String::class.java)}
-                            Teléfono: ${snapshot.child("telefono").getValue(String::class.java)}
-                            Contacto: ${snapshot.child("contactos").getValue(String::class.java)}
-                            Gestión: Instalación
-                            Zona: $zona
-                            Observaciones: ${snapshot.child("observaciones").getValue(String::class.java)}
-                            """.trimIndent()
+                            buttonRealizado.setOnClickListener {
+                                showConfirmationDialog(id, "realizado")
                             }
 
-                            id?.contains("ot") == true -> {
-                                """
-                            ID: $id
-                            Tipo de Gestión: $tipoGestion
-                            Zona: $zona
-                            Descripción: $descripcion
-                            """.trimIndent()
+                            buttonCancelado.setOnClickListener {
+                                showCancelationDialog(id)
                             }
 
-                            else -> {
-                                """
-                            ID: $id
-                            Nombre: ${snapshot.child("nombre").getValue(String::class.java)}
-                            Apellidos: ${snapshot.child("apellidos").getValue(String::class.java)}
-                            Documento: ${snapshot.child("documento").getValue(String::class.java)}
-                            Dirección: ${snapshot.child("direccion").getValue(String::class.java)}
-                            Coordenadas: ${snapshot.child("coordenadas").getValue(String::class.java)}
-                            Teléfono: ${snapshot.child("telefono").getValue(String::class.java)}
-                            Contactos: ${snapshot.child("contactos").getValue(String::class.java)}
-                            Gestión: ${snapshot.child("gestion").getValue(String::class.java)}
-                            Zona: $zona
-                            Observaciones: ${snapshot.child("observaciones").getValue(String::class.java)}
-                            """.trimIndent()
-                            }
+                            // Agregar botones al layout de botones
+                            buttonLayout.addView(buttonRealizado)
+                            buttonLayout.addView(buttonCancelado)
+
+                            // Agregar el TextView y el layout de botones al layout principal
+                            contentLayout.addView(textView)
+                            contentLayout.addView(buttonLayout)
+
+                            // Agregar el layout principal al CardView
+                            cardView.addView(contentLayout)
+
+                            // Agregar el CardView al layout principal
+                            layoutAgendaResults.addView(cardView)
                         }
-
-                        // Crear un LinearLayout vertical para los botones
-                        val buttonLayout = LinearLayout(this@VerAgendaActivity)
-                        buttonLayout.orientation = LinearLayout.VERTICAL
-                        val buttonLayoutParams = LinearLayout.LayoutParams(
-                            LinearLayout.LayoutParams.WRAP_CONTENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT
-                        )
-                        buttonLayout.layoutParams = buttonLayoutParams
-
-                        // Crear botón "Cancelado" (X roja)
-                        val buttonCancelado = Button(this@VerAgendaActivity)
-                        buttonCancelado.text = "❌"
-                        buttonCancelado.textSize = 20f
-                        buttonCancelado.setBackgroundColor(
-                            ContextCompat.getColor(
-                                this@VerAgendaActivity,
-                                R.color.red_pastel
-                            )
-                        )
-                        buttonCancelado.visibility =
-                            if (estado == null) View.VISIBLE else View.GONE // Ocultar si ya se ha seleccionado un estado
-
-                        // Crear botón "Realizado" (Visto Bueno verde)
-                        val buttonRealizado = Button(this@VerAgendaActivity)
-                        buttonRealizado.text = "✔️"
-                        buttonRealizado.textSize = 20f
-                        buttonRealizado.setBackgroundColor(
-                            ContextCompat.getColor(
-                                this@VerAgendaActivity,
-                                R.color.green_pastel
-                            )
-                        )
-                        buttonRealizado.visibility =
-                            if (estado == null) View.VISIBLE else View.GONE // Ocultar si ya se ha seleccionado un estado
-
-                        buttonRealizado.setOnClickListener {
-                            showConfirmationDialog(id, "realizado")
-                        }
-
-                        buttonCancelado.setOnClickListener {
-                            showCancelationDialog(id)
-                        }
-
-                        // Agregar botones al layout de botones
-                        buttonLayout.addView(buttonRealizado)
-                        buttonLayout.addView(buttonCancelado)
-
-                        // Agregar el TextView y el layout de botones al layout principal
-                        contentLayout.addView(textView)
-                        contentLayout.addView(buttonLayout)
-
-                        // Agregar el layout principal al CardView
-                        cardView.addView(contentLayout)
-
-                        // Agregar el CardView al layout principal
-                        layoutAgendaResults.addView(cardView)
                     }
-                }
 
-                if (layoutAgendaResults.childCount > 0) {
-                    layoutAgendaResults.visibility = View.VISIBLE
-                    datePicker.visibility = View.GONE
-                    buttonFiltrar.visibility = View.GONE
+                    if (layoutAgendaResults.childCount > 0) {
+                        layoutAgendaResults.visibility = View.VISIBLE
+                        datePicker.visibility = View.GONE
+                        buttonFiltrar.visibility = View.GONE
+                    } else {
+                        Toast.makeText(this@VerAgendaActivity, "No se encontraron resultados para la fecha seleccionada.", Toast.LENGTH_SHORT).show()
+                    }
                 } else {
                     Toast.makeText(this@VerAgendaActivity, "No se encontraron resultados para la fecha seleccionada.", Toast.LENGTH_SHORT).show()
                 }
             }
+
             override fun onCancelled(databaseError: DatabaseError) {
                 Log.e("VerAgendaActivity", "Error al cargar datos", databaseError.toException())
             }
         })
     }
+
 
 
     private fun showConfirmationDialog(id: String?, estado: String) {
