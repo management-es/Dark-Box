@@ -2,8 +2,31 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:gravity="center"
     android:padding="16dp">
+
+    <TextView
+        android:id="@+id/text_view_select_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Gestión De Informes"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:layout_gravity="center_horizontal"/>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animationView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        app:lottie_rawRes="@raw/formularios"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"/>
 
 
     <Button
