@@ -93,5 +93,13 @@
         <item>Inactivo</item>
     </string-array>
 
+    <string-array name="tipo_solicitud_options">
+        <item>Seleccione el tipo de solicitud</item>
+        <item>Falla Masiva</item>
+        <item>Falla Local</item>
+        <item>Revisión de Cliente</item>
+        <item>Otros</item>
+    </string-array>
+
     <!-- Otros recursos de cadena si es necesario -->
 </resources>

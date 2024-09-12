@@ -3,14 +3,75 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:gravity="center">
+
+    <!-- Campo para Usuario Solicitante -->
+    <TextView
+        android:id="@+id/usuarioSolicitante"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Usuario Solicitante"
+        android:textSize="18sp"
+        android:textColor="@android:color/black"
+        android:background="@android:color/white"
+        android:padding="10dp"
+        android:layout_marginBottom="16dp"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+
+    <!-- Spinner para Tipo de Solicitud -->
+    <Spinner
+        android:id="@+id/tipoSolicitud"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/tipo_solicitud_options" />
+
+    <!-- titulo para importancia -->
 
     <TextView
-        android:id="@+id/textoPrueba"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Texto de prueba"
+        android:text="Importancia"
         android:textSize="18sp"
-        android:textColor="@android:color/black" />
+        android:textColor="@android:color/black"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="8dp"
+        android:paddingStart="8dp" />
+
+    <!-- campo de cambio segun spiner de solicitud -->
+    <TextView
+        android:id="@+id/importancia"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Importancia"
+        android:textSize="18sp"
+        android:textColor="@android:color/black"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="8dp"
+        android:paddingStart="8dp"/>
+
+    <!-- Campo para Descripción -->
+    <EditText
+        android:id="@+id/descripcion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Descripción"
+        android:inputType="textMultiLine"
+        android:minLines="3" />
+
+    <!-- Campo para Destinatario -->
+    <EditText
+        android:id="@+id/destinatario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Destinatario"
+        android:inputType="text" />
+
+    <!-- Botón para Crear Solicitud -->
+    <Button
+        android:id="@+id/btnCrearSolicitud"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Crear Solicitud" />
 </LinearLayout>

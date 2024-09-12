@@ -104,6 +104,7 @@ class MainActivity : ComponentActivity() {
 
     private fun navigateToTikets() {
         val intent = Intent(this, TiketsActivity::class.java)
+        intent.putExtra("NOMBRE_USUARIO", nombreUsuario)
         startActivity(intent)
     }
 
@@ -150,7 +151,6 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-
 fun MainScreen(
     nombreUsuario: String,
     rolUsuario: String,
@@ -161,100 +161,126 @@ fun MainScreen(
     onInformesClick: () -> Unit,
     onCredencialesClick: () -> Unit,
     onLogoutClick: () -> Unit,
-    onSecondMenuClick: () -> Unit // Añadir callback para el segundo botón de menú
+    onSecondMenuClick: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
+    var secondMenuExpanded by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            // Mover el TopAppBar más abajo
-            Column {
-                Spacer(modifier = Modifier.height(16.dp)) // Ajusta la altura según sea necesario
-                TopAppBar(
-                    title = { Text("DarkBox") },
-                    navigationIcon = {
-                        IconButton(onClick = { onSecondMenuClick() }) { // Segundo botón de menú
-                            Icon(Icons.Filled.Menu, contentDescription = "Second Menu")
-                        }
-                    },
-                    actions = {
-                        IconButton(onClick = { expanded = true }) {
-                            Icon(Icons.Filled.Menu, contentDescription = "Open menu")
-                        }
-                        DropdownMenu(
-                            expanded = expanded,
-                            onDismissRequest = { expanded = false },
-                            modifier = Modifier
-                                .width(200.dp)
-                        ) {
-                            DropdownMenuItem(
-                                text = { Text("Inventario", fontSize = 20.sp) },
-                                onClick = {
-                                    expanded = false
-                                    onInventoryClick()
-                                }
-                            )
-                            DropdownMenuItem(
-                                text = { Text("Clientes", fontSize = 20.sp) },
-                                onClick = {
-                                    expanded = false
-                                    onClientesClick()
-                                }
-                            )
-                            DropdownMenuItem(
-                                text = { Text("Agenda", fontSize = 20.sp) },
-                                onClick = {
-                                    expanded = false
-                                    onAgendaClick()
-                                }
-                            )
-                            DropdownMenuItem(
-                                text = { Text("Informes", fontSize = 20.sp) },
-                                onClick = {
-                                    expanded = false
-                                    onInformesClick()
-                                }
-                            )
-                            DropdownMenuItem(
-                                text = { Text("Credenciales", fontSize = 20.sp) },
-                                onClick = {
-                                    expanded = false
-                                    onCredencialesClick()
-                                }
-                            )
-                        }
+            // Barra superior con el título DarkBox centrado
+            TopAppBar(
+                modifier = Modifier.fillMaxWidth(), // Ocupa  el ancho
+                title = {
+                    // Centrar el título usando un Row con Arrangement.Center
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "DarkBox",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.weight(1f), // Ocupa el espacio disponible
+                            textAlign = TextAlign.Center
+                        )
                     }
-                )
-            }
+                },
+                navigationIcon = {
+                    IconButton(onClick = { secondMenuExpanded = true }) {
+                        Icon(Icons.Filled.Menu, contentDescription = "Second Menu")
+                    }
+                    DropdownMenu(
+                        expanded = secondMenuExpanded,
+                        onDismissRequest = { secondMenuExpanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Tikets", fontSize = 20.sp) },
+                            onClick = {
+                                secondMenuExpanded = false
+                                onSecondMenuClick()
+                            }
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { expanded = true }) {
+                        Icon(Icons.Filled.Menu, contentDescription = "Open menu")
+                    }
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false },
+                        modifier = Modifier.width(150.dp)
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Inventario", fontSize = 20.sp) },
+                            onClick = {
+                                expanded = false
+                                onInventoryClick()
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Clientes", fontSize = 20.sp) },
+                            onClick = {
+                                expanded = false
+                                onClientesClick()
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Agenda", fontSize = 20.sp) },
+                            onClick = {
+                                expanded = false
+                                onAgendaClick()
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Informes", fontSize = 20.sp) },
+                            onClick = {
+                                expanded = false
+                                onInformesClick()
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Credenciales", fontSize = 20.sp) },
+                            onClick = {
+                                expanded = false
+                                onCredencialesClick()
+                            }
+                        )
+                    }
+                }
+            )
         }
     ) { innerPadding ->
+        // El contenido de la pantalla principal va aquí
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween // Ajuste para distribuir espacio
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             // Información del usuario y botón de cerrar sesión
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
-                modifier = Modifier.weight(1f) // Ocupa el espacio disponible
+                modifier = Modifier.weight(1f)
             ) {
                 Text(
                     text = nombreUsuario,
                     style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold // Negrita para el nombre
+                    fontWeight = FontWeight.Bold
                 )
                 Text(text = rolUsuario, style = MaterialTheme.typography.bodyLarge)
                 Text(text = zonaUsuario, style = MaterialTheme.typography.bodyLarge)
 
-                // Mensaje de bienvenida en un recuadro
+                // Mensaje de bienvenida
                 Box(
                     modifier = Modifier
-                        .padding(top = 20.dp) // Mayor separación del contenido anterior
+                        .padding(top = 20.dp)
                         .background(Color(0xFFE0E0E0), RoundedCornerShape(8.dp))
                         .padding(16.dp)
                 ) {
@@ -282,16 +308,14 @@ fun MainScreen(
                 Text(text = "Cerrar Sesión")
             }
 
-            Spacer(modifier = Modifier.height(16.dp)) // Espacio entre el botón y el copyright
+            Spacer(modifier = Modifier.height(16.dp))
 
-            // Copyright en la parte inferior
+            // Copyright
             Text(
                 text = "© 2024 KerneliX Software",
                 style = MaterialTheme.typography.bodySmall,
                 color = Color.Gray,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .align(Alignment.CenterHorizontally)
+                modifier = Modifier.padding(16.dp)
             )
         }
     }
