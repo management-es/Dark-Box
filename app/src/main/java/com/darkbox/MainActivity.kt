@@ -2,6 +2,7 @@ package com.darkbox
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -51,7 +52,8 @@ class MainActivity : ComponentActivity() {
                     onAgendaClick = { navigateToAgenda(zonaUsuario, rolUsuario) },
                     onInformesClick = { navigateToInformes() },
                     onCredencialesClick = { navigateToCredenciales() },
-                    onLogoutClick = { showLogoutConfirmationDialog() } // Mostrar diálogo de confirmación al hacer logout
+                    onLogoutClick = { showLogoutConfirmationDialog() },
+                    onSecondMenuClick = { navigateToTikets() }
                 )
             }
         }
@@ -100,6 +102,11 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun navigateToTikets() {
+        val intent = Intent(this, TiketsActivity::class.java)
+        startActivity(intent)
+    }
+
     private fun showAccessDeniedDialog() {
         AlertDialog.Builder(this)
             .setTitle("Acceso Denegado")
@@ -143,6 +150,7 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+
 fun MainScreen(
     nombreUsuario: String,
     rolUsuario: String,
@@ -152,7 +160,8 @@ fun MainScreen(
     onAgendaClick: () -> Unit,
     onInformesClick: () -> Unit,
     onCredencialesClick: () -> Unit,
-    onLogoutClick: () -> Unit
+    onLogoutClick: () -> Unit,
+    onSecondMenuClick: () -> Unit // Añadir callback para el segundo botón de menú
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -164,6 +173,11 @@ fun MainScreen(
                 Spacer(modifier = Modifier.height(16.dp)) // Ajusta la altura según sea necesario
                 TopAppBar(
                     title = { Text("DarkBox") },
+                    navigationIcon = {
+                        IconButton(onClick = { onSecondMenuClick() }) { // Segundo botón de menú
+                            Icon(Icons.Filled.Menu, contentDescription = "Second Menu")
+                        }
+                    },
                     actions = {
                         IconButton(onClick = { expanded = true }) {
                             Icon(Icons.Filled.Menu, contentDescription = "Open menu")

@@ -134,8 +134,17 @@
             android:label="Editar Credencial"
             android:theme="@style/Theme.DarkBox" />
 
+        <activity
+            android:name=".TiketsActivity"
+            android:exported="true"
+            android:label="Tickets"
+            android:theme="@style/Theme.DarkBox" />
 
-
+        <activity
+            android:name=".CrearSolicitudActivity"
+            android:exported="true"
+            android:label="Crear Solicitud"
+            android:theme="@style/Theme.DarkBox" />
 
 
     </application>
