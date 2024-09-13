@@ -72,11 +72,43 @@ class CrearSolicitudActivity : AppCompatActivity() {
             val desc = descripcion.text.toString()
 
             if (usuario.isNotEmpty() && desc.isNotEmpty() && selectedDestinatarios.isNotEmpty()) {
-                guardarTicketEnFirebase(usuario, tipo, nivelImportancia, desc)
+                // Crear un diálogo de confirmación
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("Confirmar Solicitud")
+
+                // Preparar los datos para mostrarlos en el mensaje
+                val mensajeConfirmacion = """
+            Usuario solicitante: $usuario
+            Tipo de solicitud: $tipo
+            Importancia: $nivelImportancia
+            Descripción: $desc
+            Destinatarios: ${selectedDestinatarios.joinToString(", ")}
+            
+            ¿Deseas confirmar y guardar esta solicitud?
+        """.trimIndent()
+
+                builder.setMessage(mensajeConfirmacion)
+
+                // Configurar el botón de confirmar
+                builder.setPositiveButton("Confirmar") { dialog, _ ->
+                    // Guardar los datos en Firebase si se confirma
+                    guardarTicketEnFirebase(usuario, tipo, nivelImportancia, desc)
+                    dialog.dismiss()
+                }
+
+                // Configurar el botón de cancelar
+                builder.setNegativeButton("Cancelar") { dialog, _ ->
+                    // Cerrar el diálogo sin hacer nada
+                    dialog.dismiss()
+                }
+
+                // Mostrar el diálogo
+                builder.create().show()
             } else {
                 Toast.makeText(this, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show()
             }
         }
+
     }
 
     private fun cargarDestinatarios() {
@@ -158,6 +190,7 @@ class CrearSolicitudActivity : AppCompatActivity() {
                 ticketsRef.child(ticketId).setValue(ticket)
                     .addOnSuccessListener {
                         Toast.makeText(this@CrearSolicitudActivity, "Ticket guardado correctamente", Toast.LENGTH_SHORT).show()
+                        finish()
                     }
                     .addOnFailureListener { error ->
                         Log.e("CrearSolicitudActivity", "Error al guardar ticket", error)
