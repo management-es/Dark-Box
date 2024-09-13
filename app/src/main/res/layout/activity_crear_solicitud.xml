@@ -61,12 +61,28 @@
         android:minLines="3" />
 
     <!-- Campo para Destinatario -->
-    <EditText
-        android:id="@+id/destinatario"
+    <TextView
+        android:id="@+id/destinatarioTitulo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Destinatario"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp"/>
+
+    <Button
+        android:id="@+id/destinatarioButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Destinatario"
-        android:inputType="text" />
+        android:text="Seleccionar Destinatarios"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:id="@+id/destinatariosSeleccionados"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No se han seleccionado destinatarios"
+        android:layout_marginTop="8dp"/>
+
 
     <!-- Botón para Crear Solicitud -->
     <Button

@@ -5,8 +5,17 @@ import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AlertDialog
+import com.google.firebase.database.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 class CrearSolicitudActivity : AppCompatActivity() {
+
+    private lateinit var database: DatabaseReference
+    private lateinit var destinatariosList: MutableList<String>
+    private lateinit var destinatariosSeleccionados: BooleanArray
+    private lateinit var selectedDestinatarios: MutableList<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -15,54 +24,150 @@ class CrearSolicitudActivity : AppCompatActivity() {
         // Obtener referencias a los campos de la solicitud
         val usuarioSolicitante = findViewById<TextView>(R.id.usuarioSolicitante)
         val tipoSolicitud = findViewById<Spinner>(R.id.tipoSolicitud)
-        val importancia = findViewById<TextView>(R.id.importancia) // Cambiado a TextView
+        val importancia = findViewById<TextView>(R.id.importancia)
         val descripcion = findViewById<EditText>(R.id.descripcion)
-        val destinatario = findViewById<EditText>(R.id.destinatario)
+        val destinatarioButton = findViewById<Button>(R.id.destinatarioButton)
+        val destinatariosTextView = findViewById<TextView>(R.id.destinatariosSeleccionados)
         val btnCrearSolicitud = findViewById<Button>(R.id.btnCrearSolicitud)
+
+        // Inicializar Firebase para el nodo 'access' (lista de destinatarios)
+        database = FirebaseDatabase.getInstance().getReference("access")
+
+        // Inicializar la lista para destinatarios seleccionados
+        selectedDestinatarios = mutableListOf()
 
         // Obtener el nombre del usuario del Intent
         val nombreUsuario = intent.getStringExtra("NOMBRE_USUARIO")
         usuarioSolicitante.text = nombreUsuario
 
-        // Configurar el listener para el Spinner
+        // Configurar el listener para el Spinner de tipo de solicitud
         tipoSolicitud.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                // Obtener el tipo de solicitud seleccionado
                 val tipo = tipoSolicitud.getItemAtPosition(position).toString()
-                Log.d("CrearSolicitudActivity", "Tipo seleccionado: $tipo")
-
-                // Determinar la importancia en función del tipo de solicitud
                 val nivelImportancia = when (tipo) {
                     "Falla Masiva" -> "Alta"
                     "Falla Local" -> "Media"
                     "Revisión de Cliente", "Otros" -> "Baja"
                     else -> "Desconocida"
                 }
-                // Mostrar el nivel de importancia para depuración
-                Log.d("CrearSolicitudActivity", "Importancia determinada: $nivelImportancia")
-                // Actualizar la TextView de importancia
                 importancia.text = nivelImportancia
             }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // No hacer nada si no se selecciona nada
-            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
 
+        // Cargar destinatarios desde Firebase
+        cargarDestinatarios()
+
+        // Configurar el botón para seleccionar destinatarios
+        destinatarioButton.setOnClickListener {
+            mostrarDialogoDestinatarios(destinatariosTextView)
+        }
+
+        // Listener del botón para crear la solicitud
         btnCrearSolicitud.setOnClickListener {
-            // Validar y procesar la solicitud
             val usuario = usuarioSolicitante.text.toString()
             val tipo = tipoSolicitud.selectedItem.toString()
             val nivelImportancia = importancia.text.toString()
             val desc = descripcion.text.toString()
-            val dest = destinatario.text.toString()
 
-            if (usuario.isNotEmpty() && desc.isNotEmpty() && dest.isNotEmpty()) {
-                // Aquí podrías agregar la lógica para crear la solicitud
-                Toast.makeText(this, "Solicitud creada por $usuario con importancia $nivelImportancia", Toast.LENGTH_SHORT).show()
+            if (usuario.isNotEmpty() && desc.isNotEmpty() && selectedDestinatarios.isNotEmpty()) {
+                guardarTicketEnFirebase(usuario, tipo, nivelImportancia, desc)
             } else {
                 Toast.makeText(this, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun cargarDestinatarios() {
+        destinatariosList = mutableListOf()
+
+        // Leer los datos del nodo 'access' en Firebase
+        database.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                destinatariosList.clear()
+
+                for (data in snapshot.children) {
+                    val nombreUsuario = data.child("nombreUsuario").getValue(String::class.java)
+                    if (nombreUsuario != null) {
+                        destinatariosList.add(nombreUsuario)
+                    }
+                }
+
+                // Inicializar array de booleanos para los elementos seleccionados
+                destinatariosSeleccionados = BooleanArray(destinatariosList.size)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("CrearSolicitudActivity", "Error al cargar destinatarios", error.toException())
+            }
+        })
+    }
+
+    private fun mostrarDialogoDestinatarios(destinatariosTextView: TextView) {
+        val nombresArray = destinatariosList.toTypedArray()
+
+        // Crear un diálogo para la selección múltiple
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Seleccionar Destinatarios")
+        builder.setMultiChoiceItems(nombresArray, destinatariosSeleccionados) { _, which, isChecked ->
+            if (isChecked) {
+                selectedDestinatarios.add(nombresArray[which])
+            } else {
+                selectedDestinatarios.remove(nombresArray[which])
+            }
+        }
+        builder.setPositiveButton("Aceptar") { dialog, _ ->
+            // Mostrar los destinatarios seleccionados
+            if (selectedDestinatarios.isNotEmpty()) {
+                destinatariosTextView.text = selectedDestinatarios.joinToString(", ")
+            } else {
+                destinatariosTextView.text = "No se han seleccionado destinatarios"
+            }
+            dialog.dismiss()
+        }
+        builder.setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
+
+        builder.create().show()
+    }
+
+    private fun guardarTicketEnFirebase(usuario: String, tipo: String, importancia: String, descripcion: String) {
+        // Referencia al nodo "tickets" en Firebase
+        val ticketsRef = FirebaseDatabase.getInstance().getReference("tickets")
+
+        // Obtener fecha actual para el ID
+        val fecha = SimpleDateFormat("yyyyMMddHH", Locale.getDefault()).format(Date())
+
+        // Consultar la cantidad de tickets existentes para usar un número autoincremental
+        ticketsRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val ticketCount = snapshot.childrenCount + 1
+                val ticketId = "$fecha-$importancia-$ticketCount"
+
+                // Crear el objeto ticket
+                val ticket = mapOf(
+                    "usuarioSolicitante" to usuario,
+                    "tipoSolicitud" to tipo,
+                    "importancia" to importancia,
+                    "descripcion" to descripcion,
+                    "destinatarios" to selectedDestinatarios,
+                    "fechaRegistro" to fecha
+                )
+
+                // Guardar el ticket en la base de datos
+                ticketsRef.child(ticketId).setValue(ticket)
+                    .addOnSuccessListener {
+                        Toast.makeText(this@CrearSolicitudActivity, "Ticket guardado correctamente", Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnFailureListener { error ->
+                        Log.e("CrearSolicitudActivity", "Error al guardar ticket", error)
+                        Toast.makeText(this@CrearSolicitudActivity, "Error al guardar el ticket", Toast.LENGTH_SHORT).show()
+                    }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.e("CrearSolicitudActivity", "Error al contar tickets", error.toException())
+            }
+        })
     }
 }

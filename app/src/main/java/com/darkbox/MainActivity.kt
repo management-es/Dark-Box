@@ -197,7 +197,7 @@ fun MainScreen(
                         onDismissRequest = { secondMenuExpanded = false }
                     ) {
                         DropdownMenuItem(
-                            text = { Text("Tikets", fontSize = 20.sp) },
+                            text = { Text("Tickets", fontSize = 20.sp) },
                             onClick = {
                                 secondMenuExpanded = false
                                 onSecondMenuClick()
