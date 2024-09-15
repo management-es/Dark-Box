@@ -146,6 +146,11 @@
             android:label="Crear Solicitud"
             android:theme="@style/Theme.DarkBox" />
 
+        <activity
+            android:name=".ResponderSolicitudActivity"
+            android:exported="true"
+            android:label="Responder Solicitud"
+            android:theme="@style/Theme.DarkBox" />
 
     </application>
 </manifest>

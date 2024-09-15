@@ -7,6 +7,9 @@
     <color name="cardview_background">#F0F0F0</color>
     <color name="green_pastel">#A5D6A7</color>
     <color name="red_pastel">#EF9A9A</color>
+    <color name="colorAlta">#FF0000</color>
+    <color name="colorMedia">#FFA500</color>
+    <color name="colorBaja">#0000FF</color>
 
 
 </resources>

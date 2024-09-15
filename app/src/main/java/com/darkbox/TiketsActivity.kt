@@ -21,11 +21,23 @@ class TiketsActivity : AppCompatActivity() {
         btnCrearSolicitud.setOnClickListener {
             navigateToCrearSolicitud()
         }
+
+        // Botón para ir a ResponderSolicitudActivity
+        val btnResponderSolicitud = findViewById<Button>(R.id.btnResponderSolicitud)
+        btnResponderSolicitud.setOnClickListener {
+            navigateToResponderSolicitud()
+        }
     }
 
     private fun navigateToCrearSolicitud() {
         val intent = Intent(this, CrearSolicitudActivity::class.java)
         intent.putExtra("NOMBRE_USUARIO", nombreUsuario) // Agrega el nombre del usuario al Intent
+        startActivity(intent)
+    }
+
+    private fun navigateToResponderSolicitud() {
+        val intent = Intent(this, ResponderSolicitudActivity::class.java)
+        intent.putExtra("NOMBRE_USUARIO", nombreUsuario)
         startActivity(intent)
     }
 }

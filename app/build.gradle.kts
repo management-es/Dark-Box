@@ -74,7 +74,6 @@ dependencies {
     implementation("com.airbnb.android:lottie:6.5.2")
     implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
 
-
 }
 
 apply(plugin = "com.google.gms.google-services")
