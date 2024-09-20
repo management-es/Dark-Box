@@ -1,5 +1,6 @@
 package com.darkbox
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -105,8 +106,22 @@ class ResponderSolicitudActivity : AppCompatActivity() {
                         val btnResponder = Button(this@ResponderSolicitudActivity)
                         btnResponder.text = "Responder"
                         btnResponder.setOnClickListener {
-                            // Acción cuando se hace clic en "Responder"
-                            Toast.makeText(this@ResponderSolicitudActivity, "Responder ticket ${ticket.id}", Toast.LENGTH_SHORT).show()
+                            // Crear un Intent para ir a la actividad correspondiente según la importancia del ticket
+                            val intent = when (ticket.importancia) {
+                                "Alta" -> Intent(this@ResponderSolicitudActivity, ResponderAltaActivity::class.java)
+                                "Media" -> Intent(this@ResponderSolicitudActivity, ResponderMediaActivity::class.java)
+                                "Baja" -> Intent(this@ResponderSolicitudActivity, ResponderBajaActivity::class.java)
+                                else -> null // En caso de que la importancia no sea válida
+                            }
+
+                            // Verificar que el intent no sea nulo antes de iniciar la actividad
+                            if (intent != null) {
+                                // Pasar el ID del ticket a la nueva actividad
+                                intent.putExtra("TICKET_ID", ticket.id)
+                                startActivity(intent)
+                            } else {
+                                Toast.makeText(this@ResponderSolicitudActivity, "Importancia del ticket no válida.", Toast.LENGTH_SHORT).show()
+                            }
                         }
 
                         cardContent.addView(ticketDetails)

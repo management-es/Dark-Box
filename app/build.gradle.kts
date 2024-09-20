@@ -62,7 +62,6 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.material)
     implementation("androidx.paging:paging-runtime:3.1.1")
-    implementation("com.google.firebase:firebase-database-ktx:20.0.3")
     implementation("com.google.firebase:firebase-database-ktx:20.0.5")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -73,7 +72,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation("com.airbnb.android:lottie:6.5.2")
     implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
-
+    // Firebase dependencies
+    implementation(platform("com.google.firebase:firebase-bom:32.0.0"))
+    implementation("com.google.firebase:firebase-messaging")
 }
 
 apply(plugin = "com.google.gms.google-services")

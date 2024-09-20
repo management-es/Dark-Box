@@ -1,6 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Declaraciones de permisos deben estar aquí -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -67,7 +71,6 @@
             android:label="Ingresar Cliente"
             android:theme="@style/Theme.DarkBox" />
 
-
         <!-- Agregar AgendaActivity -->
         <activity
             android:name=".AgendaActivity"
@@ -87,7 +90,6 @@
             android:exported="true"
             android:label="Otras Gestiones"
             android:theme="@style/Theme.DarkBox" />
-
 
         <!-- Agregar CrearAgendaActivity -->
         <activity
@@ -151,6 +153,32 @@
             android:exported="true"
             android:label="Responder Solicitud"
             android:theme="@style/Theme.DarkBox" />
+
+        <activity
+            android:name=".ResponderAltaActivity"
+            android:exported="true"
+            android:label="Responder Solicitud Alta"
+            android:theme="@style/Theme.DarkBox" />
+
+        <activity
+            android:name=".ResponderMediaActivity"
+            android:exported="true"
+            android:label="Responder Solicitud Media"
+            android:theme="@style/Theme.DarkBox" />
+
+        <activity
+            android:name=".ResponderBajaActivity"
+            android:exported="true"
+            android:label="Responder Solicitud Baja"
+            android:theme="@style/Theme.DarkBox" />
+
+        <service
+            android:name=".MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
 
     </application>
 </manifest>
