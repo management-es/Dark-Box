@@ -3,6 +3,8 @@ package com.darkbox
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.LinearLayout
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -14,9 +16,23 @@ import com.google.firebase.database.ValueEventListener
 
 class ResponderBajaActivity : Activity() {
 
+    private lateinit var contenedorONU: LinearLayout // Contenedor para Fibra Óptica
+    private lateinit var contenedorAntena: LinearLayout // Contenedor para Radio Enlace Antena
+    private lateinit var contenedorRouter: LinearLayout // Contenedor para Radio Enlace Router
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_responder_baja)
+
+        // Inicializa los contenedores
+        contenedorONU = findViewById(R.id.contenedorONU)
+        contenedorAntena = findViewById(R.id.contenedorAntena)
+        contenedorRouter = findViewById(R.id.contenedorRouter)
+
+        // Oculta los contenedores por defecto
+        contenedorONU.visibility = View.GONE
+        contenedorAntena.visibility = View.GONE
+        contenedorRouter.visibility = View.GONE
 
         // Obtener el ID del ticket desde el Intent
         val ticketId = intent.getStringExtra("TICKET_ID")
@@ -83,6 +99,26 @@ class ResponderBajaActivity : Activity() {
                                             IP Antena: ${cliente.ip_antena}
                                             IP Remota: ${cliente.ip_remota}
                                         """.trimIndent()
+
+                                        // Mostrar u ocultar los contenedores según la tecnología
+                                        when (cliente.tecnologia) {
+                                            "Fibra Óptica" -> {
+                                                contenedorONU.visibility = View.VISIBLE
+                                                contenedorAntena.visibility = View.GONE
+                                                contenedorRouter.visibility = View.GONE
+                                            }
+                                            "Radio Enlace" -> {
+                                                contenedorONU.visibility = View.GONE
+                                                contenedorAntena.visibility = View.VISIBLE
+                                                contenedorRouter.visibility = View.VISIBLE
+                                            }
+                                            else -> {
+                                                // Ocultar todos si la tecnología no es reconocida
+                                                contenedorONU.visibility = View.GONE
+                                                contenedorAntena.visibility = View.GONE
+                                                contenedorRouter.visibility = View.GONE
+                                            }
+                                        }
                                     } else {
                                         clienteInfoTextView.text = "Datos del cliente no disponibles."
                                     }
@@ -90,6 +126,10 @@ class ResponderBajaActivity : Activity() {
                             } else {
                                 Log.d("ResponderBajaActivity", "Cliente no encontrado")
                                 clienteInfoTextView.text = "Cliente no encontrado."
+                                // Oculta todos los contenedores si no se encuentra el cliente
+                                contenedorONU.visibility = View.GONE
+                                contenedorAntena.visibility = View.GONE
+                                contenedorRouter.visibility = View.GONE
                             }
                         }
 
