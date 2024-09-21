@@ -1,17 +1,297 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:textColor="@android:color/black" />
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="16dp"
+            android:text="Descripción" />
+
+        <TextView
+            android:id="@+id/descriptionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:layout_marginStart="16dp" />
+
+        <TextView
+            android:id="@+id/titlecliente"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginStart="16dp"
+            android:text="Cliente" />
+
+        <EditText
+            android:id="@+id/codClienteEditText"
+            android:hint="Ingrese el código de cliente"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:background="@color/light_gray"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/buscarButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Buscar Cliente" />
+
+        <TextView
+            android:id="@+id/clienteInfoTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Información del cliente aparecerá aquí"
+            android:paddingTop="16dp"
+            android:layout_marginStart="16dp" />
+
+        <TextView
+            android:id="@+id/supportTitleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="16dp"
+            android:text="Soporte en desarrollo" />
+
+        <TextView
+            android:id="@+id/antennaConfigStatusTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="16dp"
+            android:text="Estado de antena" />
+
+        <!-- Información de la antena con EditText al lado -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Velocidad de puerto:"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp" />
+
+            <EditText
+                android:id="@+id/puertoEditText"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:background="@color/light_gray"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Niveles dBm:"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp" />
+
+            <EditText
+                android:id="@+id/nivelesDbmEditText"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:background="@color/light_gray"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sector:"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp" />
+
+            <EditText
+                android:id="@+id/sectorEditText"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:background="@color/light_gray"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tiempo de conectividad:"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp" />
+
+            <EditText
+                android:id="@+id/tiempoConectividadEditText"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:background="@color/light_gray"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Capacidad de saturación:"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp" />
+
+            <EditText
+                android:id="@+id/capacidadSaturacionEditText"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:background="@color/light_gray"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <!-- Ping como subtítulo -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ping:"
+            android:textStyle="bold"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="10dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Enviados:"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp" />
+
+            <EditText
+                android:id="@+id/enviadosEditText"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:background="@color/light_gray"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Recibidos:"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp" />
+
+            <EditText
+                android:id="@+id/recibidosEditText"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:background="@color/light_gray"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pérdida:"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp" />
+
+            <EditText
+                android:id="@+id/perdidaEditText"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:background="@color/light_gray"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Actualización de antena:"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp" />
+
+            <EditText
+                android:id="@+id/actualizacionAntenaEditText"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:background="@color/light_gray"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
