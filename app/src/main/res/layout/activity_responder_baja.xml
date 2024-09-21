@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -101,11 +102,22 @@
                 android:layout_marginStart="16dp" />
 
             <EditText
-                android:id="@+id/puertoEditText"
-                android:layout_width="50dp"
+                android:id="@+id/puertoAntenaEditText"
+                android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:background="@color/light_gray"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:inputType="number"
+                android:maxLength="3"
+                android:digits="-0123456789"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mb/s"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -117,17 +129,39 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Niveles dBm:"
+                android:text="Niveles dBm: -"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="16dp" />
 
             <EditText
-                android:id="@+id/nivelesDbmEditText"
-                android:layout_width="50dp"
+                android:id="@+id/nivelesDbmAntenaEditText"
+                android:layout_width="25dp"
                 android:layout_height="wrap_content"
                 android:background="@color/light_gray"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:inputType="number"
+                android:maxLength="2"
+                android:digits="-0123456789"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" / -"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp" />
+
+            <EditText
+                android:id="@+id/nivelesDbm2AntenaEditText"
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:background="@color/light_gray"
+                android:textSize="16sp"
+                android:inputType="number"
+                android:maxLength="2"
+                android:digits="-0123456789"/>
+
+
         </LinearLayout>
 
         <LinearLayout
@@ -145,7 +179,7 @@
                 android:layout_marginStart="16dp" />
 
             <EditText
-                android:id="@+id/sectorEditText"
+                android:id="@+id/sectorAntenaEditText"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:background="@color/light_gray"
@@ -167,11 +201,12 @@
                 android:layout_marginStart="16dp" />
 
             <EditText
-                android:id="@+id/tiempoConectividadEditText"
+                android:id="@+id/tiempoConectividadAntenaEditText"
                 android:layout_width="120dp"
                 android:layout_height="wrap_content"
                 android:background="@color/light_gray"
                 android:textSize="16sp" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -189,11 +224,19 @@
                 android:layout_marginStart="16dp" />
 
             <EditText
-                android:id="@+id/capacidadSaturacionEditText"
+                android:id="@+id/capacidadSaturacionAntenaEditText"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:background="@color/light_gray"
                 android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mb/s"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp" />
+
         </LinearLayout>
 
         <!-- Ping como subtítulo -->
@@ -220,11 +263,14 @@
                 android:layout_marginStart="16dp" />
 
             <EditText
-                android:id="@+id/enviadosEditText"
+                android:id="@+id/enviadosAntenaEditText"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:background="@color/light_gray"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:inputType="number"
+                android:maxLength="4"
+                android:digits="-0123456789"/>
         </LinearLayout>
 
         <LinearLayout
@@ -242,11 +288,14 @@
                 android:layout_marginStart="16dp" />
 
             <EditText
-                android:id="@+id/recibidosEditText"
+                android:id="@+id/recibidosAntenaEditText"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:background="@color/light_gray"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:inputType="number"
+                android:maxLength="4"
+                android:digits="-0123456789"/>
         </LinearLayout>
 
         <LinearLayout
@@ -264,11 +313,22 @@
                 android:layout_marginStart="16dp" />
 
             <EditText
-                android:id="@+id/perdidaEditText"
+                android:id="@+id/perdidaAntenaEditText"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:background="@color/light_gray"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:inputType="number"
+                android:maxLength="3"
+                android:digits="-0123456789"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="%"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -280,18 +340,363 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Actualización de antena:"
+                android:text="Versión actualización de antena:"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="16dp" />
 
             <EditText
                 android:id="@+id/actualizacionAntenaEditText"
-                android:layout_width="70dp"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:background="@color/light_gray"
+                android:textSize="16sp"
+                android:inputType="number"
+                android:maxLength="10"
+                android:digits=".0123456789"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Observacion del equipo:"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp" />
+
+            <EditText
+                android:id="@+id/observacionAntenaEditText"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:background="@color/light_gray"
                 android:textSize="16sp" />
+
         </LinearLayout>
+
+        <!-- Información del router con EditText al lado -->
+
+        <TextView
+            android:id="@+id/routerConfigStatusTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="16dp"
+            android:text="Estado de Router" />
+
+
+        <!-- Ping como subtítulo -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ping:"
+            android:textStyle="bold"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="10dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Enviados:"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp" />
+
+            <EditText
+                android:id="@+id/enviadosRouterEditText"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:background="@color/light_gray"
+                android:textSize="14sp"
+                android:inputType="number"
+                android:maxLength="4"
+                android:digits="-0123456789"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Recibidos:"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp" />
+
+            <EditText
+                android:id="@+id/recibidosRouterEditText"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:background="@color/light_gray"
+                android:textSize="14sp"
+                android:inputType="number"
+                android:maxLength="4"
+                android:digits="-0123456789"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pérdida:"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp" />
+
+            <EditText
+                android:id="@+id/perdidaRouterEditText"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:background="@color/light_gray"
+                android:textSize="14sp"
+                android:inputType="number"
+                android:maxLength="3"
+                android:digits="-0123456789"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="%"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp" />
+
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Observacion del equipo:"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp" />
+
+            <EditText
+                android:id="@+id/observacionRouterEditText"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:background="@color/light_gray"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <!-- Información de la onu con EditText al lado -->
+
+        <TextView
+            android:id="@+id/onuConfigStatusTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="16dp"
+            android:text="Estado de ONU" />
+
+
+        <!-- Ping como subtítulo -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ping:"
+            android:textStyle="bold"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="10dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Enviados:"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp" />
+
+            <EditText
+                android:id="@+id/enviadosOnuEditText"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:background="@color/light_gray"
+                android:textSize="14sp"
+                android:inputType="number"
+                android:maxLength="4"
+                android:digits="-0123456789"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Recibidos:"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp" />
+
+            <EditText
+                android:id="@+id/recibidosOnuEditText"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:background="@color/light_gray"
+                android:textSize="14sp"
+                android:inputType="number"
+                android:maxLength="4"
+                android:digits="-0123456789"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pérdida:"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp" />
+
+            <EditText
+                android:id="@+id/perdidaOnuEditText"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:background="@color/light_gray"
+                android:textSize="14sp"
+                android:inputType="number"
+                android:maxLength="3"
+                android:digits="-0123456789"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="%"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Niveles puerto optico dBm: -"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp" />
+
+            <EditText
+                android:id="@+id/nivelesDbmOnuEditText"
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:background="@color/light_gray"
+                android:textSize="16sp"
+                android:inputType="number"
+                android:maxLength="2"
+                android:digits="-0123456789"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" / -"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp" />
+
+            <EditText
+                android:id="@+id/nivelesDbm2OnuEditText"
+                android:layout_width="25dp"
+                android:layout_height="wrap_content"
+                android:background="@color/light_gray"
+                android:textSize="16sp"
+                android:inputType="number"
+                android:maxLength="2"
+                android:digits="-0123456789"/>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Observacion del equipo:"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="16dp" />
+
+            <EditText
+                android:id="@+id/observacionOnuEditText"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:background="@color/light_gray"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/enviarRespuestaButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enviar Respuesta"
+            android:textSize="14sp"
+            android:padding="10dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
 
     </LinearLayout>
 </ScrollView>
