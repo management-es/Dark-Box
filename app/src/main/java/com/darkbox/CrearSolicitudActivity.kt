@@ -16,6 +16,7 @@ class CrearSolicitudActivity : AppCompatActivity() {
     private lateinit var destinatariosList: MutableList<String>
     private lateinit var destinatariosSeleccionados: BooleanArray
     private lateinit var selectedDestinatarios: MutableList<String>
+    private lateinit var estadoTextView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +30,7 @@ class CrearSolicitudActivity : AppCompatActivity() {
         val destinatarioButton = findViewById<Button>(R.id.destinatarioButton)
         val destinatariosTextView = findViewById<TextView>(R.id.destinatariosSeleccionados)
         val btnCrearSolicitud = findViewById<Button>(R.id.btnCrearSolicitud)
+        estadoTextView = findViewById(R.id.estadoTextView)
 
         // Inicializar Firebase para el nodo 'access' (lista de destinatarios)
         database = FirebaseDatabase.getInstance().getReference("access")
@@ -70,6 +72,7 @@ class CrearSolicitudActivity : AppCompatActivity() {
             val tipo = tipoSolicitud.selectedItem.toString()
             val nivelImportancia = importancia.text.toString()
             val desc = descripcionint.text.toString()
+            val estado = "Pendiente" // Estado inicial
 
             if (usuario.isNotEmpty() && desc.isNotEmpty() && selectedDestinatarios.isNotEmpty()) {
                 // Crear un diálogo de confirmación
@@ -81,6 +84,7 @@ class CrearSolicitudActivity : AppCompatActivity() {
             Usuario solicitante: $usuario
             Tipo de solicitud: $tipo
             Importancia: $nivelImportancia
+            Estado: $estado
             Descripción: $desc
             Destinatarios: ${selectedDestinatarios.joinToString(", ")}
             
@@ -92,7 +96,7 @@ class CrearSolicitudActivity : AppCompatActivity() {
                 // Configurar el botón de confirmar
                 builder.setPositiveButton("Confirmar") { dialog, _ ->
                     // Guardar los datos en Firebase si se confirma
-                    guardarTicketEnFirebase(usuario, tipo, nivelImportancia, desc)
+                    guardarTicketEnFirebase(usuario, tipo, nivelImportancia, desc, estado)
                     dialog.dismiss()
                 }
 
@@ -163,7 +167,7 @@ class CrearSolicitudActivity : AppCompatActivity() {
         builder.create().show()
     }
 
-    private fun guardarTicketEnFirebase(usuario: String, tipo: String, importancia: String, descripcion: String) {
+    private fun guardarTicketEnFirebase(usuario: String, tipo: String, importancia: String, descripcion: String, estado: String) {
         // Referencia al nodo "tickets" en Firebase
         val ticketsRef = FirebaseDatabase.getInstance().getReference("tickets")
 
@@ -181,6 +185,7 @@ class CrearSolicitudActivity : AppCompatActivity() {
                     "usuarioSolicitante" to usuario,
                     "tipoSolicitud" to tipo,
                     "importancia" to importancia,
+                    "estado" to estado,
                     "descripcionint" to descripcion,
                     "destinatarios" to selectedDestinatarios,
                     "fechaRegistro" to fecha

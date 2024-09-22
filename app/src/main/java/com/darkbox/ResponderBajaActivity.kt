@@ -10,7 +10,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import android.app.AlertDialog
-import android.content.DialogInterface
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -36,7 +35,6 @@ class ResponderBajaActivity : Activity() {
         contenedorAntena.visibility = View.GONE
         contenedorRouter.visibility = View.GONE
 
-
         // Obtener el TextView para mostrar el nombre del usuario
         val usuarioTextView = findViewById<TextView>(R.id.usuarioTextView)
 
@@ -47,7 +45,6 @@ class ResponderBajaActivity : Activity() {
         } else {
             usuarioTextView.text = "Usuario no disponible"
         }
-
 
         // Inicializar el botón enviarRespuestaButton
         val enviarRespuestaButton = findViewById<Button>(R.id.enviarRespuestaButton)
@@ -166,9 +163,9 @@ class ResponderBajaActivity : Activity() {
             // Crear un mapa con los datos
             val respuestaData = HashMap<String, Any>()
             respuestaData["descripcion"] = mapOf(
-                "tipoSolicitud" to description.substringAfter("Tipo de Solicitud:").substringBefore("\n").trim(),
-                "importancia" to description.substringAfter("Importancia:").substringBefore("\n").trim(),
-                "descripcionint" to description.substringAfter("Descripción:").substringBefore("\n").trim(),
+                "tipoSolicitud" to tipoSolicitud,
+                "importancia" to importancia,
+                "descripcionint" to descripcion
             )
 
             respuestaData["cliente"] = mapOf(
@@ -221,7 +218,6 @@ class ResponderBajaActivity : Activity() {
                 val nivelesDbm2ONU = findViewById<EditText>(R.id.nivelesDbm2OnuEditText).text.toString()
                 val observacionesONU = findViewById<EditText>(R.id.observacionOnuEditText).text.toString()
 
-
                 // Agregar información de la ONU al subnodo "desarrollo"
                 desarrolloData["enviadosONU"] = enviadosONU
                 desarrolloData["recibidosONU"] = recibidosONU
@@ -234,45 +230,46 @@ class ResponderBajaActivity : Activity() {
             // Agregar el subnodo "desarrollo" a la respuesta
             respuestaData["desarrollo"] = desarrolloData
 
-
-            // Enviar respuesta con alertdialog
-            enviarRespuestaButton.setOnClickListener {
-                // Crear y mostrar un AlertDialog de confirmación
-                val alertDialog = AlertDialog.Builder(this)
-                    .setTitle("Confirmar envío")
-                    .setMessage("¿Deseas guardar estos datos como respuesta del ticket? Una vez enviado, no podrás editar la respuesta.")
-                    .setPositiveButton("Sí") { dialog, _ ->
-                        // Guardar la respuesta en la base de datos si el usuario confirma
-
-                        val respuestaId = "$ticketId-Resp"
-
-                        // Aquí iría el código para crear los datos que se enviarán
-
-                        FirebaseDatabase.getInstance().getReference("respuestas").child(respuestaId)
-                            .setValue(respuestaData)
-                            .addOnCompleteListener { task ->
-                                if (task.isSuccessful) {
-                                    // Mostrar alerta indicando que ya no se puede editar
-                                    AlertDialog.Builder(this)
-                                        .setTitle("Respuesta enviada")
-                                        .setMessage("La respuesta ha sido enviada exitosamente. Ya no podrás editarla.")
-                                        .setPositiveButton("Aceptar") { dialog, _ ->
-                                            finish() // Cerrar la actividad actual
+            // Crear y mostrar un AlertDialog de confirmación
+            val alertDialog = AlertDialog.Builder(this)
+                .setTitle("Confirmar envío")
+                .setMessage("¿Deseas guardar estos datos como respuesta del ticket? Una vez enviado, no podrás editar la respuesta.")
+                .setPositiveButton("Sí") { dialog, _ ->
+                    // Guardar la respuesta en la base de datos si el usuario confirma
+                    FirebaseDatabase.getInstance().getReference("respuestas").child(respuestaId)
+                        .setValue(respuestaData)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                // Actualizar el estado del ticket a "Realizado"
+                                if (ticketId != null) {
+                                    val ticketRef = FirebaseDatabase.getInstance().getReference("tickets").child(ticketId)
+                                    ticketRef.child("estado").setValue("Realizado") // Cambiar estado a "Realizado"
+                                        .addOnCompleteListener { stateTask ->
+                                            if (stateTask.isSuccessful) {
+                                                // Mostrar alerta indicando que ya no se puede editar
+                                                AlertDialog.Builder(this)
+                                                    .setTitle("Respuesta enviada")
+                                                    .setMessage("La respuesta ha sido enviada exitosamente y el estado del ticket ha sido actualizado a 'Realizado'.")
+                                                    .setPositiveButton("Aceptar") { dialog, _ ->
+                                                        finish() // Cerrar la actividad actual
+                                                    }
+                                                    .show()
+                                            } else {
+                                                Toast.makeText(this, "Error al actualizar el estado del ticket: ${stateTask.exception?.message}", Toast.LENGTH_SHORT).show()
+                                            }
                                         }
-                                        .show()
-                                } else {
-                                    Toast.makeText(this, "Error al guardar respuesta: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                                 }
+                            } else {
+                                Toast.makeText(this, "Error al guardar respuesta: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                             }
-                    }
-                    .setNegativeButton("Cancelar", null) // No hacer nada si el usuario cancela
-                    .show()
-              }
+                        }
+                }
+                .setNegativeButton("Cancelar", null) // No hacer nada si el usuario cancela
+                .show()
         }
     }
 
-
-// Modelo de Cliente
+    // Modelo de Cliente
     data class Cliente(
         val cod_cliente: String? = null,
         val nombres: String? = null,

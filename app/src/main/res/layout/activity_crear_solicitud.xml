@@ -51,6 +51,14 @@
         android:layout_marginBottom="8dp"
         android:paddingStart="8dp"/>
 
+    <TextView
+        android:id="@+id/estadoTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Estado: Pendiente"
+        android:textSize="16sp"
+        android:layout_marginTop="16dp" />
+
     <!-- Campo para Descripción -->
     <EditText
         android:id="@+id/descripcionint"

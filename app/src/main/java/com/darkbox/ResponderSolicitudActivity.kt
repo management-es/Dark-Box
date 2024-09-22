@@ -12,6 +12,7 @@ class ResponderSolicitudActivity : AppCompatActivity() {
     private lateinit var nombreUsuario: String
     private lateinit var database: DatabaseReference
     private lateinit var ticketContainer: LinearLayout
+    private lateinit var tvTicketCount: TextView
 
     // Mapa para definir el orden de importancia
     private val importanciaOrder = mapOf(
@@ -37,6 +38,7 @@ class ResponderSolicitudActivity : AppCompatActivity() {
         // Encontrar los TextView y contenedor de tickets en el layout
         val tvUsuarioSolicitante = findViewById<TextView>(R.id.tvUsuarioSolicitante)
         ticketContainer = findViewById(R.id.ticketContainer)
+        tvTicketCount = findViewById(R.id.tvTicketCount)
 
         // Mostrar el nombre del usuario en el TextView
         tvUsuarioSolicitante.text = nombreUsuario
@@ -60,13 +62,16 @@ class ResponderSolicitudActivity : AppCompatActivity() {
                     for (ticketSnapshot in dataSnapshot.children) {
                         val ticket = ticketSnapshot.getValue(Ticket::class.java)
                         ticket?.let {
-                            // Verificar si el nombre del usuario está en la lista de destinatarios
-                            if (it.destinatarios.contains(nombreUsuario)) {
+                            // Verificar si el ticket está en estado "Pendiente" y si el nombre del usuario está en la lista de destinatarios
+                            if (it.estado == "Pendiente" && it.destinatarios.contains(nombreUsuario)) {
                                 // Añadir ticket a la lista
                                 tickets.add(it.copy(id = ticketSnapshot.key))
                             }
                         }
                     }
+
+                    // Mostrar cantidad de tickets pendientes
+                    tvTicketCount.text = "Tickets Pendientes: ${tickets.size}"
 
                     // Ordenar tickets por importancia (según el mapa) y luego por fecha
                     tickets.sortWith(compareBy<Ticket> { importanciaOrder[it.importancia] ?: Int.MAX_VALUE }
@@ -96,11 +101,11 @@ class ResponderSolicitudActivity : AppCompatActivity() {
 
                         val ticketDetails = TextView(this@ResponderSolicitudActivity)
                         ticketDetails.text = """
-                            Ticket ID: ${ticket.id}
-                            Descripción: ${ticket.descripcionint}
-                            Importancia: ${ticket.importancia}
-                            Tipo de Solicitud: ${ticket.tipoSolicitud}
-                        """.trimIndent()
+                        Ticket ID: ${ticket.id}
+                        Descripción: ${ticket.descripcionint}
+                        Importancia: ${ticket.importancia}
+                        Tipo de Solicitud: ${ticket.tipoSolicitud}
+                    """.trimIndent()
                         ticketDetails.textSize = 16f
 
                         val btnResponder = Button(this@ResponderSolicitudActivity)
@@ -143,6 +148,13 @@ class ResponderSolicitudActivity : AppCompatActivity() {
         })
     }
 
+    // Método onResume para refrescar la lista de tickets
+    override fun onResume() {
+        super.onResume()
+        fetchTicketData() // Llamar para refrescar la lista de tickets
+    }
+
+
     // Clase que representa la estructura de los tickets en la base de datos
     data class Ticket(
         val id: String? = null,
@@ -151,6 +163,7 @@ class ResponderSolicitudActivity : AppCompatActivity() {
         val importancia: String = "",
         val descripcionint: String = "",
         val destinatarios: List<String> = emptyList(),
-        val fechaRegistro: String = ""
+        val fechaRegistro: String = "",
+        val estado: String = ""
     )
 }
