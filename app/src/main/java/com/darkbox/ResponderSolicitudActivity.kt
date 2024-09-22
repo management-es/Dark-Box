@@ -97,7 +97,7 @@ class ResponderSolicitudActivity : AppCompatActivity() {
                         val ticketDetails = TextView(this@ResponderSolicitudActivity)
                         ticketDetails.text = """
                             Ticket ID: ${ticket.id}
-                            Descripción: ${ticket.descripcion}
+                            Descripción: ${ticket.descripcionint}
                             Importancia: ${ticket.importancia}
                             Tipo de Solicitud: ${ticket.tipoSolicitud}
                         """.trimIndent()
@@ -148,7 +148,7 @@ class ResponderSolicitudActivity : AppCompatActivity() {
         val usuarioSolicitante: String = "",
         val tipoSolicitud: String = "",
         val importancia: String = "",
-        val descripcion: String = "",
+        val descripcionint: String = "",
         val destinatarios: List<String> = emptyList(),
         val fechaRegistro: String = ""
     )

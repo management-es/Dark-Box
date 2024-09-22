@@ -53,7 +53,7 @@
 
     <!-- Campo para Descripción -->
     <EditText
-        android:id="@+id/descripcion"
+        android:id="@+id/descripcionint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Descripción"

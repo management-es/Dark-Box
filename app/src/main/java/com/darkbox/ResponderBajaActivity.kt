@@ -4,9 +4,9 @@ import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import com.google.firebase.database.DataSnapshot
@@ -16,23 +16,26 @@ import com.google.firebase.database.ValueEventListener
 
 class ResponderBajaActivity : Activity() {
 
-    private lateinit var contenedorONU: LinearLayout // Contenedor para Fibra Óptica
-    private lateinit var contenedorAntena: LinearLayout // Contenedor para Radio Enlace Antena
-    private lateinit var contenedorRouter: LinearLayout // Contenedor para Radio Enlace Router
+    private lateinit var contenedorONU: LinearLayout
+    private lateinit var contenedorAntena: LinearLayout
+    private lateinit var contenedorRouter: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_responder_baja)
 
-        // Inicializa los contenedores
+        // Inicializar contenedores
         contenedorONU = findViewById(R.id.contenedorONU)
         contenedorAntena = findViewById(R.id.contenedorAntena)
         contenedorRouter = findViewById(R.id.contenedorRouter)
 
-        // Oculta los contenedores por defecto
+        // Ocultar contenedores por defecto
         contenedorONU.visibility = View.GONE
         contenedorAntena.visibility = View.GONE
         contenedorRouter.visibility = View.GONE
+
+        // Inicializar el botón enviarRespuestaButton
+        val enviarRespuestaButton = findViewById<Button>(R.id.enviarRespuestaButton)
 
         // Obtener el ID del ticket desde el Intent
         val ticketId = intent.getStringExtra("TICKET_ID")
@@ -54,9 +57,10 @@ class ResponderBajaActivity : Activity() {
                     val ticket = dataSnapshot.getValue(Ticket::class.java)
                     if (ticket != null) {
                         descriptionTextView.text = """
+                            Ticket ID: $ticketId
                             Importancia: ${ticket.importancia}
                             Tipo de Solicitud: ${ticket.tipoSolicitud}
-                            Descripción: ${ticket.descripcion}
+                            Descripción: ${ticket.descripcionint}
                         """.trimIndent()
                     } else {
                         descriptionTextView.text = "Información del ticket no disponible."
@@ -87,17 +91,7 @@ class ResponderBajaActivity : Activity() {
                                             Código de Cliente: ${cliente.cod_cliente}
                                             Nombres: ${cliente.nombres}
                                             Apellidos: ${cliente.apellidos}
-                                            Número de Documento: ${cliente.numero_documento}
-                                            Tipo de Documento: ${cliente.tipo_documento}
-                                            Dirección: ${cliente.direccion}
-                                            Teléfono: ${cliente.telefono}
-                                            Zona: ${cliente.zona}
                                             Tecnología: ${cliente.tecnologia}
-                                            Serial Antena: ${cliente.serial_antena}
-                                            Serial ONU: ${cliente.serial_onu}
-                                            Serial Router: ${cliente.serial_router}
-                                            IP Antena: ${cliente.ip_antena}
-                                            IP Remota: ${cliente.ip_remota}
                                         """.trimIndent()
 
                                         // Mostrar u ocultar los contenedores según la tecnología
@@ -113,7 +107,6 @@ class ResponderBajaActivity : Activity() {
                                                 contenedorRouter.visibility = View.VISIBLE
                                             }
                                             else -> {
-                                                // Ocultar todos si la tecnología no es reconocida
                                                 contenedorONU.visibility = View.GONE
                                                 contenedorAntena.visibility = View.GONE
                                                 contenedorRouter.visibility = View.GONE
@@ -126,7 +119,6 @@ class ResponderBajaActivity : Activity() {
                             } else {
                                 Log.d("ResponderBajaActivity", "Cliente no encontrado")
                                 clienteInfoTextView.text = "Cliente no encontrado."
-                                // Oculta todos los contenedores si no se encuentra el cliente
                                 contenedorONU.visibility = View.GONE
                                 contenedorAntena.visibility = View.GONE
                                 contenedorRouter.visibility = View.GONE
@@ -141,28 +133,117 @@ class ResponderBajaActivity : Activity() {
                 Toast.makeText(this, "Por favor, ingrese el código del cliente.", Toast.LENGTH_SHORT).show()
             }
         }
+
+        // Funcionalidad del botón enviarRespuestaButton
+        enviarRespuestaButton.setOnClickListener {
+            val respuestaId = "$ticketId-Resp"
+
+            // Obtener los datos de los TextViews
+            val description = descriptionTextView.text.toString()
+            val clienteInfo = clienteInfoTextView.text.toString()
+
+            // Extraer los campos importantes
+            val importancia = description.substringAfter("Importancia:").substringBefore("Tipo de Solicitud:").trim()
+            val tipoSolicitud = description.substringAfter("Tipo de Solicitud:").substringBefore("Descripción:").trim()
+            val descripcion = description.substringAfter("Descripción:").trim()
+            val tecnologia = clienteInfo.substringAfter("Tecnología:").trim()
+
+            // Crear un mapa con los datos
+            val respuestaData = HashMap<String, Any>()
+            respuestaData["descripcion"] = mapOf(
+                "tipoSolicitud" to description.substringAfter("Tipo de Solicitud:").substringBefore("\n").trim(),
+                "importancia" to description.substringAfter("Importancia:").substringBefore("\n").trim(),
+                "descripcionint" to description.substringAfter("Descripción:").substringBefore("\n").trim(),
+            )
+
+            respuestaData["cliente"] = mapOf(
+                "cod_cliente" to clienteInfo.substringAfter("Código de Cliente:").substringBefore("\n").trim(),
+                "nombres" to clienteInfo.substringAfter("Nombres:").substringBefore("\n").trim(),
+                "apellidos" to clienteInfo.substringAfter("Apellidos:").substringBefore("\n").trim()
+            )
+
+            // Crear subnodo "desarrollo" que incluya tecnología y sus datos
+            val desarrolloData = HashMap<String, Any>()
+            desarrolloData["tecnologia"] = tecnologia
+
+            // Obtener información según la tecnología
+            if (tecnologia == "Radio Enlace") {
+                val puertoAntena = findViewById<EditText>(R.id.puertoAntenaEditText).text.toString()
+                val nivelesDbm1 = findViewById<EditText>(R.id.nivelesDbmAntenaEditText).text.toString()
+                val nivelesDbm2 = findViewById<EditText>(R.id.nivelesDbm2AntenaEditText).text.toString()
+                val sectorAntena = findViewById<EditText>(R.id.sectorAntenaEditText).text.toString()
+                val tiempoConectividad = findViewById<EditText>(R.id.tiempoConectividadAntenaEditText).text.toString()
+                val capacidadSaturacion = findViewById<EditText>(R.id.capacidadSaturacionAntenaEditText).text.toString()
+                val enviadosAntena = findViewById<EditText>(R.id.enviadosAntenaEditText).text.toString()
+                val recibidosAntena = findViewById<EditText>(R.id.recibidosAntenaEditText).text.toString()
+                val perdidaAntena = findViewById<EditText>(R.id.perdidaAntenaEditText).text.toString()
+                val actualizacionAntena = findViewById<EditText>(R.id.actualizacionAntenaEditText).text.toString()
+                val observacionesAntena = findViewById<EditText>(R.id.observacionesAntenaEditText).text.toString()
+
+                // Agregar información de la antena al subnodo "desarrollo"
+                desarrolloData["puertoAntena"] = puertoAntena
+                desarrolloData["nivelesDbm1"] = nivelesDbm1
+                desarrolloData["nivelesDbm2"] = nivelesDbm2
+                desarrolloData["sectorAntena"] = sectorAntena
+                desarrolloData["tiempoConectividad"] = tiempoConectividad
+                desarrolloData["capacidadSaturacion"] = capacidadSaturacion
+                desarrolloData["enviadosAntena"] = enviadosAntena
+                desarrolloData["recibidosAntena"] = recibidosAntena
+                desarrolloData["perdidaAntena"] = perdidaAntena
+                desarrolloData["actualizacionAntena"] = actualizacionAntena
+                desarrolloData["observacionesAntena"] = observacionesAntena
+
+                // Datos del router
+                desarrolloData["enviadosRouter"] = findViewById<EditText>(R.id.enviadosRouterEditText).text.toString()
+                desarrolloData["recibidosRouter"] = findViewById<EditText>(R.id.recibidosRouterEditText).text.toString()
+                desarrolloData["perdidaRouter"] = findViewById<EditText>(R.id.perdidaRouterEditText).text.toString()
+            } else if (tecnologia == "Fibra Óptica") {
+                val enviadosONU = findViewById<EditText>(R.id.enviadosOnuEditText).text.toString()
+                val recibidosONU = findViewById<EditText>(R.id.recibidosOnuEditText).text.toString()
+                val perdidaONU = findViewById<EditText>(R.id.perdidaOnuEditText).text.toString()
+                val nivelesDbmONU = findViewById<EditText>(R.id.nivelesDbmOnuEditText).text.toString()
+                val nivelesDbm2ONU = findViewById<EditText>(R.id.nivelesDbm2OnuEditText).text.toString()
+                val observacionesONU = findViewById<EditText>(R.id.observacionOnuEditText).text.toString()
+
+
+                // Agregar información de la ONU al subnodo "desarrollo"
+                desarrolloData["enviadosONU"] = enviadosONU
+                desarrolloData["recibidosONU"] = recibidosONU
+                desarrolloData["perdidaONU"] = perdidaONU
+                desarrolloData["nivelesDbmONU"] = nivelesDbmONU
+                desarrolloData["nivelesDbm2ONU"] = nivelesDbm2ONU
+                desarrolloData["observacionesONU"] = observacionesONU
+            }
+
+            // Agregar el subnodo "desarrollo" a la respuesta
+            respuestaData["desarrollo"] = desarrolloData
+
+            // Guardar respuesta en la base de datos
+            FirebaseDatabase.getInstance().getReference("respuestas").child(respuestaId)
+                .setValue(respuestaData)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Toast.makeText(this, "Respuesta guardada exitosamente.", Toast.LENGTH_SHORT).show()
+                        finish() // Regresar a la actividad anterior
+                    } else {
+                        Toast.makeText(this, "Error al guardar respuesta: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+        }
     }
 
+
+// Modelo de Cliente
     data class Cliente(
         val cod_cliente: String? = null,
         val nombres: String? = null,
         val apellidos: String? = null,
-        val numero_documento: String? = null,
-        val tipo_documento: String? = null,
-        val direccion: String? = null,
-        val telefono: String? = null,
-        val zona: String? = null,
-        val tecnologia: String? = null,
-        val serial_antena: String? = null,
-        val serial_onu: String? = null,
-        val serial_router: String? = null,
-        val ip_antena: String? = null,
-        val ip_remota: String? = null
+        val tecnologia: String? = null
     )
 
-    // Clase modelo para los datos del ticket
+    // Modelo de Ticket
     data class Ticket(
-        val descripcion: String? = null,
+        val descripcionint: String? = null,
         val tipoSolicitud: String? = null,
         val importancia: String? = null
     )

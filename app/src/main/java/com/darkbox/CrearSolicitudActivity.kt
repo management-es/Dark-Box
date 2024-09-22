@@ -25,7 +25,7 @@ class CrearSolicitudActivity : AppCompatActivity() {
         val usuarioSolicitante = findViewById<TextView>(R.id.usuarioSolicitante)
         val tipoSolicitud = findViewById<Spinner>(R.id.tipoSolicitud)
         val importancia = findViewById<TextView>(R.id.importancia)
-        val descripcion = findViewById<EditText>(R.id.descripcion)
+        val descripcionint = findViewById<EditText>(R.id.descripcionint)
         val destinatarioButton = findViewById<Button>(R.id.destinatarioButton)
         val destinatariosTextView = findViewById<TextView>(R.id.destinatariosSeleccionados)
         val btnCrearSolicitud = findViewById<Button>(R.id.btnCrearSolicitud)
@@ -69,7 +69,7 @@ class CrearSolicitudActivity : AppCompatActivity() {
             val usuario = usuarioSolicitante.text.toString()
             val tipo = tipoSolicitud.selectedItem.toString()
             val nivelImportancia = importancia.text.toString()
-            val desc = descripcion.text.toString()
+            val desc = descripcionint.text.toString()
 
             if (usuario.isNotEmpty() && desc.isNotEmpty() && selectedDestinatarios.isNotEmpty()) {
                 // Crear un diálogo de confirmación
@@ -181,7 +181,7 @@ class CrearSolicitudActivity : AppCompatActivity() {
                     "usuarioSolicitante" to usuario,
                     "tipoSolicitud" to tipo,
                     "importancia" to importancia,
-                    "descripcion" to descripcion,
+                    "descripcionint" to descripcion,
                     "destinatarios" to selectedDestinatarios,
                     "fechaRegistro" to fecha
                 )
