@@ -118,6 +118,7 @@ class ResponderSolicitudActivity : AppCompatActivity() {
                             if (intent != null) {
                                 // Pasar el ID del ticket a la nueva actividad
                                 intent.putExtra("TICKET_ID", ticket.id)
+                                intent.putExtra("NOMBRE_USUARIO", nombreUsuario)
                                 startActivity(intent)
                             } else {
                                 Toast.makeText(this@ResponderSolicitudActivity, "Importancia del ticket no válida.", Toast.LENGTH_SHORT).show()
