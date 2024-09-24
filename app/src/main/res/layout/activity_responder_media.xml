@@ -2,16 +2,56 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="16dp">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/usuarioTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="24sp"
+        android:text="Usuario: "
+        android:textSize="18sp"
         android:textStyle="bold"
-        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"/>
+
+    <!-- TextView para mostrar la descripción del ticket -->
+    <TextView
+        android:id="@+id/descriptionTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
         android:layout_marginBottom="20dp"
-        android:textColor="@android:color/black" />
+        android:text="Descripción del ticket"
+        android:layout_marginTop="20dp" />
+
+    <!-- EditText para ingresar observaciones -->
+    <EditText
+        android:id="@+id/observacionesEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Ingrese observaciones"
+        android:inputType="textMultiLine"
+        android:gravity="top"
+        android:minLines="3"
+        android:layout_marginBottom="20dp"
+        android:padding="10dp"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        android:background="@android:drawable/editbox_background_normal" />
+
+    <!-- Botón para enviar la respuesta -->
+    <Button
+        android:id="@+id/enviarRespuestaButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Enviar Respuesta"
+        android:layout_marginBottom="20dp"
+        android:textSize="18sp"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:textColor="@android:color/white" />
+
+
 
 </LinearLayout>
