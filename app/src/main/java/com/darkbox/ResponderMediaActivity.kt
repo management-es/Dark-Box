@@ -7,6 +7,7 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import android.app.AlertDialog
+import android.content.Intent
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -22,6 +23,7 @@ class ResponderMediaActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_responder_media)
+
 
         // Inicializar los componentes del layout
         descriptionTextView = findViewById(R.id.descriptionTextView)
@@ -40,6 +42,9 @@ class ResponderMediaActivity : Activity() {
 
         // Referencia a la base de datos para tickets
         val databaseTickets = FirebaseDatabase.getInstance().getReference("tickets")
+
+        // En tu actividad actual, donde tienes el botón para ir al historial
+        val botonHistorial: Button = findViewById(R.id.button_historial)
 
         // Mostrar la descripción del ticket
         if (ticketId != null) {
@@ -108,6 +113,19 @@ class ResponderMediaActivity : Activity() {
                 Toast.makeText(this, "Por favor, ingrese sus observaciones.", Toast.LENGTH_SHORT).show()
             }
         }
+
+
+        // Funcionalidad del botón Historial
+        botonHistorial.setOnClickListener {
+            val intent = Intent(this, HistorialMediaAltaActivity::class.java)
+            ticketId?.let {
+                intent.putExtra("TICKET_ID", it)
+                startActivity(intent)
+            } ?: run {
+                Toast.makeText(this, "Ticket ID no disponible.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
     }
 
     // Modelo de Ticket

@@ -172,6 +172,12 @@
             android:label="Responder Solicitud Baja"
             android:theme="@style/Theme.DarkBox" />
 
+        <activity
+            android:name=".HistorialMediaAltaActivity"
+            android:exported="true"
+            android:label="Historial Solicitud Media Alta"
+            android:theme="@style/Theme.DarkBox" />
+
         <service
             android:name=".MyFirebaseMessagingService"
             android:exported="false">

@@ -72,6 +72,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation("com.airbnb.android:lottie:6.5.2")
     implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation ("androidx.cardview:cardview:1.0.0")
+    implementation ("androidx.recyclerview:recyclerview:1.2.0")
     // Firebase dependencies
     implementation(platform("com.google.firebase:firebase-bom:32.0.0"))
     implementation("com.google.firebase:firebase-messaging")
