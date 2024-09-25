@@ -18,17 +18,18 @@ class ResponderMediaActivity : Activity() {
     private lateinit var descriptionTextView: TextView
     private lateinit var observacionesEditText: EditText
     private lateinit var usuarioTextView: TextView
+    private lateinit var cerrarTicketButton: Button  // Agregar referencia para el botón
     private lateinit var nombreUsuario: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_responder_media)
 
-
         // Inicializar los componentes del layout
         descriptionTextView = findViewById(R.id.descriptionTextView)
         observacionesEditText = findViewById(R.id.observacionesEditText)
         usuarioTextView = findViewById(R.id.usuarioTextView)
+        cerrarTicketButton = findViewById(R.id.cerrarTicketButton) // Inicializar botón de cerrar ticket
         val enviarRespuestaButton = findViewById<Button>(R.id.enviarRespuestaButton)
 
         // Obtener el nombre de usuario desde el Intent
@@ -42,9 +43,6 @@ class ResponderMediaActivity : Activity() {
 
         // Referencia a la base de datos para tickets
         val databaseTickets = FirebaseDatabase.getInstance().getReference("tickets")
-
-        // En tu actividad actual, donde tienes el botón para ir al historial
-        val botonHistorial: Button = findViewById(R.id.button_historial)
 
         // Mostrar la descripción del ticket
         if (ticketId != null) {
@@ -67,6 +65,24 @@ class ResponderMediaActivity : Activity() {
                     Toast.makeText(this@ResponderMediaActivity, "Error al consultar el ticket: ${databaseError.message}", Toast.LENGTH_SHORT).show()
                 }
             })
+        }
+
+        // Funcionalidad del botón cerrarTicketButton
+        cerrarTicketButton.setOnClickListener {
+            ticketId?.let {
+                // Actualizar el estado del ticket a "Realizado"
+                databaseTickets.child(it).child("estado").setValue("Realizado")
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            Toast.makeText(this, "Ticket cerrado y marcado como realizado.", Toast.LENGTH_SHORT).show()
+                            finish() // Cerrar la actividad actual
+                        } else {
+                            Toast.makeText(this, "Error al cerrar el ticket: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+            } ?: run {
+                Toast.makeText(this, "Ticket ID no disponible.", Toast.LENGTH_SHORT).show()
+            }
         }
 
         // Funcionalidad del botón enviarRespuestaButton
@@ -114,8 +130,8 @@ class ResponderMediaActivity : Activity() {
             }
         }
 
-
         // Funcionalidad del botón Historial
+        val botonHistorial: Button = findViewById(R.id.button_historial)
         botonHistorial.setOnClickListener {
             val intent = Intent(this, HistorialMediaAltaActivity::class.java)
             ticketId?.let {
