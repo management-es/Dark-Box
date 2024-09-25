@@ -20,6 +20,7 @@ class ResponderMediaActivity : Activity() {
     private lateinit var usuarioTextView: TextView
     private lateinit var cerrarTicketButton: Button  // Agregar referencia para el botón
     private lateinit var nombreUsuario: String
+    private lateinit var ticketId: String // Agregar referencia para el Ticket ID
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,17 +36,17 @@ class ResponderMediaActivity : Activity() {
         // Obtener el nombre de usuario desde el Intent
         nombreUsuario = intent.getStringExtra("NOMBRE_USUARIO") ?: "Usuario"
 
+        // Obtener el ID del ticket desde el Intent
+        ticketId = intent.getStringExtra("TICKET_ID") ?: ""
+
         // Mostrar el nombre del usuario en pantalla
         usuarioTextView.text = "Usuario: $nombreUsuario"
-
-        // Obtener el ID del ticket desde el Intent
-        val ticketId = intent.getStringExtra("TICKET_ID")
 
         // Referencia a la base de datos para tickets
         val databaseTickets = FirebaseDatabase.getInstance().getReference("tickets")
 
         // Mostrar la descripción del ticket
-        if (ticketId != null) {
+        if (ticketId.isNotEmpty()) {
             databaseTickets.child(ticketId).addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     val ticket = dataSnapshot.getValue(Ticket::class.java)
@@ -56,6 +57,20 @@ class ResponderMediaActivity : Activity() {
                             Tipo de Solicitud: ${ticket.tipoSolicitud}
                             Descripción: ${ticket.descripcionint}
                         """.trimIndent()
+
+                        // Validar si el usuario es el solicitante
+                        val usuarioSolicitante = dataSnapshot.child("usuarioSolicitante").getValue(String::class.java)
+                        if (usuarioSolicitante != nombreUsuario) {
+                            cerrarTicketButton.isEnabled = false
+                            cerrarTicketButton.alpha = 0.5f // Cambiar la opacidad del botón para indicar que está deshabilitado
+
+                            // Crear el AlertDialog
+                            AlertDialog.Builder(this@ResponderMediaActivity)
+                                .setTitle("Permiso restringido")
+                                .setMessage("Este ticket únicamente puede ser cerrado por el usuario solicitante.")
+                                .setPositiveButton("Aceptar") { dialog, _ -> dialog.dismiss() }
+                                .show()
+                        }
                     } else {
                         descriptionTextView.text = "Información del ticket no disponible."
                     }
@@ -69,21 +84,28 @@ class ResponderMediaActivity : Activity() {
 
         // Funcionalidad del botón cerrarTicketButton
         cerrarTicketButton.setOnClickListener {
-            ticketId?.let {
-                // Actualizar el estado del ticket a "Realizado"
-                databaseTickets.child(it).child("estado").setValue("Realizado")
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            Toast.makeText(this, "Ticket cerrado y marcado como realizado.", Toast.LENGTH_SHORT).show()
-                            finish() // Cerrar la actividad actual
-                        } else {
-                            Toast.makeText(this, "Error al cerrar el ticket: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+            // Crear el AlertDialog
+            AlertDialog.Builder(this)
+                .setTitle("Cerrar Ticket")
+                .setMessage("Al cerrar este ticket no podrás volver a activarlo, por favor revisar detenidamente el historial y las respuestas a la solicitud.")
+                .setPositiveButton("Cerrar Ticket") { dialog, which ->
+                    // Actualizar el estado del ticket a "Realizado"
+                    databaseTickets.child(ticketId).child("estado").setValue("Realizado")
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                Toast.makeText(this, "Ticket cerrado y marcado como realizado.", Toast.LENGTH_SHORT).show()
+                                finish() // Cerrar la actividad actual
+                            } else {
+                                Toast.makeText(this, "Error al cerrar el ticket: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                            }
                         }
-                    }
-            } ?: run {
-                Toast.makeText(this, "Ticket ID no disponible.", Toast.LENGTH_SHORT).show()
-            }
+                }
+                .setNegativeButton("Cancelar") { dialog, which ->
+                    dialog.dismiss() // Cerrar el diálogo si se cancela
+                }
+                .show() // Mostrar el AlertDialog
         }
+
 
         // Funcionalidad del botón enviarRespuestaButton
         enviarRespuestaButton.setOnClickListener {
@@ -134,7 +156,7 @@ class ResponderMediaActivity : Activity() {
         val botonHistorial: Button = findViewById(R.id.button_historial)
         botonHistorial.setOnClickListener {
             val intent = Intent(this, HistorialMediaAltaActivity::class.java)
-            ticketId?.let {
+            ticketId.let {
                 intent.putExtra("TICKET_ID", it)
                 startActivity(intent)
             } ?: run {
@@ -148,6 +170,7 @@ class ResponderMediaActivity : Activity() {
     data class Ticket(
         val descripcionint: String? = null,
         val tipoSolicitud: String? = null,
-        val importancia: String? = null
+        val importancia: String? = null,
+        val usuarioSolicitante: String? = null // Agregar la propiedad usuarioSolicitante
     )
 }
