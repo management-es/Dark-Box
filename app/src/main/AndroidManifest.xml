@@ -178,6 +178,12 @@
             android:label="Historial Solicitud Media Alta"
             android:theme="@style/Theme.DarkBox" />
 
+        <activity
+            android:name=".SeguimientoActivity"
+            android:exported="true"
+            android:label="Seguimiento de Solicitudes"
+            android:theme="@style/Theme.DarkBox" />
+
         <service
             android:name=".MyFirebaseMessagingService"
             android:exported="false">

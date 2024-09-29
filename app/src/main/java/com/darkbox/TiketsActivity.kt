@@ -1,5 +1,6 @@
 package com.darkbox
 
+
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -11,7 +12,7 @@ class TiketsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_tikets) // Asegúrate de que el layout correcto esté establecido
+        setContentView(R.layout.item_ticket) // Asegúrate de que el layout correcto esté establecido
 
         // Obtener el nombre de usuario del Intent
         nombreUsuario = intent.getStringExtra("NOMBRE_USUARIO") ?: "Usuario"
@@ -27,6 +28,12 @@ class TiketsActivity : AppCompatActivity() {
         btnResponderSolicitud.setOnClickListener {
             navigateToResponderSolicitud()
         }
+
+        // Botón para ir a Seguimiento
+        val btnSeguimiento = findViewById<Button>(R.id.btnSeguimiento)
+        btnSeguimiento.setOnClickListener {
+            navigateToSeguimiento()
+        }
     }
 
     private fun navigateToCrearSolicitud() {
@@ -37,6 +44,12 @@ class TiketsActivity : AppCompatActivity() {
 
     private fun navigateToResponderSolicitud() {
         val intent = Intent(this, ResponderSolicitudActivity::class.java)
+        intent.putExtra("NOMBRE_USUARIO", nombreUsuario)
+        startActivity(intent)
+    }
+
+    private fun navigateToSeguimiento() {
+        val intent = Intent(this, SeguimientoActivity::class.java)
         intent.putExtra("NOMBRE_USUARIO", nombreUsuario)
         startActivity(intent)
     }
