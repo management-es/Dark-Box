@@ -1,40 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_margin="8dp"
+    app:cardElevation="4dp"
+    app:cardCornerRadius="8dp">
 
-    <TextView
-        android:id="@+id/descripcionTextView"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Descripción:" />
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <TextView
-        android:id="@+id/estadoTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Estado:" />
+        <TextView
+            android:id="@+id/descripcionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Descripción"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/importanciaTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Importancia:" />
+        <TextView
+            android:id="@+id/estadoTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Estado" />
 
-    <TextView
-        android:id="@+id/tipoSolicitudTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tipo de Solicitud:" />
+        <TextView
+            android:id="@+id/importanciaTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Importancia" />
 
-    <TextView
-        android:id="@+id/usuarioSolicitanteTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Usuario Solicitante:" />
+        <TextView
+            android:id="@+id/tipoSolicitudTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tipo de Solicitud" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/usuarioSolicitanteTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Usuario Solicitante" />
+
+        <TextView
+            android:id="@+id/destinatariosTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Destinatarios" />
+
+        <Button
+            android:id="@+id/btnCargarRespuesta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cargar Respuesta" />
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
