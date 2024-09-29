@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.database.*
 import java.util.*
-import androidx.appcompat.app.AlertDialog
 
 
 class SeguimientoActivity : AppCompatActivity() {
@@ -37,33 +36,9 @@ class SeguimientoActivity : AppCompatActivity() {
 
         // Inicializa ticketAdapter con el lambda para el botón "Cargar Respuesta"
         ticketAdapter = TicketAdapter(ticketList) { ticket ->
-            // Mostrar el estado del ticket al hacer clic en el botón
-            val estadoTicket = ticket.estado ?: "Estado desconocido" // Manejar el caso de null
-
-            // Mostrar un Toast con el estado del ticket
-            Toast.makeText(this, "Estado del ticket: $estadoTicket", Toast.LENGTH_SHORT).show()
-
             // Manejar la acción de cargar respuesta aquí
-            when (estadoTicket) {
-                "Realizado" -> {
-                    // Aquí puedes implementar la lógica para cargar la respuesta
-                    Toast.makeText(this, "Cargar respuesta para el ticket: ${ticket.descripcionint}", Toast.LENGTH_SHORT).show()
-                    // Aquí puedes agregar la lógica para cargar la respuesta...
-                }
-                "Pendiente" -> {
-                    // Mostrar AlertDialog
-                    AlertDialog.Builder(this)
-                        .setTitle("Estado de la Solicitud")
-                        .setMessage("Esta solicitud aún está pendiente por respuesta.")
-                        .setPositiveButton("Aceptar") { dialog, _ -> dialog.dismiss() }
-                        .setCancelable(true)
-                        .show()
-                }
-                else -> {
-                    // Mostrar un Toast para el caso de estado null o desconocido
-                    Toast.makeText(this, "El estado del ticket es desconocido.", Toast.LENGTH_SHORT).show()
-                }
-            }
+            Toast.makeText(this, "Cargar respuesta para el ticket: ${ticket.descripcionint}", Toast.LENGTH_SHORT).show()
+            // Aquí puedes iniciar una nueva actividad o mostrar un diálogo, según lo que necesites hacer
         }
 
 
@@ -96,57 +71,44 @@ class SeguimientoActivity : AppCompatActivity() {
     }
 
     private fun searchTicketsByDate(date: String) {
-        // Obtener una referencia a la base de datos de Firebase
         val firebaseDatabase: DatabaseReference = FirebaseDatabase.getInstance().reference
-
-        // Crear la consulta para buscar tickets que comiencen con la fecha seleccionada
         val query = firebaseDatabase.child("tickets")
             .orderByKey()
             .startAt(date)
-            .endAt(date + "\uf8ff") // Para incluir lo que comience con esa fecha
+            .endAt(date + "\uf8ff")
 
-        // Escuchar los resultados de la consulta
         query.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val resultCount = snapshot.childrenCount.toInt() // Contar la cantidad de resultados
+                val resultCount = snapshot.childrenCount.toInt()
 
-                // Comprobar si hay resultados
                 if (resultCount > 0) {
-                    val tickets = mutableListOf<Ticket>() // Lista de tickets válidos
+                    val tickets = mutableListOf<Ticket>()
 
-                    // Recorrer los resultados
                     for (ticketSnapshot in snapshot.children) {
-                        val ticketId = ticketSnapshot.key // Obtiene el ID del ticket
+                        val ticketId = ticketSnapshot.key ?: continue  // Obtiene el ID del ticket
 
-                        // Comprobar si el ticketId comienza con la fecha seleccionada
-                        if (ticketId != null && ticketId.startsWith(date)) {
-                            // Extraer la información del ticket
+                        if (ticketId.startsWith(date)) {
                             val descripcionint = ticketSnapshot.child("descripcionint").getValue(String::class.java)
                             val estado = ticketSnapshot.child("estado").getValue(String::class.java)
                             val importancia = ticketSnapshot.child("importancia").getValue(String::class.java)
                             val tipoSolicitud = ticketSnapshot.child("tipoSolicitud").getValue(String::class.java)
                             val usuarioSolicitante = ticketSnapshot.child("usuarioSolicitante").getValue(String::class.java)
 
-                            // Extraer destinatarios
                             val destinatarios = mutableListOf<String>()
                             ticketSnapshot.child("destinatarios").children.forEach { destinatarioSnapshot ->
                                 destinatarios.add(destinatarioSnapshot.getValue(String::class.java) ?: "")
                             }
 
-                            // Crear un nuevo ticket y agregarlo a la lista
-                            val ticket = Ticket(descripcionint ?: "", estado ?: "", importancia ?: "", tipoSolicitud ?: "", usuarioSolicitante ?: "", destinatarios)
+                            // Crear un nuevo ticket con el Ticket ID
+                            val ticket = Ticket(ticketId, descripcionint ?: "", estado ?: "", importancia ?: "", tipoSolicitud ?: "", usuarioSolicitante ?: "", destinatarios)
                             tickets.add(ticket)
                         }
                     }
 
-                    // Configura el RecyclerView con la lista de tickets y el manejo del botón
                     recyclerView.adapter = TicketAdapter(tickets) { ticket ->
-                        // Manejar la acción de cargar respuesta
                         Toast.makeText(this@SeguimientoActivity, "Cargar respuesta para el ticket: ${ticket.descripcionint}", Toast.LENGTH_SHORT).show()
-                        // Aquí puedes iniciar una nueva actividad o mostrar un diálogo, según lo que necesites hacer
                     }
 
-                    // Mostrar la cantidad de tickets válidos
                     Toast.makeText(this@SeguimientoActivity, "Cantidad de resultados: ${tickets.size}", Toast.LENGTH_SHORT).show()
                 } else {
                     Toast.makeText(this@SeguimientoActivity, "No se encontraron tickets para la fecha: $date", Toast.LENGTH_SHORT).show()
@@ -161,9 +123,9 @@ class SeguimientoActivity : AppCompatActivity() {
     }
 
 
-
     // Clase Ticket definida aquí
     data class Ticket(
+        val ticketId: String? = null,
         val descripcionint: String? = null,
         val estado: String? = null,
         val importancia: String? = null,

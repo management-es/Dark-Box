@@ -66,6 +66,7 @@ class TicketAdapter(
         holder.tipoSolicitudTextView.text = "Tipo de Solicitud: ${ticket.tipoSolicitud}"
         holder.usuarioSolicitanteTextView.text = "Usuario Solicitante: ${ticket.usuarioSolicitante}"
         holder.destinatariosTextView.text = "Destinatarios: ${ticket.destinatarios.joinToString(", ")}"
+        holder.itemView.findViewById<TextView>(R.id.ticketIdTextView).text = "Ticket ID: ${ticket.ticketId}"
     }
 
     override fun getItemCount(): Int {
