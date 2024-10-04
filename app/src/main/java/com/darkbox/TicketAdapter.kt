@@ -1,5 +1,6 @@
 package com.darkbox
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,7 +27,8 @@ class TicketAdapter(
         init {
             btnCargarRespuesta.setOnClickListener {
                 val ticket = ticketList[adapterPosition] // Obtener el ticket correspondiente
-                val estadoTicket = estadoTextView.text.toString() // Obtener el estado del TextView
+                val estadoTicket = estadoTextView.text.toString().substringAfter("Estado: ").trim()
+                val importanciaTicket = importanciaTextView.text.toString().substringAfter("Importancia: ").trim()
 
                 // Mostrar un Toast con el estado del ticket
                 Toast.makeText(itemView.context, "Estado del ticket: $estadoTicket", Toast.LENGTH_SHORT).show()
@@ -34,10 +36,21 @@ class TicketAdapter(
                 // Manejar la acción de cargar respuesta aquí
                 when (estadoTicket) {
                     "Realizado" -> {
-                        // Aquí puedes implementar la lógica para cargar la respuesta
-                        Toast.makeText(itemView.context, "Cargar respuesta para el ticket: ${ticket.descripcionint}", Toast.LENGTH_SHORT).show()
-                        // Aquí puedes agregar la lógica para cargar la respuesta...
+                        if (importanciaTicket == "Baja") {
+                            val ticketId = ticket.ticketId
+                            if (ticketId != null) {
+                                val context = itemView.context
+                                val intent = Intent(context, RespuestaBajaActivity::class.java)
+                                intent.putExtra("TICKET_ID", ticketId) // Pasar el Ticket ID a la nueva actividad
+                                context.startActivity(intent)
+                            } else {
+                                Toast.makeText(itemView.context, "El Ticket ID es nulo", Toast.LENGTH_SHORT).show()
+                            }
+                        } else {
+                            Toast.makeText(itemView.context, "Solo puedes cargar respuestas de tickets con importancia 'Baja'.", Toast.LENGTH_SHORT).show()
+                        }
                     }
+
                     "Pendiente" -> {
                         // Mostrar AlertDialog
                         AlertDialog.Builder(itemView.context)

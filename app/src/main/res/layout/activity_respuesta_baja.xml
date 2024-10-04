@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- TextView para Apellidos -->
+    <TextView
+        android:id="@+id/apellidosTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Apellidos: "
+        android:textSize="16sp" />
+
+    <!-- TextView para Código de Cliente -->
+    <TextView
+        android:id="@+id/codClienteTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Código de Cliente: "
+        android:textSize="16sp" />
+
+    <!-- TextView para Nombres -->
+    <TextView
+        android:id="@+id/nombresTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nombres: "
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tecnologiaTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tecnología"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/nivelesDbmTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Niveles dBm"
+        android:textSize="18sp" />
+
+
+    <TextView
+        android:id="@+id/enviadosTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Enviados"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/recibidosTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Recibidos"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/perdidaTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pérdida"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/observacionesTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Observaciones"
+        android:textSize="18sp" />
+
+</LinearLayout>
