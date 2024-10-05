@@ -1,102 +1,135 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:padding="16dp">
 
-    <TextView
-        android:id="@+id/titulo1TextView"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Datos CLiente "
-        android:textSize="20sp"
-        android:textStyle="bold"/>
+        android:orientation="vertical">
+
+        <!-- Campos Comunes -->
+
+        <!-- Datos Cliente -->
+        <TextView
+            android:id="@+id/codClienteTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Código de Cliente: "
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/nombresTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nombres: "
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/apellidosTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Apellidos: "
+            android:textSize="16sp" />
+
+        <!-- Desarrollo -->
+        <TextView
+            android:id="@+id/tecnologiaTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tecnología: "
+            android:textSize="16sp" />
+
+        <!-- Campos para Radio Enlace -->
+
+        <TextView
+            android:id="@+id/enviadosAntenaTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enviados Antena: "
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/enviadosRouterTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Enviados Router: "
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/nivelesDbm1TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Niveles dBm 1: "
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/nivelesDbm2TextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Niveles dBm 2: "
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/observacionesTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Observaciones Antena: "
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/perdidaAntenaTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pérdida Antena: "
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/perdidaRouterTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pérdida Router: "
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/recibidosRouterTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Recibidos Router: "
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/sectorAntenaTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sector Antena: "
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tiempoConectividadTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tiempo de Conectividad: "
+            android:textSize="16sp" />
+
+        <!-- Campos para Fibra Óptica -->
+        <TextView
+            android:id="@+id/velocidadContratadaTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Velocidad Contratada: "
+            android:textSize="16sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/potenciaFibraTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Potencia Fibra: "
+            android:textSize="16sp"
+            android:visibility="gone" />
 
 
-    <!-- TextView para Código de Cliente -->
-    <TextView
-        android:id="@+id/codClienteTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Código de Cliente: "
-        android:textSize="16sp" />
 
-    <!-- TextView para Nombres -->
-    <TextView
-        android:id="@+id/nombresTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Nombres: "
-        android:textSize="16sp" />
-
-    <!-- TextView para Apellidos -->
-    <TextView
-        android:id="@+id/apellidosTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Apellidos: "
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/titulo2TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Desarrollo y Respuesta "
-        android:textSize="20sp"
-        android:textStyle="bold"/>
-
-
-    <TextView
-        android:id="@+id/tecnologiaTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tecnología"
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/nivelesDbmTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Niveles dBm"
-        android:textSize="16sp"
-        android:textStyle="bold"/>
-
-    <TextView
-        android:id="@+id/titulo3TextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ping a Equipos "
-        android:textSize="20sp"
-        android:textStyle="bold"/>
-
-
-    <TextView
-        android:id="@+id/enviadosTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Enviados"
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/recibidosTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Recibidos"
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/perdidaTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Pérdida"
-        android:textSize="16sp" />
-
-    <TextView
-        android:id="@+id/observacionesTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Observaciones"
-        android:textSize="16sp" />
-
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>

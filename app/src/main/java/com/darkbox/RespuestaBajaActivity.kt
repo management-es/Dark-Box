@@ -4,17 +4,28 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.StyleSpan
+import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.*
 
 class RespuestaBajaActivity : AppCompatActivity() {
     private lateinit var tecnologiaTextView: TextView
-    private lateinit var enviadosTextView: TextView
-    private lateinit var nivelesDbmTextView: TextView
+    private lateinit var enviadosAntenaTextView: TextView
+    private lateinit var enviadosRouterTextView: TextView
+    private lateinit var nivelesDbm1TextView: TextView
+    private lateinit var nivelesDbm2TextView: TextView
     private lateinit var observacionesTextView: TextView
-    private lateinit var perdidaTextView: TextView
-    private lateinit var recibidosTextView: TextView
+    private lateinit var perdidaAntenaTextView: TextView
+    private lateinit var perdidaRouterTextView: TextView
+    private lateinit var recibidosRouterTextView: TextView
+    private lateinit var sectorAntenaTextView: TextView
+    private lateinit var tiempoConectividadTextView: TextView
+
+    // Campos para Fibra Óptica
+    private lateinit var velocidadContratadaTextView: TextView
+    private lateinit var potenciaFibraTextView: TextView
+
     private lateinit var apellidosTextView: TextView
     private lateinit var codClienteTextView: TextView
     private lateinit var nombresTextView: TextView
@@ -26,11 +37,21 @@ class RespuestaBajaActivity : AppCompatActivity() {
 
         // Inicializar vistas
         tecnologiaTextView = findViewById(R.id.tecnologiaTextView)
-        enviadosTextView = findViewById(R.id.enviadosTextView)
-        nivelesDbmTextView = findViewById(R.id.nivelesDbmTextView)
+        enviadosAntenaTextView = findViewById(R.id.enviadosAntenaTextView)
+        enviadosRouterTextView = findViewById(R.id.enviadosRouterTextView)
+        nivelesDbm1TextView = findViewById(R.id.nivelesDbm1TextView)
+        nivelesDbm2TextView = findViewById(R.id.nivelesDbm2TextView)
         observacionesTextView = findViewById(R.id.observacionesTextView)
-        perdidaTextView = findViewById(R.id.perdidaTextView)
-        recibidosTextView = findViewById(R.id.recibidosTextView)
+        perdidaAntenaTextView = findViewById(R.id.perdidaAntenaTextView)
+        perdidaRouterTextView = findViewById(R.id.perdidaRouterTextView)
+        recibidosRouterTextView = findViewById(R.id.recibidosRouterTextView)
+        sectorAntenaTextView = findViewById(R.id.sectorAntenaTextView)
+        tiempoConectividadTextView = findViewById(R.id.tiempoConectividadTextView)
+
+        // Inicializar vistas para Fibra Óptica
+        velocidadContratadaTextView = findViewById(R.id.velocidadContratadaTextView)
+        potenciaFibraTextView = findViewById(R.id.potenciaFibraTextView)
+
         apellidosTextView = findViewById(R.id.apellidosTextView)
         codClienteTextView = findViewById(R.id.codClienteTextView)
         nombresTextView = findViewById(R.id.nombresTextView)
@@ -58,54 +79,41 @@ class RespuestaBajaActivity : AppCompatActivity() {
                     val tecnologia = desarrolloSnapshot.child("tecnologia").getValue(String::class.java)
                     tecnologiaTextView.text = createSpannable("Tecnología: ", tecnologia ?: "No se encontró la tecnología")
 
-                    // Inicializar variables para los campos
-                    var enviados: String? = null
-                    val nivelesDbmList = mutableListOf<String>() // Usar una lista para almacenar múltiples valores de nivelesDbm
-                    var observaciones: String? = null
-                    var perdida: String? = null
-                    var recibidos: String? = null
+                    if (tecnologia == "Radio Enlace") {
+                        mostrarCamposRadioEnlace()
+                        // Asignar valores específicos para Radio Enlace
+                        val enviadosAntena = desarrolloSnapshot.child("enviadosAntena").getValue(String::class.java)
+                        val enviadosRouter = desarrolloSnapshot.child("enviadosRouter").getValue(String::class.java)
+                        val nivelesDbm1 = desarrolloSnapshot.child("nivelesDbm1").getValue(String::class.java)
+                        val nivelesDbm2 = desarrolloSnapshot.child("nivelesDbm2").getValue(String::class.java)
+                        val observaciones = desarrolloSnapshot.child("observacionesAntena").getValue(String::class.java)
+                        val perdidaAntena = desarrolloSnapshot.child("perdidaAntena").getValue(String::class.java)
+                        val perdidaRouter = desarrolloSnapshot.child("perdidaRouter").getValue(String::class.java)
+                        val recibidosRouter = desarrolloSnapshot.child("recibidosRouter").getValue(String::class.java)
+                        val sectorAntena = desarrolloSnapshot.child("sectorAntena").getValue(String::class.java)
+                        val tiempoConectividad = desarrolloSnapshot.child("tiempoConectividad").getValue(String::class.java)
 
-                    // Iterar por todos los hijos del nodo "desarrollo"
-                    for (campoSnapshot in desarrolloSnapshot.children) {
-                        val key = campoSnapshot.key
-                        val value = campoSnapshot.getValue(String::class.java)
+                        // Asignar valores a los TextViews
+                        enviadosAntenaTextView.text = createSpannable("Enviados Antena: ", enviadosAntena ?: "No se encontraron enviados antena")
+                        enviadosRouterTextView.text = createSpannable("Enviados Router: ", enviadosRouter ?: "No se encontraron enviados router")
+                        nivelesDbm1TextView.text = createSpannable("Niveles dBm 1: ", nivelesDbm1 ?: "No se encontraron niveles dBm 1")
+                        nivelesDbm2TextView.text = createSpannable("Niveles dBm 2: ", nivelesDbm2 ?: "No se encontraron niveles dBm 2")
+                        observacionesTextView.text = createSpannable("Observaciones Antena: ", observaciones ?: "No se encontraron observaciones")
+                        perdidaAntenaTextView.text = createSpannable("Pérdida Antena: ", perdidaAntena ?: "No se encontró pérdida en antena")
+                        perdidaRouterTextView.text = createSpannable("Pérdida Router: ", perdidaRouter ?: "No se encontró pérdida en router")
+                        recibidosRouterTextView.text = createSpannable("Recibidos Router: ", recibidosRouter ?: "No se encontraron recibidos en router")
+                        sectorAntenaTextView.text = createSpannable("Sector Antena: ", sectorAntena ?: "No se encontró sector de la antena")
+                        tiempoConectividadTextView.text = createSpannable("Tiempo de Conectividad: ", tiempoConectividad ?: "No se encontró tiempo de conectividad")
 
-                        // Comprobar si el nombre del campo empieza con los prefijos deseados
-                        when {
-                            key?.startsWith("enviados", ignoreCase = true) == true -> {
-                                enviados = value ?: "No se encontraron los enviados"
-                            }
-                            key?.startsWith("nivelesDbm", ignoreCase = true) == true -> {
-                                // Agregar los valores de nivelesDbm a la lista
-                                nivelesDbmList.add(value ?: "No se encontró nivelesDbm")
-                            }
-                            key?.startsWith("observaciones", ignoreCase = true) == true -> {
-                                observaciones = value ?: "No se encontraron observaciones"
-                            }
-                            key?.startsWith("perdida", ignoreCase = true) == true -> {
-                                perdida = value ?: "No se encontró la pérdida"
-                            }
-                            key?.startsWith("recibidos", ignoreCase = true) == true -> {
-                                recibidos = value ?: "No se encontraron los recibidos"
-                            }
-                        }
+                    } else if (tecnologia == "Fibra Óptica") {
+                        mostrarCamposFibraOptica()
+                        // Asignar valores específicos para Fibra Óptica
+                        val velocidadContratada = desarrolloSnapshot.child("velocidadContratada").getValue(String::class.java)
+                        val potenciaFibra = desarrolloSnapshot.child("potenciaFibra").getValue(String::class.java)
+
+                        velocidadContratadaTextView.text = createSpannable("Velocidad Contratada: ", velocidadContratada ?: "No se encontró la velocidad contratada")
+                        potenciaFibraTextView.text = createSpannable("Potencia Fibra: ", potenciaFibra ?: "No se encontró la potencia de la fibra")
                     }
-
-                    // Concatenar los valores de nivelesDbm
-                    val nivelesDbmConcatenado = if (nivelesDbmList.size >= 2) {
-                        "Niveles dBm: ${nivelesDbmList[1]} / ${nivelesDbmList[0]}"
-                    } else if (nivelesDbmList.isNotEmpty()) {
-                        "Niveles dBm: ${nivelesDbmList[0]}"
-                    } else {
-                        "No se encontraron los niveles dBm"
-                    }
-
-                    // Asignar valores a los TextViews después de completar la iteración
-                    enviadosTextView.text = createSpannable("Enviados: ", enviados ?: "No se encontraron los enviados")
-                    nivelesDbmTextView.text = createSpannable("", nivelesDbmConcatenado)
-                    observacionesTextView.text = createSpannable("Observaciones: ", observaciones ?: "No se encontraron observaciones")
-                    perdidaTextView.text = createSpannable("Pérdida: ", perdida ?: "No se encontró la pérdida")
-                    recibidosTextView.text = createSpannable("Recibidos: ", recibidos ?: "No se encontraron los recibidos")
 
                     // Obtener datos del subnodo cliente
                     val clienteSnapshot = respuestaSnapshot.child("cliente")
@@ -130,5 +138,41 @@ class RespuestaBajaActivity : AppCompatActivity() {
         val spannableString = SpannableString("$label$value")
         spannableString.setSpan(StyleSpan(android.graphics.Typeface.BOLD), 0, label.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         return spannableString
+    }
+
+    // Mostrar los campos para Radio Enlace y ocultar los de Fibra Óptica
+    private fun mostrarCamposRadioEnlace() {
+        enviadosAntenaTextView.visibility = View.VISIBLE
+        enviadosRouterTextView.visibility = View.VISIBLE
+        nivelesDbm1TextView.visibility = View.VISIBLE
+        nivelesDbm2TextView.visibility = View.VISIBLE
+        observacionesTextView.visibility = View.VISIBLE
+        perdidaAntenaTextView.visibility = View.VISIBLE
+        perdidaRouterTextView.visibility = View.VISIBLE
+        recibidosRouterTextView.visibility = View.VISIBLE
+        sectorAntenaTextView.visibility = View.VISIBLE
+        tiempoConectividadTextView.visibility = View.VISIBLE
+
+        // Ocultar campos de Fibra Óptica
+        velocidadContratadaTextView.visibility = View.GONE
+        potenciaFibraTextView.visibility = View.GONE
+    }
+
+    // Mostrar los campos para Fibra Óptica y ocultar los de Radio Enlace
+    private fun mostrarCamposFibraOptica() {
+        enviadosAntenaTextView.visibility = View.GONE
+        enviadosRouterTextView.visibility = View.GONE
+        nivelesDbm1TextView.visibility = View.GONE
+        nivelesDbm2TextView.visibility = View.GONE
+        observacionesTextView.visibility = View.GONE
+        perdidaAntenaTextView.visibility = View.GONE
+        perdidaRouterTextView.visibility = View.GONE
+        recibidosRouterTextView.visibility = View.GONE
+        sectorAntenaTextView.visibility = View.GONE
+        tiempoConectividadTextView.visibility = View.GONE
+
+        // Mostrar campos de Fibra Óptica
+        velocidadContratadaTextView.visibility = View.VISIBLE
+        potenciaFibraTextView.visibility = View.VISIBLE
     }
 }
