@@ -5,13 +5,14 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- TextView para Apellidos -->
     <TextView
-        android:id="@+id/apellidosTextView"
+        android:id="@+id/titulo1TextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Apellidos: "
-        android:textSize="16sp" />
+        android:text="Datos CLiente "
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+
 
     <!-- TextView para Código de Cliente -->
     <TextView
@@ -29,19 +30,45 @@
         android:text="Nombres: "
         android:textSize="16sp" />
 
+    <!-- TextView para Apellidos -->
+    <TextView
+        android:id="@+id/apellidosTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Apellidos: "
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/titulo2TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Desarrollo y Respuesta "
+        android:textSize="20sp"
+        android:textStyle="bold"/>
+
+
     <TextView
         android:id="@+id/tecnologiaTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Tecnología"
-        android:textSize="18sp" />
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/nivelesDbmTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Niveles dBm"
-        android:textSize="18sp" />
+        android:textSize="16sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/titulo3TextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ping a Equipos "
+        android:textSize="20sp"
+        android:textStyle="bold"/>
 
 
     <TextView
@@ -49,27 +76,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Enviados"
-        android:textSize="18sp" />
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/recibidosTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Recibidos"
-        android:textSize="18sp" />
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/perdidaTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Pérdida"
-        android:textSize="18sp" />
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/observacionesTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Observaciones"
-        android:textSize="18sp" />
+        android:textSize="16sp" />
 
 </LinearLayout>
