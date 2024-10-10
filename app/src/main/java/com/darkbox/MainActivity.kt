@@ -53,7 +53,7 @@ class MainActivity : ComponentActivity() {
                     onInformesClick = { navigateToInformes() },
                     onCredencialesClick = { navigateToCredenciales() },
                     onLogoutClick = { showLogoutConfirmationDialog() },
-                    onSecondMenuClick = { navigateToTikets() }
+                    onSecondMenuClick = { navigateToTikets(rolUsuario) }
                 )
             }
         }
@@ -102,9 +102,10 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun navigateToTikets() {
+    private fun navigateToTikets(rol: String) {
         val intent = Intent(this, TiketsActivity::class.java)
         intent.putExtra("NOMBRE_USUARIO", nombreUsuario)
+        intent.putExtra("ROL_USUARIO", rol)
         startActivity(intent)
     }
 

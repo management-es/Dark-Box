@@ -9,6 +9,7 @@ import android.widget.Button
 class TiketsActivity : AppCompatActivity() {
 
     private lateinit var nombreUsuario: String // Asegúrate de que esto esté inicializado correctamente
+    private lateinit var rolUsuario: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -16,6 +17,9 @@ class TiketsActivity : AppCompatActivity() {
 
         // Obtener el nombre de usuario del Intent
         nombreUsuario = intent.getStringExtra("NOMBRE_USUARIO") ?: "Usuario"
+
+        // Obtener el rol del Intent
+        rolUsuario = intent.getStringExtra("ROL_USUARIO") ?: "Usuario"
 
         // Botón para ir a CrearSolicitudActivity
         val btnCrearSolicitud = findViewById<Button>(R.id.btnCrearSolicitud)
@@ -51,6 +55,7 @@ class TiketsActivity : AppCompatActivity() {
     private fun navigateToSeguimiento() {
         val intent = Intent(this, SeguimientoActivity::class.java)
         intent.putExtra("NOMBRE_USUARIO", nombreUsuario)
+        intent.putExtra("ROL_USUARIO", rolUsuario) // Agrega el rol al Intent
         startActivity(intent)
     }
 }

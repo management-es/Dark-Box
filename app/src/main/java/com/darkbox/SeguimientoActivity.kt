@@ -19,14 +19,17 @@ class SeguimientoActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var ticketAdapter: TicketAdapter
     private val ticketList: MutableList<Ticket> = mutableListOf()
+    private lateinit var nombreUsuario: String
+    private lateinit var rolUsuario: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_seguimiento)
 
-        // Otras inicializaciones
-        val frmSeguimientoTextView = findViewById<TextView>(R.id.frmSeguimientoTextView)
-        frmSeguimientoTextView.text = "frm seguimiento"
+        // Obtener el nombre de usuario del Intent
+        nombreUsuario = intent.getStringExtra("NOMBRE_USUARIO") ?: "Usuario"
+        rolUsuario = intent.getStringExtra("ROL_USUARIO") ?: "Usuario"
+
 
         val btnSelectDate = findViewById<Button>(R.id.btnSelectDate)
         val tvSelectedDate = findViewById<TextView>(R.id.tvSelectedDate)
@@ -57,7 +60,7 @@ class SeguimientoActivity : AppCompatActivity() {
             val datePickerDialog = DatePickerDialog(this, { _, selectedYear, selectedMonth, selectedDay ->
                 // Formatear la fecha seleccionada
                 selectedDate = String.format("%04d%02d%02d", selectedYear, selectedMonth + 1, selectedDay)
-                tvSelectedDate.text = "Selected Date: $selectedDate"
+                tvSelectedDate.text = "Fecha Seleccionada: $selectedDate"
 
             }, year, month, day)
             datePickerDialog.show()
@@ -94,22 +97,28 @@ class SeguimientoActivity : AppCompatActivity() {
                             val tipoSolicitud = ticketSnapshot.child("tipoSolicitud").getValue(String::class.java)
                             val usuarioSolicitante = ticketSnapshot.child("usuarioSolicitante").getValue(String::class.java)
 
-                            val destinatarios = mutableListOf<String>()
-                            ticketSnapshot.child("destinatarios").children.forEach { destinatarioSnapshot ->
-                                destinatarios.add(destinatarioSnapshot.getValue(String::class.java) ?: "")
-                            }
+                            // Filtrar por rol de usuario
+                            if (rolUsuario in listOf("Directivo", "SupUsrDo", "Administrativo") || usuarioSolicitante == nombreUsuario) {
+                                val destinatarios = mutableListOf<String>()
+                                ticketSnapshot.child("destinatarios").children.forEach { destinatarioSnapshot ->
+                                    destinatarios.add(destinatarioSnapshot.getValue(String::class.java) ?: "")
+                                }
 
-                            // Crear un nuevo ticket con el Ticket ID
-                            val ticket = Ticket(ticketId, descripcionint ?: "", estado ?: "", importancia ?: "", tipoSolicitud ?: "", usuarioSolicitante ?: "", destinatarios)
-                            tickets.add(ticket)
+                                // Crear un nuevo ticket con el Ticket ID
+                                val ticket = Ticket(ticketId, descripcionint ?: "", estado ?: "", importancia ?: "", tipoSolicitud ?: "", usuarioSolicitante ?: "", destinatarios)
+                                tickets.add(ticket)
+                            }
                         }
                     }
 
-                    recyclerView.adapter = TicketAdapter(tickets) { ticket ->
-                        Toast.makeText(this@SeguimientoActivity, "Cargar respuesta para el ticket: ${ticket.descripcionint}", Toast.LENGTH_SHORT).show()
+                    if (tickets.isNotEmpty()) {
+                        recyclerView.adapter = TicketAdapter(tickets) { ticket ->
+                            Toast.makeText(this@SeguimientoActivity, "Cargar respuesta para el ticket: ${ticket.descripcionint}", Toast.LENGTH_SHORT).show()
+                        }
+                        Toast.makeText(this@SeguimientoActivity, "Cantidad de resultados: ${tickets.size}", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this@SeguimientoActivity, "No tienes tickets para la fecha: $date", Toast.LENGTH_SHORT).show()
                     }
-
-                    Toast.makeText(this@SeguimientoActivity, "Cantidad de resultados: ${tickets.size}", Toast.LENGTH_SHORT).show()
                 } else {
                     Toast.makeText(this@SeguimientoActivity, "No se encontraron tickets para la fecha: $date", Toast.LENGTH_SHORT).show()
                     Log.d("SeguimientoActivity", "No se encontraron tickets para la fecha: $date")
@@ -123,7 +132,7 @@ class SeguimientoActivity : AppCompatActivity() {
     }
 
 
-    // Clase Ticket definida aquí
+    // Clase Ticket definida
     data class Ticket(
         val ticketId: String? = null,
         val descripcionint: String? = null,

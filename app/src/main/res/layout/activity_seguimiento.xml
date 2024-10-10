@@ -7,23 +7,18 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <TextView
-        android:id="@+id/frmSeguimientoTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="frm seguimiento" />
 
     <Button
         android:id="@+id/btnSelectDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select Date" />
+        android:text="Seleccionar Fecha" />
 
     <TextView
         android:id="@+id/tvSelectedDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Selected Date: " />
+        android:text="Fecha Seleccionada: " />
 
     <Button
         android:id="@+id/btnSearch"
