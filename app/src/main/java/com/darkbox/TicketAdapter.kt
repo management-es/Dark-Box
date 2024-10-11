@@ -36,18 +36,28 @@ class TicketAdapter(
                 // Manejar la acción de cargar respuesta aquí
                 when (estadoTicket) {
                     "Realizado" -> {
-                        if (importanciaTicket == "Baja") {
-                            val ticketId = ticket.ticketId
-                            if (ticketId != null) {
-                                val context = itemView.context
-                                val intent = Intent(context, RespuestaBajaActivity::class.java)
-                                intent.putExtra("TICKET_ID", ticketId) // Pasar el Ticket ID a la nueva actividad
-                                context.startActivity(intent)
-                            } else {
-                                Toast.makeText(itemView.context, "El Ticket ID es nulo", Toast.LENGTH_SHORT).show()
+                        val ticketId = ticket.ticketId
+                        if (ticketId != null) {
+                            val context = itemView.context
+
+                            // Verificar la importancia del ticket
+                            when (importanciaTicket) {
+                                "Baja" -> {
+                                    val intent = Intent(context, RespuestaBajaActivity::class.java)
+                                    intent.putExtra("TICKET_ID", ticketId) // Pasar el Ticket ID a la nueva actividad
+                                    context.startActivity(intent)
+                                }
+                                "Media", "Alta" -> {
+                                    val intent = Intent(context, RespuestaMediaAltaActivity::class.java)
+                                    intent.putExtra("TICKET_ID", ticketId) // Pasar el Ticket ID a la nueva actividad
+                                    context.startActivity(intent)
+                                }
+                                else -> {
+                                    Toast.makeText(context, "Importancia no reconocida", Toast.LENGTH_SHORT).show()
+                                }
                             }
                         } else {
-                            Toast.makeText(itemView.context, "Solo puedes cargar respuestas de tickets con importancia 'Baja'.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(itemView.context, "El Ticket ID es nulo", Toast.LENGTH_SHORT).show()
                         }
                     }
 
@@ -61,9 +71,13 @@ class TicketAdapter(
                             .show()
                     }
 
+                    else -> {
+                        Toast.makeText(itemView.context, "No se puede cargar respuesta para este estado del ticket.", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TicketViewHolder {
