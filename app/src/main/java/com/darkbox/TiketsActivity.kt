@@ -1,8 +1,8 @@
 package com.darkbox
 
-
 import android.content.Intent
 import android.os.Bundle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.Button
 
@@ -20,6 +20,12 @@ class TiketsActivity : AppCompatActivity() {
 
         // Obtener el rol del Intent
         rolUsuario = intent.getStringExtra("ROL_USUARIO") ?: "Usuario"
+
+        // Verificar el rol del usuario
+        if (rolUsuario == "Tecnico") {
+            showAccessDeniedDialog()
+            return // Termina la ejecución si es Tecnico
+        }
 
         // Botón para ir a CrearSolicitudActivity
         val btnCrearSolicitud = findViewById<Button>(R.id.btnCrearSolicitud)
@@ -40,6 +46,15 @@ class TiketsActivity : AppCompatActivity() {
         }
     }
 
+    private fun showAccessDeniedDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Acceso Denegado")
+            .setMessage("No tienes acceso a esta función.")
+            .setPositiveButton("Aceptar") { dialog, _ -> dialog.dismiss() }
+            .setCancelable(false)
+            .show()
+    }
+
     private fun navigateToCrearSolicitud() {
         val intent = Intent(this, CrearSolicitudActivity::class.java)
         intent.putExtra("NOMBRE_USUARIO", nombreUsuario) // Agrega el nombre del usuario al Intent
@@ -53,10 +68,10 @@ class TiketsActivity : AppCompatActivity() {
     }
 
     private fun navigateToSeguimiento() {
+
         val intent = Intent(this, SeguimientoActivity::class.java)
         intent.putExtra("NOMBRE_USUARIO", nombreUsuario)
         intent.putExtra("ROL_USUARIO", rolUsuario) // Agrega el rol al Intent
         startActivity(intent)
     }
 }
-

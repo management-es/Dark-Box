@@ -103,6 +103,11 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun navigateToTikets(rol: String) {
+        // Verificar el rol del usuario
+        if (rolUsuario == "Tecnico") {
+            showAccessDeniedDialog()
+            return // Termina la ejecución si es Tecnico
+        }
         val intent = Intent(this, TiketsActivity::class.java)
         intent.putExtra("NOMBRE_USUARIO", nombreUsuario)
         intent.putExtra("ROL_USUARIO", rol)
