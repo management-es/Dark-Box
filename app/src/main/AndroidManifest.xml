@@ -194,6 +194,11 @@
             android:label="Seguimiento de Solicitudes"
             android:theme="@style/Theme.DarkBox" />
 
+        <activity android:name=".FiltradoSeguimientoActivity"
+            android:exported="true"
+            android:label="Seguimiento de Solicitudes"
+            android:theme="@style/Theme.DarkBox" />
+
 
         <service
             android:name=".MyFirebaseMessagingService"
