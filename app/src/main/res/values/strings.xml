@@ -101,5 +101,11 @@
         <item>Otros</item>
     </string-array>
 
+    <string-array name="status_options">
+        <item>Todo</item>
+        <item>Realizado</item>
+        <item>Pendiente</item>
+    </string-array>
+
     <!-- Otros recursos de cadena si es necesario -->
 </resources>

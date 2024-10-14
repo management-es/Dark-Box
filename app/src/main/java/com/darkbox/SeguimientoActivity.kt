@@ -35,7 +35,6 @@ class SeguimientoActivity : AppCompatActivity() {
         val btnSelectDate = findViewById<Button>(R.id.btnSelectDate)
         val tvSelectedDate = findViewById<TextView>(R.id.tvSelectedDate)
         val btnSearch = findViewById<Button>(R.id.btnSearch)
-        val btnAvanzado = findViewById<Button>(R.id.btnAvanzado)
         recyclerView = findViewById(R.id.ticketRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
@@ -50,11 +49,6 @@ class SeguimientoActivity : AppCompatActivity() {
     // Configura el RecyclerView con el adaptador
         recyclerView.adapter = ticketAdapter
 
-
-        btnAvanzado.setOnClickListener {
-            val intent = Intent(this, FiltradoSeguimientoActivity::class.java)
-            startActivity(intent)
-        }
 
 
         btnSelectDate.setOnClickListener {

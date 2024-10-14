@@ -11,7 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 
 class TicketAdapter(
-    private val ticketList: List<SeguimientoActivity.Ticket>,
+    private var ticketList: List<SeguimientoActivity.Ticket>, // Cambié a var para permitir la actualización de la lista
     private val onCargarRespuestaClick: (SeguimientoActivity.Ticket) -> Unit // Lambda para manejar el clic
 ) : RecyclerView.Adapter<TicketAdapter.TicketViewHolder>() {
 
@@ -99,5 +99,10 @@ class TicketAdapter(
     override fun getItemCount(): Int {
         return ticketList.size
     }
-}
 
+    // Método para actualizar la lista de tickets y notificar al RecyclerView
+    fun updateTickets(newTickets: List<SeguimientoActivity.Ticket>) {
+        ticketList = newTickets  // Actualiza la lista de tickets
+        notifyDataSetChanged()  // Notifica que los datos han cambiado
+    }
+}

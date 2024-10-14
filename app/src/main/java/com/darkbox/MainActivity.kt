@@ -22,6 +22,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import com.darkbox.ui.theme.DarkBoxTheme
+import androidx.compose.material.icons.filled.Help
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
@@ -53,7 +55,8 @@ class MainActivity : ComponentActivity() {
                     onInformesClick = { navigateToInformes() },
                     onCredencialesClick = { navigateToCredenciales() },
                     onLogoutClick = { showLogoutConfirmationDialog() },
-                    onSecondMenuClick = { navigateToTikets(rolUsuario) }
+                    onSecondMenuClick = { navigateToTikets(rolUsuario) },
+                    onSoporteClick = { navigateToSoporteDev(rolUsuario, zonaUsuario) }
                 )
             }
         }
@@ -114,6 +117,14 @@ class MainActivity : ComponentActivity() {
         startActivity(intent)
     }
 
+    private fun navigateToSoporteDev(zona: String, rol: String) {
+        val intent = Intent(this, SoporteDevActivity::class.java)
+        intent.putExtra("ZONA_USUARIO", zona)
+        intent.putExtra("ROL_USUARIO", rol)
+        intent.putExtra("NOMBRE_USUARIO", nombreUsuario)
+        startActivity(intent)
+    }
+
     private fun showAccessDeniedDialog() {
         AlertDialog.Builder(this)
             .setTitle("Acceso Denegado")
@@ -167,7 +178,8 @@ fun MainScreen(
     onInformesClick: () -> Unit,
     onCredencialesClick: () -> Unit,
     onLogoutClick: () -> Unit,
-    onSecondMenuClick: () -> Unit
+    onSecondMenuClick: () -> Unit,
+    onSoporteClick: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     var secondMenuExpanded by remember { mutableStateOf(false) }
@@ -212,6 +224,7 @@ fun MainScreen(
                     }
                 },
                 actions = {
+
                     IconButton(onClick = { expanded = true }) {
                         Icon(Icons.Filled.Menu, contentDescription = "Open menu")
                     }
@@ -300,18 +313,33 @@ fun MainScreen(
                 }
             }
 
-            // Botón de cerrar sesión
-            Button(
-                onClick = { onLogoutClick() },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFE0E0E0),
-                    contentColor = Color.Black
-                ),
+            // Ícono de Soporte + Botón de Cerrar Sesión
+            Row(
                 modifier = Modifier
-                    .padding(top = 16.dp)
-                    .background(Color(0xFFE0E0E0), shape = MaterialTheme.shapes.medium)
+                    .padding(top = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "Cerrar Sesión")
+                IconButton(
+                    onClick = { onSoporteClick() }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Help, // Puedes usar un ícono como Help o Support
+                        contentDescription = "Soporte"
+                    )
+                }
+
+                Button(
+                    onClick = { onLogoutClick() },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFE0E0E0),
+                        contentColor = Color.Black
+                    ),
+                    modifier = Modifier
+                        .background(Color(0xFFE0E0E0), shape = MaterialTheme.shapes.medium)
+                ) {
+                    Text(text = "Cerrar Sesión")
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))

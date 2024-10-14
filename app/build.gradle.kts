@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.androidx.material)
     implementation("androidx.paging:paging-runtime:3.1.1")
     implementation("com.google.firebase:firebase-database-ktx:20.0.5")
+    implementation(libs.protolite.well.known.types)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -74,6 +75,8 @@ dependencies {
     implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation ("androidx.cardview:cardview:1.0.0")
     implementation ("androidx.recyclerview:recyclerview:1.2.0")
+    implementation ("androidx.compose.material:material-icons-extended:1.0.0")
+
     // Firebase dependencies
     implementation(platform("com.google.firebase:firebase-bom:32.0.0"))
     implementation("com.google.firebase:firebase-messaging")

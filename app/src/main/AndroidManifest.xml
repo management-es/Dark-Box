@@ -194,10 +194,11 @@
             android:label="Seguimiento de Solicitudes"
             android:theme="@style/Theme.DarkBox" />
 
-        <activity android:name=".FiltradoSeguimientoActivity"
+        <activity android:name=".SoporteDevActivity"
             android:exported="true"
-            android:label="Seguimiento de Solicitudes"
+            android:label="Soporte Tecnico Aplicacion"
             android:theme="@style/Theme.DarkBox" />
+
 
 
         <service
