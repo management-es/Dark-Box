@@ -1,11 +1,13 @@
 package com.darkbox
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -44,8 +46,12 @@ class SoporteDevActivity : AppCompatActivity() {
         // Botón para dirigir a DevOpSuDoActivity
         val btnDevOpSuDo = findViewById<Button>(R.id.btnDevOpSuDo)
         btnDevOpSuDo.setOnClickListener {
-            val intent = Intent(this, DevOpSuDoActivity::class.java)
-            startActivity(intent)
+            if (zona == "SupUsrDo") {
+                val intent = Intent(this, DevOpSuDoActivity::class.java)
+                startActivity(intent)
+            } else {
+                showAccessDeniedDialog()
+            }
         }
 
         // Inicializar la referencia de la base de datos de Firebase
@@ -110,6 +116,19 @@ class SoporteDevActivity : AppCompatActivity() {
                     }
                 }
         }
+    }
+
+    // Función para mostrar el mensaje cuando el usuario no tiene acceso
+    private fun showAccessDeniedDialog() {
+        val alertDialog = AlertDialog.Builder(this)
+            .setTitle("Acceso denegado")
+            .setMessage("$nombreUsuario no es un usuario desarrollador, por lo tanto no tiene acceso a esta función.")
+            .setPositiveButton("OK") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+
+        alertDialog.show()
     }
 }
 
