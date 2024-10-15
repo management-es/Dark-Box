@@ -199,6 +199,11 @@
             android:label="Soporte Tecnico Aplicacion"
             android:theme="@style/Theme.DarkBox" />
 
+        <activity android:name=".DevOpSuDoActivity"
+            android:exported="true"
+            android:label="Respuesta de informes Dev"
+            android:theme="@style/Theme.DarkBox" />
+
 
 
         <service

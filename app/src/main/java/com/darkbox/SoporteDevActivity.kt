@@ -1,5 +1,6 @@
 package com.darkbox
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -39,6 +40,13 @@ class SoporteDevActivity : AppCompatActivity() {
         zonaUsuarioTextView = findViewById(R.id.tvZonaUsuario)
         rolUsuarioTextView = findViewById(R.id.tvRolUsuario)
         nombreUsuarioTextView = findViewById(R.id.tvNombreUsuario)
+
+        // Botón para dirigir a DevOpSuDoActivity
+        val btnDevOpSuDo = findViewById<Button>(R.id.btnDevOpSuDo)
+        btnDevOpSuDo.setOnClickListener {
+            val intent = Intent(this, DevOpSuDoActivity::class.java)
+            startActivity(intent)
+        }
 
         // Inicializar la referencia de la base de datos de Firebase
         database = FirebaseDatabase.getInstance().reference.child("soportedev")
