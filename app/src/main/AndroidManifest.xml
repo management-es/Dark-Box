@@ -204,6 +204,10 @@
             android:label="Respuesta de informes Dev"
             android:theme="@style/Theme.DarkBox" />
 
+        <activity android:name=".LoadingActivity"
+            android:exported="true"
+            android:theme="@style/Theme.DarkBox" />
+
 
 
         <service
