@@ -5,8 +5,11 @@ import android.os.Bundle
 import android.widget.*
 import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AlertDialog
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 
 class IngresarEquipoActivity : ComponentActivity() {
 
@@ -75,10 +78,27 @@ class IngresarEquipoActivity : ComponentActivity() {
                 val tecnologiaUpper = tecnologia.uppercase()
                 val modeloUpper = modelo.uppercase()
 
-                // Mostrar el diálogo de confirmación con los datos correctos
-                showConfirmationDialogForEquipment(equipo, serialUpper, tecnologiaUpper, modeloUpper, estado, zona, observaciones)
+                // Consulta a Firebase para verificar si el serial ya existe
+                database.child("inventario").child(serialUpper)
+                    .addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                // Si el serial ya existe, muestra un mensaje
+                                Toast.makeText(this@IngresarEquipoActivity, "El serial del equipo ya existe.", Toast.LENGTH_SHORT).show()
+                            } else {
+                                // Si el serial no existe, muestra el diálogo de confirmación
+                                showConfirmationDialogForEquipment(equipo, serialUpper, tecnologiaUpper, modeloUpper, estado, zona, observaciones)
+                            }
+                        }
+
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            // Manejo de errores
+                            Toast.makeText(this@IngresarEquipoActivity, "Error al verificar el serial.", Toast.LENGTH_SHORT).show()
+                        }
+                    })
             }
         }
+
 
     }
 
