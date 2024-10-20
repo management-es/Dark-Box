@@ -1,5 +1,6 @@
 package com.darkbox
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.*
@@ -55,9 +56,15 @@ class ActualizarEstadoActivity : ComponentActivity() {
     }
 
     private fun buscarEquipo() {
-        serialBuscado = editTextBuscarSerial.text.toString().trim()
+        // Convertir el serial buscado a mayúsculas
+        serialBuscado = editTextBuscarSerial.text.toString().trim().uppercase()
+
+        // Mostrar pantalla de carga
+        val intent = Intent(this, LoadingActivity::class.java)
+        startActivity(intent)
 
         if (!serialBuscado.isNullOrEmpty()) {
+            // Realiza la búsqueda utilizando el serial en mayúsculas
             database.orderByChild("serial").equalTo(serialBuscado).addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
@@ -92,8 +99,10 @@ class ActualizarEstadoActivity : ComponentActivity() {
         }
     }
 
+
     private fun mostrarConfirmacionCambioEstado() {
         val nuevoEstado = spinnerNuevoEstado.selectedItem.toString()
+
 
         if (!serialBuscado.isNullOrEmpty() && estadoAnterior != null) {
             AlertDialog.Builder(this)
@@ -101,6 +110,11 @@ class ActualizarEstadoActivity : ComponentActivity() {
                 .setMessage("¿Desea realizar el cambio de estado de $estadoAnterior a $nuevoEstado?")
                 .setPositiveButton("Confirmar") { _, _ ->
                     cambiarEstado(nuevoEstado)
+
+                    // Mostrar pantalla de carga
+                    val intent = Intent(this, LoadingActivity::class.java)
+                    startActivity(intent)
+
                 }
                 .setNegativeButton("Rechazar", null)
                 .show()

@@ -20,7 +20,7 @@ class LoadingActivity : AppCompatActivity() {
     private lateinit var errorMessage: TextView
     private var timer: CountDownTimer? = null
     private lateinit var database: DatabaseReference
-    private val handler = Handler(Looper.getMainLooper()) // Handler para el retraso de 7 segundos
+    private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +29,7 @@ class LoadingActivity : AppCompatActivity() {
         loadingAnimation = findViewById(R.id.loading_animation)
         errorMessage = findViewById(R.id.error_message)
 
-        database = FirebaseDatabase.getInstance().getReference("access") // Nodo "access" en Firebase
+        database = FirebaseDatabase.getInstance().getReference("access")
 
         // Verificar conexión a internet
         if (isNetworkAvailable()) {
@@ -37,7 +37,9 @@ class LoadingActivity : AppCompatActivity() {
             startTimer() // Iniciar temporizador
             fetchDataFromDatabase() // Consultar el nodo "access"
         } else {
-            showError()
+            // Mostrar mensaje de error solo después de 30 segundos, no inmediatamente
+            showLoading() // Mantener la animación de carga
+            startTimer() // Aún iniciamos el temporizador para esperar 30 segundos
         }
     }
 
@@ -74,27 +76,25 @@ class LoadingActivity : AppCompatActivity() {
         database.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    // Si hay registros en el nodo "access"
-                    stopTimer()
-                    // Demorar 7 segundos antes de cerrar la actividad
+                    stopTimer() // Detener el temporizador si la consulta es exitosa
                     handler.postDelayed({
-                        finish() // Cerrar la actividad de carga después de 7 segundos
+                        finish() // Cerrar la actividad de carga después de 5 segundos
                     }, 5000) // 5 segundos de demora
                 } else {
-                    // Si no hay registros
+                    // No mostrar el error inmediatamente, se deja que el temporizador lo gestione
                     stopTimer()
-                    showErrorDialog("No se encontraron registros en la base de datos")
                 }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                stopTimer()
-                showErrorDialog("Error al consultar la base de datos: ${databaseError.message}")
+                // En caso de error en la consulta, no detenemos el temporizador aún
+                stopTimer() // Puedes detenerlo si prefieres no esperar en caso de un error de base de datos
             }
         })
     }
 
     private fun showErrorDialog(message: String) {
+        stopTimer() // Asegurarse de detener el temporizador si ocurre un error
         val builder = androidx.appcompat.app.AlertDialog.Builder(this)
         builder.setTitle("Error de conexión")
         builder.setMessage(message)
@@ -110,7 +110,7 @@ class LoadingActivity : AppCompatActivity() {
     private fun startTimer() {
         timer = object : CountDownTimer(30000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                // Cada segundo, puedes actualizar algo si lo necesitas
+                // Aquí puedes actualizar la UI cada segundo si lo necesitas
             }
 
             override fun onFinish() {
@@ -121,7 +121,7 @@ class LoadingActivity : AppCompatActivity() {
     }
 
     private fun stopTimer() {
-        timer?.cancel() // Detenemos el temporizador si se recibe respuesta antes de los 30 segundos
+        timer?.cancel() // Detener el temporizador si se recibe una respuesta antes de los 30 segundos
     }
 
     override fun onDestroy() {
