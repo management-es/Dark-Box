@@ -1,5 +1,6 @@
 package com.darkbox
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.activity.ComponentActivity
@@ -55,7 +56,6 @@ class IngresarEquipoActivity : ComponentActivity() {
         zonaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerZona.adapter = zonaAdapter
 
-        // Manejar el clic del botón de guardar equipo
         buttonSaveEquipment.setOnClickListener {
             val equipo = spinnerEquipo.selectedItem.toString()
             val serial = inputSerial.text.toString()
@@ -65,8 +65,14 @@ class IngresarEquipoActivity : ComponentActivity() {
             val zona = spinnerZona.selectedItem.toString()
             val observaciones = inputObservaciones.text.toString()
 
-            // Mostrar el diálogo de confirmación antes de guardar
-            showConfirmationDialogForEquipment(equipo, serial, tecnologia, modelo, estado, zona, observaciones)
+            // Validación para campos vacíos o seleccionados incorrectamente
+            if (equipo == "Seleccionar" || serial.isEmpty() || tecnologia.isEmpty() || modelo.isEmpty() || estado == "Seleccionar" || zona == "Seleccionar") {
+                // Mostrar un mensaje si hay campos vacíos o no seleccionados
+                Toast.makeText(this, "Por favor completa todos los campos.", Toast.LENGTH_SHORT).show()
+            } else {
+                // Mostrar el diálogo de confirmación solo si los datos son válidos
+                showConfirmationDialogForEquipment(equipo, serial, tecnologia, modelo, estado, zona, observaciones)
+            }
         }
     }
 
@@ -83,6 +89,10 @@ class IngresarEquipoActivity : ComponentActivity() {
             Observaciones: $observaciones
         """.trimIndent()
 
+        // Mostrar pantalla de carga
+        val intent = Intent(this, LoadingActivity::class.java)
+        startActivity(intent)
+
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Confirmar")
         builder.setMessage(message)
@@ -90,6 +100,7 @@ class IngresarEquipoActivity : ComponentActivity() {
             saveEquipmentData(equipo, serial, tecnologia, modelo, estado, zona, observaciones)
             dialog.dismiss()
             Toast.makeText(this, "Equipo ingresado correctamente", Toast.LENGTH_SHORT).show()
+
             finish() // Cerrar la actividad y regresar a la pantalla anterior
         }
         builder.setNegativeButton("No") { dialog, _ ->
@@ -113,8 +124,10 @@ class IngresarEquipoActivity : ComponentActivity() {
         // Escribir los datos del equipo en la base de datos usando el serial como clave
         database.child("inventario").child(serial).setValue(equipmentData)
             .addOnSuccessListener {
+
                 // Datos escritos correctamente
                 showMessage("Datos del equipo guardados")
+
             }
             .addOnFailureListener { exception ->
                 // Manejo de errores
@@ -132,5 +145,6 @@ class IngresarEquipoActivity : ComponentActivity() {
             }
             .create()
             .show()
+
     }
 }
