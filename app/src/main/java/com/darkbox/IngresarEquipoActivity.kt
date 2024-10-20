@@ -57,23 +57,29 @@ class IngresarEquipoActivity : ComponentActivity() {
         spinnerZona.adapter = zonaAdapter
 
         buttonSaveEquipment.setOnClickListener {
-            val equipo = spinnerEquipo.selectedItem.toString()
+            val equipo = spinnerEquipo.selectedItem.toString() // No se convierte a mayúsculas
             val serial = inputSerial.text.toString()
             val tecnologia = inputTecnologia.text.toString()
             val modelo = inputModelo.text.toString()
-            val estado = spinnerEstado.selectedItem.toString()
-            val zona = spinnerZona.selectedItem.toString()
-            val observaciones = inputObservaciones.text.toString()
+            val estado = spinnerEstado.selectedItem.toString() // No se convierte a mayúsculas
+            val zona = spinnerZona.selectedItem.toString() // No se convierte a mayúsculas
+            val observaciones = inputObservaciones.text.toString()  // Observaciones no se convertirá a mayúsculas
 
             // Validación para campos vacíos o seleccionados incorrectamente
             if (equipo == "Seleccionar" || serial.isEmpty() || tecnologia.isEmpty() || modelo.isEmpty() || estado == "Seleccionar" || zona == "Seleccionar") {
                 // Mostrar un mensaje si hay campos vacíos o no seleccionados
                 Toast.makeText(this, "Por favor completa todos los campos.", Toast.LENGTH_SHORT).show()
             } else {
-                // Mostrar el diálogo de confirmación solo si los datos son válidos
-                showConfirmationDialogForEquipment(equipo, serial, tecnologia, modelo, estado, zona, observaciones)
+                // Convertir solo los campos serial, tecnologia y modelo a mayúsculas
+                val serialUpper = serial.uppercase()
+                val tecnologiaUpper = tecnologia.uppercase()
+                val modeloUpper = modelo.uppercase()
+
+                // Mostrar el diálogo de confirmación con los datos correctos
+                showConfirmationDialogForEquipment(equipo, serialUpper, tecnologiaUpper, modeloUpper, estado, zona, observaciones)
             }
         }
+
     }
 
     private fun showConfirmationDialogForEquipment(equipo: String, serial: String, tecnologia: String, modelo: String, estado: String, zona: String, observaciones: String) {

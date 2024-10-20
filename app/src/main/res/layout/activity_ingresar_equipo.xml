@@ -41,7 +41,9 @@
             android:id="@+id/input_serial"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="16dp"
+            android:digits="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+            android:inputType="textNoSuggestions|textVisiblePassword" />
 
         <TextView
             android:layout_width="wrap_content"
