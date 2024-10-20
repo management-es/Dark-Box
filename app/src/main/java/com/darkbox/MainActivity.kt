@@ -38,6 +38,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
+
+
         // Obtener el nombre de usuario, rol y zona del Intent
         nombreUsuario = intent.getStringExtra("NOMBRE_USUARIO") ?: "Usuario"
         rolUsuario = intent.getStringExtra("ROL_USUARIO") ?: "Rol no especificado"
@@ -60,7 +62,13 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
+
+        // Mostrar pantalla de carga
+        val intent = Intent(this, LoadingActivity::class.java)
+        startActivity(intent)
     }
+
+
 
     override fun onBackPressed() {
         if (!shouldExit) {

@@ -14,6 +14,8 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 
+
+
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var etUsuario: EditText
@@ -27,6 +29,10 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        // Mostrar pantalla de carga
+        val intent = Intent(this, LoadingActivity::class.java)
+        startActivity(intent)
 
         etUsuario = findViewById(R.id.etEmail)
         etContrasena = findViewById(R.id.etPassword)
