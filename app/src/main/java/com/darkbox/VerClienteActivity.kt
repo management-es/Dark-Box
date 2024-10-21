@@ -1,5 +1,6 @@
 package com.darkbox
 
+import android.content.Intent
 import android.view.View
 import android.widget.TextView
 import android.os.Bundle
@@ -85,6 +86,12 @@ class VerClienteActivity : AppCompatActivity() {
             .show()
 
         btnBuscar.setOnClickListener {
+
+            // Mostrar pantalla de carga
+            val intent = Intent(this, LoadingActivity::class.java)
+            startActivity(intent)
+
+
             val searchType = spinnerTipoBusqueda.selectedItem.toString()
             val queryText = edtBusqueda.text.toString()
 
