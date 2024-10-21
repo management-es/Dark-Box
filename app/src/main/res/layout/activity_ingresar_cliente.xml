@@ -79,7 +79,11 @@
                     android:id="@+id/input_numero_documento"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Número Documento" />
+                    android:hint="Número Documento"
+                    android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+                    android:inputType="text" />
+
+
                 <Button
                     android:id="@+id/button_ubicacion"
                     android:layout_width="wrap_content"
@@ -108,27 +112,37 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Dirección" />
+
                     <EditText
                         android:id="@+id/input_coordenadas"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Coordenadas" />
+
                 </LinearLayout>
+
                 <EditText
                     android:id="@+id/input_telefono"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Teléfono" />
+                    android:hint="Teléfono"
+                    android:inputType="number" />
+
+
                 <EditText
                     android:id="@+id/input_correo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Correo" />
+                    android:hint="Correo"
+                    android:inputType="textEmailAddress" />
+
+
                 <EditText
                     android:id="@+id/input_contactos"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Contactos" />
+
             </LinearLayout>
             <!-- Button for Servicio -->
             <Button
@@ -136,6 +150,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Servicio" />
+
             <!-- Hidden layout for Servicio fields -->
             <LinearLayout
                 android:id="@+id/servicio_layout"
@@ -144,6 +159,7 @@
                 android:orientation="vertical"
                 android:visibility="gone"
                 android:layout_marginTop="16dp">
+
                 <EditText
                     android:id="@+id/input_cod_cliente"
                     android:layout_width="match_parent"
@@ -202,17 +218,25 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Equipos" />
+
                 <EditText
                     android:id="@+id/input_ip_antena"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="IP Antena" />
+                    android:hint="IP Antena"
+                    android:inputType="number|numberDecimal"
+                    android:digits="0123456789." />
+
                 <EditText
                     android:id="@+id/input_ip_remota"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="IP Remota" />
+                    android:hint="IP Remota"
+                    android:inputType="number|numberDecimal"
+                    android:digits="0123456789." />
+
             </LinearLayout>
+
             <!-- Button for Adicionales -->
             <Button
                 android:id="@+id/button_adicionales"
