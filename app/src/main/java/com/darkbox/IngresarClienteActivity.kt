@@ -481,6 +481,16 @@ class IngresarClienteActivity : ComponentActivity() {
         equipos: String, ipAntena: String, ipRemota: String, observaciones: String, historial: String, zona: String,
         coordenadas: String, serialOnu: String, serialAntena: String, serialRouter: String
     ) {
+
+        // Expresión regular para validar caracteres no permitidos
+        val invalidCharsRegex = Regex("[#+*^&@=;:.,/$%?!\\s]")
+
+        // Verifica si el código de cliente contiene caracteres no permitidos
+        if (codCliente.contains(invalidCharsRegex)) {
+            Toast.makeText(this, "El código de cliente contiene caracteres no permitidos", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val clientRef = database.child("clientes").child(codCliente)
 
         clientRef.get().addOnSuccessListener { snapshot ->
