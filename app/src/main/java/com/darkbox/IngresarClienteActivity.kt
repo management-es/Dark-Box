@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.Spinner
 import android.widget.Toast
 import android.content.Intent
+import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AlertDialog
 import com.google.firebase.database.DatabaseReference
@@ -17,9 +18,9 @@ import com.google.firebase.database.FirebaseDatabase
 
 class IngresarClienteActivity : ComponentActivity() {
     private lateinit var database: DatabaseReference
-    private lateinit var inputSerialOnu: EditText
-    private lateinit var inputSerialAntena: EditText
-    private lateinit var inputSerialRouter: EditText
+    private lateinit var inputSerialOnu: TextView
+    private lateinit var inputSerialAntena: TextView
+    private lateinit var inputSerialRouter: TextView
     private lateinit var zonaUsuario: String // Variable para almacenar la zona del usuario
     private lateinit var rolUsuario: String  // Variable para almacenar el rol del usuario
 
@@ -186,15 +187,14 @@ class IngresarClienteActivity : ComponentActivity() {
                 val ipAntena = findViewById<EditText>(R.id.input_ip_antena).text.toString()
                 val ipRemota = findViewById<EditText>(R.id.input_ip_remota).text.toString()
                 val observaciones = findViewById<EditText>(R.id.input_observaciones).text.toString()
-                val historial = findViewById<EditText>(R.id.input_historial).text.toString()
                 val zona = spinnerZona.selectedItem.toString()
                 val coordenadas = findViewById<EditText>(R.id.input_coordenadas).text.toString()
-                val serialOnu = findViewById<EditText>(R.id.input_serial_onu).text.toString()
+                val serialOnu = findViewById<TextView>(R.id.input_serial_onu).text.toString()
 
                 showConfirmationDialogForClient(
                     codCliente, nombres, apellidos, tipoDocumento, numeroDocumento, direccion,
                     telefono, correo, contactos, plan, tecnologia, equipos, ipAntena, ipRemota,
-                    observaciones, historial, zona, coordenadas, serialOnu
+                    observaciones, zona, coordenadas, serialOnu
                 )
             }
         }
@@ -230,7 +230,7 @@ class IngresarClienteActivity : ComponentActivity() {
                     builder.setTitle("Selecciona un Serial ONU")
                         .setItems(serialOnuList.toTypedArray()) { _, which ->
                             val selectedSerial = serialOnuList[which]
-                            findViewById<EditText>(R.id.input_serial_onu).setText(selectedSerial)
+                            findViewById<TextView>(R.id.input_serial_onu).text = selectedSerial
                         }
                         .setNegativeButton("Cancelar", null)
                         .show()
@@ -264,7 +264,7 @@ class IngresarClienteActivity : ComponentActivity() {
                     builder.setTitle("Selecciona un Serial Antena Cliente")
                         .setItems(serialAntenaList.toTypedArray()) { _, which ->
                             val selectedSerial = serialAntenaList[which]
-                            findViewById<EditText>(R.id.input_serial_antena).setText(selectedSerial)
+                            findViewById<TextView>(R.id.input_serial_antena).text = selectedSerial
                         }
                         .setNegativeButton("Cancelar", null)
                         .show()
@@ -298,7 +298,7 @@ class IngresarClienteActivity : ComponentActivity() {
                     builder.setTitle("Selecciona un Serial Router")
                         .setItems(serialRouterList.toTypedArray()) { _, which ->
                             val selectedSerial = serialRouterList[which]
-                            findViewById<EditText>(R.id.input_serial_router).setText(selectedSerial)
+                            findViewById<TextView>(R.id.input_serial_router).text = selectedSerial
                         }
                         .setNegativeButton("Cancelar", null)
                         .show()
@@ -326,7 +326,6 @@ class IngresarClienteActivity : ComponentActivity() {
         val ipAntena = findViewById<EditText>(R.id.input_ip_antena).text.toString()
         val ipRemota = findViewById<EditText>(R.id.input_ip_remota).text.toString()
         val observaciones = findViewById<EditText>(R.id.input_observaciones).text.toString()
-        val historial = findViewById<EditText>(R.id.input_historial).text.toString()
         val coordenadas = findViewById<EditText>(R.id.input_coordenadas).text.toString()
 
         return when {
@@ -374,10 +373,7 @@ class IngresarClienteActivity : ComponentActivity() {
                 Toast.makeText(this, "Por favor ingresa observaciones", Toast.LENGTH_SHORT).show()
                 false
             }
-            historial.isEmpty() -> {
-                Toast.makeText(this, "Por favor ingresa el historial", Toast.LENGTH_SHORT).show()
-                false
-            }
+
             coordenadas.isEmpty() -> {
                 Toast.makeText(this, "Por favor ingresa las coordenadas", Toast.LENGTH_SHORT).show()
                 false
@@ -389,11 +385,11 @@ class IngresarClienteActivity : ComponentActivity() {
     private fun showConfirmationDialogForClient(
         codCliente: String, nombres: String, apellidos: String, tipoDocumento: String, numeroDocumento: String,
         direccion: String, telefono: String, correo: String, contactos: String, plan: String, tecnologia: String,
-        equipos: String, ipAntena: String, ipRemota: String, observaciones: String, historial: String, zona: String,
+        equipos: String, ipAntena: String, ipRemota: String, observaciones: String, zona: String,
         coordenadas: String, serialOnu: String
     ) {
-        val serialAntena = findViewById<EditText>(R.id.input_serial_antena).text.toString()
-        val serialRouter = findViewById<EditText>(R.id.input_serial_router).text.toString()
+        val serialAntena = findViewById<TextView>(R.id.input_serial_antena).text.toString()
+        val serialRouter = findViewById<TextView>(R.id.input_serial_router).text.toString()
 
         val message = when (tecnologia) {
             "Fibra Óptica" -> """
@@ -413,7 +409,6 @@ class IngresarClienteActivity : ComponentActivity() {
             IP Antena: $ipAntena
             IP Remota: $ipRemota
             Observaciones: $observaciones
-            Historial: $historial
             Zona: $zona
             Coordenadas: $coordenadas
         """.trimIndent()
@@ -435,7 +430,6 @@ class IngresarClienteActivity : ComponentActivity() {
             IP Antena: $ipAntena
             IP Remota: $ipRemota
             Observaciones: $observaciones
-            Historial: $historial
             Zona: $zona
             Coordenadas: $coordenadas
         """.trimIndent()
@@ -455,7 +449,6 @@ class IngresarClienteActivity : ComponentActivity() {
             IP Antena: $ipAntena
             IP Remota: $ipRemota
             Observaciones: $observaciones
-            Historial: $historial
             Zona: $zona
             Coordenadas: $coordenadas
         """.trimIndent()
@@ -465,10 +458,15 @@ class IngresarClienteActivity : ComponentActivity() {
             .setTitle("Confirmar Datos")
             .setMessage(message)
             .setPositiveButton("Confirmar") { _, _ ->
+
+                // Mostrar pantalla de carga
+                val intent = Intent(this, LoadingActivity::class.java)
+                startActivity(intent)
+
                 saveClientData(
                     codCliente, nombres, apellidos, tipoDocumento, numeroDocumento, direccion,
                     telefono, correo, contactos, plan, tecnologia, equipos, ipAntena, ipRemota,
-                    observaciones, historial, zona, coordenadas, serialOnu, serialAntena, serialRouter
+                    observaciones, zona, coordenadas, serialOnu, serialAntena, serialRouter
                 )
             }
             .setNegativeButton("Cancelar", null)
@@ -478,7 +476,7 @@ class IngresarClienteActivity : ComponentActivity() {
     private fun saveClientData(
         codCliente: String, nombres: String, apellidos: String, tipoDocumento: String, numeroDocumento: String,
         direccion: String, telefono: String, correo: String, contactos: String, plan: String, tecnologia: String,
-        equipos: String, ipAntena: String, ipRemota: String, observaciones: String, historial: String, zona: String,
+        equipos: String, ipAntena: String, ipRemota: String, observaciones: String,  zona: String,
         coordenadas: String, serialOnu: String, serialAntena: String, serialRouter: String
     ) {
 
@@ -514,7 +512,6 @@ class IngresarClienteActivity : ComponentActivity() {
                     "ip_antena" to ipAntena,
                     "ip_remota" to ipRemota,
                     "observaciones" to observaciones,
-                    "historial" to historial,
                     "zona" to zona,
                     "coordenadas" to coordenadas,
                     "serial_onu" to serialOnu,

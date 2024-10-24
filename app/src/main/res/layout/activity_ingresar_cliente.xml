@@ -191,33 +191,34 @@
                     android:layout_height="wrap_content"
                     android:hint="Tecnología" />
 
-                <EditText
+                <TextView
                     android:id="@+id/input_serial_onu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Serial ONU"
+                    android:text="Serial ONU"
                     android:visibility="gone" />
 
-                <EditText
+                <TextView
                     android:id="@+id/input_serial_antena"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Serial Antena"
+                    android:text="Serial Antena"
                     android:visibility="gone" />
 
-                <EditText
+                <TextView
                     android:id="@+id/input_serial_router"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Serial Router"
+                    android:text="Serial Router"
                     android:visibility="gone" />
+
 
 
                 <EditText
                     android:id="@+id/input_equipos"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Equipos" />
+                    android:hint="Equipos Adicionales" />
 
                 <EditText
                     android:id="@+id/input_ip_antena"
@@ -256,11 +257,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Observaciones" />
-                <EditText
-                    android:id="@+id/input_historial"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Historial" />
+
             </LinearLayout>
             <!-- Button to save the client data -->
             <Button
