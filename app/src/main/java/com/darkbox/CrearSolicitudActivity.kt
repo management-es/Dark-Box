@@ -1,5 +1,6 @@
 package com.darkbox
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -74,6 +75,7 @@ class CrearSolicitudActivity : AppCompatActivity() {
             val desc = descripcionint.text.toString()
             val estado = "Pendiente" // Estado inicial
 
+
             if (usuario.isNotEmpty() && desc.isNotEmpty() && selectedDestinatarios.isNotEmpty()) {
                 // Crear un diálogo de confirmación
                 val builder = AlertDialog.Builder(this)
@@ -95,6 +97,8 @@ class CrearSolicitudActivity : AppCompatActivity() {
 
                 // Configurar el botón de confirmar
                 builder.setPositiveButton("Confirmar") { dialog, _ ->
+
+
                     // Guardar los datos en Firebase si se confirma
                     guardarTicketEnFirebase(usuario, tipo, nivelImportancia, desc, estado)
                     dialog.dismiss()

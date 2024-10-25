@@ -2,6 +2,7 @@ package com.darkbox
 
 import android.app.DatePickerDialog
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.Spinner
@@ -114,6 +115,12 @@ class OtrasGestionesActivity : ComponentActivity() {
                         .setTitle("Confirmar")
                         .setMessage(mensajeConfirmacion)
                         .setPositiveButton("Sí") { _, _ ->
+
+                            // Mostrar pantalla de carga
+                            val intent = Intent(this, LoadingActivity::class.java)
+                            startActivity(intent)
+
+
                             // Crear el objeto de datos
                             val gestion = mapOf(
                                 "tipoGestion" to tipoGestion,

@@ -1,5 +1,6 @@
 package com.darkbox
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -37,10 +38,16 @@ class VerAgendaActivity : AppCompatActivity() {
     }
 
     private fun showZonaAlert() {
+
         val alertDialog = androidx.appcompat.app.AlertDialog.Builder(this)
         alertDialog.setTitle("Zona de Usuario")
         alertDialog.setMessage("Solo puedes ver la agenda de la zona: $zonaUsuario")
         alertDialog.setPositiveButton("Aceptar") { dialog, _ ->
+
+            // Mostrar pantalla de carga
+            val intent = Intent(this, LoadingActivity::class.java)
+            startActivity(intent)
+
             filterByDate() // Llama a filterByDate solo después de que el usuario acepte el mensaje
             dialog.dismiss()
         }

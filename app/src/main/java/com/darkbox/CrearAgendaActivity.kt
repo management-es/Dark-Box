@@ -272,8 +272,10 @@ class CrearAgendaActivity : ComponentActivity() {
 
                     AlertDialog.Builder(this@CrearAgendaActivity)
                         .setTitle("Confirmar creación de agenda")
+
                         .setMessage(mensaje)
                         .setPositiveButton("Confirmar") { _, _ ->
+
                             // Acción para confirmar la creación
                             guardarAgenda(clienteSeleccionado, gestionSeleccionada, observaciones, nombreCliente, apellidosCliente, numeroDocumento, direccion, coordenadas, telefono, contactos, zona)
                         }
@@ -289,6 +291,7 @@ class CrearAgendaActivity : ComponentActivity() {
             Toast.makeText(this, "Debe seleccionar un cliente y una fecha", Toast.LENGTH_SHORT).show()
         }
     }
+
 
     private fun guardarAgenda(
         clienteSeleccionado: String,
