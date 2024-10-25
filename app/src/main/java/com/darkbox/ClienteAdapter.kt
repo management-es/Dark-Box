@@ -33,7 +33,7 @@ class ClienteAdapter : ListAdapter<Cliente, ClienteAdapter.ClienteViewHolder>(Cl
         private val txtCorreo: TextView = itemView.findViewById(R.id.txtCorreo)
         private val txtDireccion: TextView = itemView.findViewById(R.id.txtDireccion)
         private val txtEquipos: TextView = itemView.findViewById(R.id.txtEquipos)
-        private val txtHistorial: TextView = itemView.findViewById(R.id.txtHistorial)
+
         private val txtIpAntena: TextView = itemView.findViewById(R.id.txtIpAntena)
         private val txtIpRemota: TextView = itemView.findViewById(R.id.txtIpRemota)
         private val txtObservaciones: TextView = itemView.findViewById(R.id.txtObservaciones)
@@ -56,7 +56,7 @@ class ClienteAdapter : ListAdapter<Cliente, ClienteAdapter.ClienteViewHolder>(Cl
             txtCorreo.text = formatText("Correo: ", cliente.correo)
             txtDireccion.text = formatText("Dirección: ", cliente.direccion)
             txtEquipos.text = formatText("Equipos: ", cliente.equipos)
-            txtHistorial.text = formatText("Historial: ", cliente.historial)
+
             txtIpAntena.text = formatText("IP Antena: ", cliente.ip_antena)
             txtIpRemota.text = formatText("IP Remota: ", cliente.ip_remota)
             txtObservaciones.text = formatText("Observaciones: ", cliente.observaciones)
