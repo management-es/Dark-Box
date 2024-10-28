@@ -199,6 +199,12 @@
             android:label="Soporte Tecnico Aplicacion"
             android:theme="@style/Theme.DarkBox" />
 
+        <activity android:name=".HistorialActivity"
+            android:exported="true"
+            android:label="Historial de Cliente"
+            android:theme="@style/Theme.DarkBox" />
+
+
         <activity android:name=".DevOpSuDoActivity"
             android:exported="true"
             android:label="Respuesta de informes Dev"

@@ -58,6 +58,7 @@ class MainActivity : ComponentActivity() {
                     onCredencialesClick = { navigateToCredenciales() },
                     onLogoutClick = { showLogoutConfirmationDialog() },
                     onSecondMenuClick = { navigateToTikets(rolUsuario) },
+                    onHistorialClick = { navigateToHistorial(rolUsuario) },
                     onSoporteClick = { navigateToSoporteDev(rolUsuario, zonaUsuario) }
                 )
             }
@@ -133,6 +134,19 @@ class MainActivity : ComponentActivity() {
         startActivity(intent)
     }
 
+    private fun navigateToHistorial(rol: String) {
+        // Verificar el rol del usuario
+        if (rolUsuario == "Tecnico") {
+            showAccessDeniedDialog()
+            return // Termina la ejecución si es Tecnico
+        }
+        val intent = Intent(this, HistorialActivity::class.java)
+        intent.putExtra("NOMBRE_USUARIO", nombreUsuario)
+        intent.putExtra("ROL_USUARIO", rol)
+        startActivity(intent)
+    }
+
+
     private fun showAccessDeniedDialog() {
         AlertDialog.Builder(this)
             .setTitle("Acceso Denegado")
@@ -187,7 +201,8 @@ fun MainScreen(
     onCredencialesClick: () -> Unit,
     onLogoutClick: () -> Unit,
     onSecondMenuClick: () -> Unit,
-    onSoporteClick: () -> Unit
+    onSoporteClick: () -> Unit,
+    onHistorialClick: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     var secondMenuExpanded by remember { mutableStateOf(false) }
@@ -226,12 +241,20 @@ fun MainScreen(
                             text = { Text("Tickets", fontSize = 20.sp) },
                             onClick = {
                                 secondMenuExpanded = false
-                                onSecondMenuClick()
+                                onSecondMenuClick() // Acción para Tickets
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Historial", fontSize = 20.sp) },
+                            onClick = {
+                                secondMenuExpanded = false
+                                onHistorialClick()
                             }
                         )
                     }
                 },
-                actions = {
+
+                        actions = {
 
                     IconButton(onClick = { expanded = true }) {
                         Icon(Icons.Filled.Menu, contentDescription = "Open menu")
