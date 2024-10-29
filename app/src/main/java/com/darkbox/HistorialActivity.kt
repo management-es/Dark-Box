@@ -1,5 +1,6 @@
 package com.darkbox
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -70,6 +71,10 @@ class HistorialActivity : ComponentActivity() {
             return
         }
 
+        // Mostrar pantalla de carga
+        val intent = Intent(this, LoadingActivity::class.java)
+        startActivity(intent)
+
         val historialList = mutableListOf<Pair<String, String>>()
 
         // Búsqueda en el nodo "agenda"
@@ -80,8 +85,8 @@ class HistorialActivity : ComponentActivity() {
 
                     if (registroId.endsWith("-$codCliente")) {
                         val fecha = registroId.take(8)  // Extrae los primeros 8 caracteres como fecha
-                        val agendaInfo = dataSnapshot.value.toString()
-                        historialList.add(fecha to "Agenda (ID: $registroId):\n$agendaInfo\n\n")
+                        val agendaInfo = formatearAgendaInfo(dataSnapshot)
+                        historialList.add(fecha to "Agenda (ID: $registroId): $agendaInfo\n")
                     }
                 }
 
@@ -109,6 +114,39 @@ class HistorialActivity : ComponentActivity() {
         })
     }
 
+    private fun formatearAgendaInfo(dataSnapshot: DataSnapshot): String {
+        val cliente = dataSnapshot.child("cliente").getValue(String::class.java) ?: "N/A"
+        val nombre = dataSnapshot.child("nombre").getValue(String::class.java) ?: "N/A"
+        val apellidos = dataSnapshot.child("apellidos").getValue(String::class.java) ?: "N/A"
+        val documento = dataSnapshot.child("documento").getValue(String::class.java) ?: "N/A"
+        val direccion = dataSnapshot.child("direccion").getValue(String::class.java) ?: "N/A"
+        val coordenadas = dataSnapshot.child("coordenadas").getValue(String::class.java) ?: "N/A"
+        val telefono = dataSnapshot.child("telefono").getValue(String::class.java) ?: "N/A"
+        val contactos = dataSnapshot.child("contactos").getValue(String::class.java) ?: "N/A"
+        val zona = dataSnapshot.child("zona").getValue(String::class.java) ?: "N/A"
+        val gestion = dataSnapshot.child("gestion").getValue(String::class.java) ?: "N/A"
+        val fecha = dataSnapshot.child("fecha").getValue(String::class.java) ?: "N/A"
+        val observaciones = dataSnapshot.child("observaciones").getValue(String::class.java) ?: "N/A"
+        val observacionesCancelacion = dataSnapshot.child("observaciones-cancelacion").getValue(String::class.java) ?: "N/A"
+
+        return """
+        Cliente: $cliente
+        Nombre: $nombre
+        Apellidos: $apellidos
+        Documento: $documento
+        Dirección: $direccion
+        Coordenadas: $coordenadas
+        Teléfono: $telefono
+        Contactos: $contactos
+        Zona: $zona
+        Gestión: $gestion
+        Fecha: $fecha
+        Observaciones: $observaciones
+        Observaciones-Cancelación: $observacionesCancelacion
+    """.trimIndent().replace("\n", ",")
+    }
+
+
     private fun buscarEnRespuestas(codCliente: String, onResult: (List<Pair<String, String>>) -> Unit) {
         val respuestasList = mutableListOf<Pair<String, String>>()
 
@@ -124,10 +162,11 @@ class HistorialActivity : ComponentActivity() {
                         if (clienteCod == codCliente) {
                             val fecha = respuestaId.take(8)  // Extrae los primeros 8 caracteres como fecha
                             val respuestaInfo = dataSnapshot.value.toString()
-                            respuestasList.add(fecha to "Respuestas (ID: $respuestaId):\n$respuestaInfo\n\n")
+                            respuestasList.add(fecha to "Respuestas (ID: $respuestaId): $respuestaInfo\n")
                         }
                     }
                 }
+
 
                 // Devuelve la lista de respuestas para agregarse al historial
                 onResult(respuestasList)
