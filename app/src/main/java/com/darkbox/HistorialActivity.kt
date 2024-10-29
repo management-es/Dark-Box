@@ -22,7 +22,6 @@ class HistorialActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Inicializa la referencia de Firebase
         database = FirebaseDatabase.getInstance().reference
 
         setContent {
@@ -71,29 +70,71 @@ class HistorialActivity : ComponentActivity() {
             return
         }
 
-        var historial = ""
+        val historialList = mutableListOf<Pair<String, String>>()
 
-        // Realiza la búsqueda en el nodo "agenda" recorriendo los IDs para verificar si contienen el código del cliente
+        // Búsqueda en el nodo "agenda"
         database.child("agenda").addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 snapshot.children.forEach { dataSnapshot ->
                     val registroId = dataSnapshot.key ?: ""
 
                     if (registroId.endsWith("-$codCliente")) {
-                        // Si el ID contiene el código del cliente, obtenemos su información
+                        val fecha = registroId.take(8)  // Extrae los primeros 8 caracteres como fecha
                         val agendaInfo = dataSnapshot.value.toString()
-                        historial += "Agenda:\n$agendaInfo\n"
+                        historialList.add(fecha to "Agenda (ID: $registroId):\n$agendaInfo\n\n")
                     }
                 }
 
-                if (historial.isEmpty()) {
-                    historial = "No se encontraron registros en agenda para el cliente $codCliente."
+                // Realiza la búsqueda en "respuestas" después de procesar "agenda"
+                buscarEnRespuestas(codCliente) { respuestasHistorialList ->
+                    historialList.addAll(respuestasHistorialList)
+
+                    // Ordena la lista por fecha en orden descendente
+                    historialList.sortByDescending { it.first }
+
+                    // Combina todos los registros en una sola cadena de texto
+                    val historial = historialList.joinToString("\n") { it.second }
+
+                    if (historial.isEmpty()) {
+                        onResult("No se encontraron registros para el cliente $codCliente.")
+                    } else {
+                        onResult(historial)
+                    }
                 }
-                onResult(historial)  // Actualiza el historial
             }
 
             override fun onCancelled(error: DatabaseError) {
                 Toast.makeText(this@HistorialActivity, "Error en la búsqueda de agenda: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun buscarEnRespuestas(codCliente: String, onResult: (List<Pair<String, String>>) -> Unit) {
+        val respuestasList = mutableListOf<Pair<String, String>>()
+
+        database.child("respuestas").addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                snapshot.children.forEach { dataSnapshot ->
+                    val respuestaId = dataSnapshot.key ?: ""
+
+                    if (respuestaId.contains("Baja")) {
+                        val clienteNode = dataSnapshot.child("cliente")
+                        val clienteCod = clienteNode.child("cod_cliente").getValue(String::class.java)
+
+                        if (clienteCod == codCliente) {
+                            val fecha = respuestaId.take(8)  // Extrae los primeros 8 caracteres como fecha
+                            val respuestaInfo = dataSnapshot.value.toString()
+                            respuestasList.add(fecha to "Respuestas (ID: $respuestaId):\n$respuestaInfo\n\n")
+                        }
+                    }
+                }
+
+                // Devuelve la lista de respuestas para agregarse al historial
+                onResult(respuestasList)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@HistorialActivity, "Error en la búsqueda de respuestas: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
