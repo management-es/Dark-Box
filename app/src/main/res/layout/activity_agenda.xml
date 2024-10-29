@@ -43,6 +43,14 @@
         android:text="Ver Agenda"
         android:layout_marginTop="6dp"/>
 
+    <Button
+        android:id="@+id/button_descargar_agenda"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Descargar Agenda"
+        android:layout_gravity="center" />
+
+
     <LinearLayout
         android:id="@+id/date_input_layout"
         android:layout_width="match_parent"

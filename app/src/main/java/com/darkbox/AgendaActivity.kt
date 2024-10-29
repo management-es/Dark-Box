@@ -24,6 +24,7 @@ class AgendaActivity : ComponentActivity() {
         // Referencias a los elementos de la UI
         val buttonCrearAgenda: Button = findViewById(R.id.button_crear_agenda)
         val buttonVerAgenda = findViewById<Button>(R.id.button_ver_agenda)
+        val buttonDescargarAgenda: Button = findViewById(R.id.button_descargar_agenda)
         val dateInputLayout: View = findViewById(R.id.date_input_layout)
         val dateEditText: EditText = findViewById(R.id.input_date)
 
@@ -56,6 +57,13 @@ class AgendaActivity : ComponentActivity() {
             // Abrir la nueva actividad "Ver Agenda"
             val intent = Intent(this, VerAgendaActivity::class.java)
             intent.putExtra("ZONA_USUARIO", zonaUsuario) // Pasar la zona del usuario a VerAgendaActivity
+            startActivity(intent)
+        }
+
+        // Listener para el botón Descargar Agenda
+        buttonDescargarAgenda.setOnClickListener {
+            // Abrir la nueva actividad "Descarga Agenda"
+            val intent = Intent(this, DescargaAgendaActivity::class.java)
             startActivity(intent)
         }
 
