@@ -49,6 +49,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Ingresar Cliente" />
+
+        <Button
+            android:id="@+id/button_actualizar_cliente"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Actualizar Cliente" />
+
+
     </LinearLayout>
 
     <!-- Diseño oculto para opciones adicionales -->

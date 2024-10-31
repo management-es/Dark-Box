@@ -28,6 +28,7 @@ class ClientesActivity : ComponentActivity() {
         // Referencias a los campos y botones
         val buttonIngresarCliente: Button = findViewById(R.id.button_ingresar_cliente)
         val btnVerCliente: Button = findViewById(R.id.btnVerCliente)
+        val buttonActualizarCliente: Button = findViewById(R.id.button_actualizar_cliente)
         val optionsLayout: View = findViewById(R.id.options_layout)
 
         btnVerCliente.setOnClickListener {
@@ -46,6 +47,18 @@ class ClientesActivity : ComponentActivity() {
                 intent.putExtra("ZONA_USUARIO", zonaUsuario) // Pasar la zona del usuario a IngresarClienteActivity
                 intent.putExtra("ROL_USUARIO", rolUsuario) // Pasar el rol del usuario a IngresarClienteActivity
                 startActivity(intent)
+            }
+        }
+
+        buttonActualizarCliente.setOnClickListener {
+            if (rolUsuario == "Tecnico") {
+                showAccessDeniedDialog() // Mostrar alerta si es técnico
+            } else {
+                optionsLayout.visibility = View.VISIBLE
+            val intent = Intent(this, ActualizarClienteActivity::class.java)
+            intent.putExtra("ZONA_USUARIO", zonaUsuario) // Pasar la zona del usuario a IngresarClienteActivity
+            intent.putExtra("ROL_USUARIO", rolUsuario) // Pasar el rol del usuario a IngresarClienteActivity
+            startActivity(intent)
             }
         }
 

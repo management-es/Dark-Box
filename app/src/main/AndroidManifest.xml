@@ -71,6 +71,12 @@
             android:label="Ingresar Cliente"
             android:theme="@style/Theme.DarkBox" />
 
+        <activity
+            android:name=".ActualizarClienteActivity"
+            android:exported="true"
+            android:label="Actualizar Datos de CLiente"
+            android:theme="@style/Theme.DarkBox" />
+
         <!-- Agregar AgendaActivity -->
         <activity
             android:name=".AgendaActivity"
