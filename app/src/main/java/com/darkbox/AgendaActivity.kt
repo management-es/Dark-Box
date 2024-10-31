@@ -64,6 +64,7 @@ class AgendaActivity : ComponentActivity() {
         buttonDescargarAgenda.setOnClickListener {
             // Abrir la nueva actividad "Descarga Agenda"
             val intent = Intent(this, DescargaAgendaActivity::class.java)
+            intent.putExtra("ZONA_USUARIO", zonaUsuario)
             startActivity(intent)
         }
 

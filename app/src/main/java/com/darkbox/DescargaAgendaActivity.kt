@@ -3,7 +3,6 @@ package com.darkbox
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import android.widget.DatePicker
 import android.widget.Toast
@@ -19,6 +18,7 @@ class DescargaAgendaActivity : ComponentActivity() {
     private lateinit var buttonDescargar: Button
     private lateinit var database: DatabaseReference
     private lateinit var selectedDate: String
+    private lateinit var zonaUsuario: String // Zona del usuario
     private val recordIds = mutableListOf<String>() // Lista para almacenar los IDs encontrados
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +31,12 @@ class DescargaAgendaActivity : ComponentActivity() {
 
         // Inicializa la referencia a la base de datos de Firebase
         database = FirebaseDatabase.getInstance().getReference("agenda")
+
+        // Obtiene la zona del usuario desde el Intent y la asigna a la propiedad de clase
+        zonaUsuario = intent.getStringExtra("ZONA_USUARIO") ?: ""
+
+        // Muestra un AlertDialog con la zona autorizada del usuario
+        showZoneDialog()
 
         buttonBuscar.setOnClickListener {
             val selectedDate = getSelectedDate()
@@ -50,6 +56,15 @@ class DescargaAgendaActivity : ComponentActivity() {
         }
     }
 
+    // Función para mostrar el AlertDialog con la zona del usuario
+    private fun showZoneDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Zona Autorizada")
+        builder.setMessage("Puedes descargar información de la zona: $zonaUsuario")
+        builder.setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+        builder.show()
+    }
+
     private fun getSelectedDate(): String? {
         val day = datePicker.dayOfMonth
         val month = datePicker.month + 1 // Los meses son indexados desde 0
@@ -59,28 +74,33 @@ class DescargaAgendaActivity : ComponentActivity() {
     }
 
     private fun searchAgendaByDate(selectedDate: String) {
-        this.selectedDate = selectedDate // Almacena la fecha seleccionada
+        this.selectedDate = selectedDate
 
-        // Busca en la base de datos usando la fecha formateada
         database.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                recordIds.clear() // Limpiar la lista antes de buscar
+                recordIds.clear()
 
-                // Iterar sobre todos los registros en el nodo 'agenda'
                 for (data in snapshot.children) {
-                    // Obtener el ID del registro
-                    val recordId = data.key ?: continue // Salta si no hay ID
+                    val recordId = data.key ?: continue
 
-                    // Comparar los primeros 8 caracteres del ID con la fecha seleccionada
                     if (recordId.startsWith(selectedDate)) {
-                        recordIds.add(recordId) // Agregar el ID a la lista si coincide
+                        if (zonaUsuario == "Set-Admin") {
+                            // Si es Set-Admin, agrega todos los registros sin filtrar por zona
+                            recordIds.add(recordId)
+                        } else {
+                            // De lo contrario, verifica que la zona del registro coincida con la zona del usuario
+                            val zonaRegistro = data.child("zona").getValue(String::class.java) ?: ""
+                            if (zonaRegistro == zonaUsuario) {
+                                recordIds.add(recordId)
+                            }
+                        }
                     }
                 }
 
                 if (recordIds.isNotEmpty()) {
                     showRecordsDialog(recordIds)
                 } else {
-                    Toast.makeText(this@DescargaAgendaActivity, "No se encontraron registros para la fecha seleccionada", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@DescargaAgendaActivity, "No se encontraron registros para la fecha y zona seleccionada", Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -89,6 +109,7 @@ class DescargaAgendaActivity : ComponentActivity() {
             }
         })
     }
+
 
     private fun showRecordsDialog(recordIds: List<String>) {
         val builder = AlertDialog.Builder(this)
@@ -121,29 +142,28 @@ class DescargaAgendaActivity : ComponentActivity() {
 
     private fun downloadRecordsToFile(uri: Uri) {
         val contentBuilder = StringBuilder() // Usar StringBuilder para construir el contenido
+        var recordsProcessed = 0 // Contador de registros procesados
 
-        // Verificar si hay registros para procesar
         if (recordIds.isEmpty()) {
             Toast.makeText(this, "No hay registros para descargar", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // Procesar cada ID para obtener su información
         for (recordId in recordIds) {
             database.child(recordId).addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
-                        // Aquí debes agregar la lógica para extraer la información que deseas
-                        val recordInfo = snapshot.value.toString() // Obtén toda la información del registro
-
-                        // Cambiar la forma en que se agrega el contenido con saltos de línea
-                        contentBuilder.append("\nID: $recordId\n") // Agrega el ID
-                        contentBuilder.append(recordInfo.replace(",", "\n")) // Reemplaza comas por saltos de línea
-                        contentBuilder.append("\n") // Añadir un salto de línea extra para separar registros
+                        val recordInfo = snapshot.value.toString()
+                        contentBuilder.append("\nID: $recordId\n")
+                        contentBuilder.append(recordInfo.replace(",", "\n"))
+                        contentBuilder.append("\n")
                     }
 
-                    // Guardar el contenido en el archivo después de procesar todos los registros
-                    if (recordId == recordIds.last()) {
+                    // Incrementa el contador de registros procesados
+                    recordsProcessed++
+
+                    // Solo guarda el archivo cuando todos los registros han sido procesados
+                    if (recordsProcessed == recordIds.size) {
                         saveToFile(uri, contentBuilder.toString())
                     }
                 }
@@ -161,12 +181,14 @@ class DescargaAgendaActivity : ComponentActivity() {
                 outputStream.write(content.toByteArray())
                 Toast.makeText(this, "Archivo guardado correctamente", Toast.LENGTH_LONG).show()
             }
+            finish() // Finaliza la actividad después de guardar el archivo
         } catch (e: IOException) {
             Toast.makeText(this, "Error al guardar el archivo: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
 
+
     companion object {
-        private const val CREATE_FILE_REQUEST_CODE = 1001 // Código de solicitud para crear un archivo
+        private const val CREATE_FILE_REQUEST_CODE = 1001
     }
 }
