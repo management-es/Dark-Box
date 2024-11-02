@@ -8,6 +8,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.google.firebase.database.*
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 class ActDatosActivity : ComponentActivity() {
     private lateinit var database: DatabaseReference
@@ -317,15 +320,24 @@ class ActDatosActivity : ComponentActivity() {
             }
         }
 
-        // Crear el mensaje con el nombre del usuario
-        val mensaje = "Usuario: $nombreUsuario\n\nDatos anteriores:\n$previousValues\nDatos nuevos:\n$newValues"
+        // Formatear la fecha actual en AAAAMMDD
+        val currentDate = SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(Date())
+
+        // Crear el mensaje de cambios para mostrar en el AlertDialog
+        val mensaje = """
+        Datos anteriores:
+        $previousValues
+        
+        Datos nuevos:
+        $newValues
+    """.trimIndent()
 
         // Crear el AlertDialog
         val alertDialog = AlertDialog.Builder(this)
             .setTitle("Confirmar Cambios")
-            .setMessage(mensaje)
+            .setMessage("Usuario: $nombreUsuario\nFecha: $currentDate\n\n$mensaje")
             .setPositiveButton("Guardar") { dialog, _ ->
-                guardarCambios(nuevosDatos)
+                guardarCambios(nuevosDatos, mensaje, currentDate, nombreUsuario)
                 dialog.dismiss()
                 finish()  // Volver a la actividad anterior (ActualizarClienteActivity) al guardar
             }
@@ -338,26 +350,61 @@ class ActDatosActivity : ComponentActivity() {
         alertDialog.show()
     }
 
-
-    private fun guardarCambios(nuevosDatos: Map<String, String>) {
-        // Actualizar los datos en Firebase
+    private fun guardarCambios(nuevosDatos: Map<String, String>, mensaje: String, fecha: String, usuario: String) {
+        // Actualizar los datos del cliente en Firebase
         val clienteId = clienteData?.cod_cliente ?: return
         database.child(clienteId).updateChildren(nuevosDatos)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    // Actualización exitosa
-                    Toast.makeText(this, "Datos actualizados correctamente.", Toast.LENGTH_SHORT).show()
-                    // También podrías actualizar clienteData aquí si es necesario
-                    // Puedes optar por reiniciar la actividad o simplemente ocultar los EditText
+                    // Referencia para "observacion-editado"
+                    val observacionRef = database.child(clienteId).child("observacion-editado")
+
+                    // Obtener la lista de observaciones para contar las existentes en la misma fecha
+                    observacionRef.orderByKey().addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(dataSnapshot: DataSnapshot) {
+                            // Contar cuántas observaciones existen con la misma fecha
+                            var contador = 1
+                            dataSnapshot.children.forEach { child ->
+                                if (child.key?.startsWith(fecha) == true) {
+                                    contador++
+                                }
+                            }
+
+                            // Crear el ID en el formato "fecha+contador"
+                            val observacionId = "$fecha$contador"
+
+                            // Crear un objeto con los detalles de la edición
+                            val observacionData = mapOf(
+                                "usuario" to usuario,
+                                "fecha" to fecha,
+                                "detalle" to mensaje
+                            )
+
+                            // Guardar la observación con el ID generado
+                            observacionRef.child(observacionId).setValue(observacionData)
+                                .addOnCompleteListener { observacionTask ->
+                                    if (observacionTask.isSuccessful) {
+                                        Toast.makeText(this@ActDatosActivity, "Datos y observación actualizados correctamente.", Toast.LENGTH_SHORT).show()
+                                    } else {
+                                        Toast.makeText(this@ActDatosActivity, "Error al guardar observación: ${observacionTask.exception?.message}", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                        }
+
+                        override fun onCancelled(databaseError: DatabaseError) {
+                            // Manejar error en la consulta
+                            Toast.makeText(this@ActDatosActivity, "Error al contar observaciones: ${databaseError.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    })
+
+                    // Alternativa: Puedes optar por reiniciar la actividad o simplemente ocultar los EditText
                     toggleEditMode(false)
                 } else {
-                    // Error al actualizar
-                    Toast.makeText(this, "Error al actualizar datos: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                    // Error al actualizar los datos
+                    Toast.makeText(this@ActDatosActivity, "Error al actualizar datos: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                 }
             }
     }
-
-
 }
 
 // Modelo de datos para el cliente
