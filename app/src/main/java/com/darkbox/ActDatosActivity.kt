@@ -112,21 +112,21 @@ class ActDatosActivity : ComponentActivity() {
                 if (snapshot.exists()) {
                     clienteData = snapshot.getValue(Client::class.java)
                     if (clienteData != null) {
-                        // Aquí se asume que Client tiene una propiedad 'zona'
-                        if (clienteData!!.zona == zonaUsuario) { // Comparar zona
+                        // Comprobar si el usuario es un administrador
+                        if (zonaUsuario == "Set-Admin" || clienteData!!.zona == zonaUsuario) { // Permitir ver todos si es Set-Admin
                             // Mostrar datos en el TextView
                             textViewDatos.text = """
-                                Nombres: ${clienteData?.nombres}
-                                Apellidos: ${clienteData?.apellidos}
-                                Tipo de documento: ${clienteData?.tipo_documento}
-                                Número de documento: ${clienteData?.numero_documento}
-                                Dirección: ${clienteData?.direccion}
-                                Código de cliente: ${clienteData?.cod_cliente}
-                                Contactos: ${clienteData?.contactos}
-                                Correo: ${clienteData?.correo}
-                                Coordenadas: ${clienteData?.coordenadas}
-                                Teléfono: ${clienteData?.telefono}
-                            """.trimIndent()
+                            Nombres: ${clienteData?.nombres}
+                            Apellidos: ${clienteData?.apellidos}
+                            Tipo de documento: ${clienteData?.tipo_documento}
+                            Número de documento: ${clienteData?.numero_documento}
+                            Dirección: ${clienteData?.direccion}
+                            Código de cliente: ${clienteData?.cod_cliente}
+                            Contactos: ${clienteData?.contactos}
+                            Correo: ${clienteData?.correo}
+                            Coordenadas: ${clienteData?.coordenadas}
+                            Teléfono: ${clienteData?.telefono}
+                        """.trimIndent()
 
                             // Cargar datos en los EditTexts
                             editTextNombres.setText(clienteData?.nombres)
@@ -286,9 +286,12 @@ class ActDatosActivity : ComponentActivity() {
                 cambios = true
             }
 
-            // Si hay cambios, proceder a mostrar el AlertDialog
+            // Verificar si hay cambios
             if (cambios) {
                 showConfirmationDialog(nuevosDatos)
+            } else {
+                // Si no hay cambios, mostrar un Toast
+                Toast.makeText(this, "No hay datos editados.", Toast.LENGTH_SHORT).show()
             }
         }
     }
