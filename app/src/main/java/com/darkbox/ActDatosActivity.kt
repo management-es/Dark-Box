@@ -27,6 +27,7 @@ class ActDatosActivity : ComponentActivity() {
     private lateinit var editTextCorreo: EditText
     private lateinit var editTextCoordenadas: EditText
     private lateinit var editTextTelefono: EditText
+    private lateinit var nombreUsuario: String
 
     private var clienteData: Client? = null
 
@@ -34,8 +35,17 @@ class ActDatosActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_actdatos)
 
+
+        // Obtener el nombre del usuario desde el intent y asignarlo a la variable de instancia
+        nombreUsuario = intent.getStringExtra("NOMBRE_USUARIO") ?: "Usuario desconocido"
+
+        // Mostrar el nombre del usuario en el TextView
+        val textViewUsuarioLogueado: TextView = findViewById(R.id.textView_usuario_logueado)
+        textViewUsuarioLogueado.text = "Usuario: $nombreUsuario"
+
         // Inicializar la referencia a la base de datos
         database = FirebaseDatabase.getInstance().reference.child("clientes")
+
 
         // Inicializar vistas
         editTextBuscarCliente = findViewById(R.id.editText_buscar_cliente)
@@ -307,21 +317,27 @@ class ActDatosActivity : ComponentActivity() {
             }
         }
 
+        // Crear el mensaje con el nombre del usuario
+        val mensaje = "Usuario: $nombreUsuario\n\nDatos anteriores:\n$previousValues\nDatos nuevos:\n$newValues"
+
         // Crear el AlertDialog
         val alertDialog = AlertDialog.Builder(this)
             .setTitle("Confirmar Cambios")
-            .setMessage("Datos anteriores:\n$previousValues\nDatos nuevos:\n$newValues")
+            .setMessage(mensaje)
             .setPositiveButton("Guardar") { dialog, _ ->
                 guardarCambios(nuevosDatos)
                 dialog.dismiss()
+                finish()  // Volver a la actividad anterior (ActualizarClienteActivity) al guardar
             }
             .setNegativeButton("Cancelar") { dialog, _ ->
                 dialog.dismiss()
+                finish()  // Volver a la actividad anterior (ActualizarClienteActivity) al cancelar
             }
             .create()
 
         alertDialog.show()
     }
+
 
     private fun guardarCambios(nuevosDatos: Map<String, String>) {
         // Actualizar los datos en Firebase
