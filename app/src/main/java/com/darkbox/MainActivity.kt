@@ -90,6 +90,7 @@ class MainActivity : ComponentActivity() {
         val intent = Intent(this, ClientesActivity::class.java)
         intent.putExtra("ZONA_USUARIO", zona)
         intent.putExtra("ROL_USUARIO", rol)
+        intent.putExtra("NOMBRE_USUARIO", nombreUsuario)
         startActivity(intent)
     }
 

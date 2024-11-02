@@ -13,6 +13,7 @@ class ClientesActivity : ComponentActivity() {
     private lateinit var database: DatabaseReference
     private lateinit var zonaUsuario: String // Variable para almacenar la zona del usuario
     private lateinit var rolUsuario: String  // Variable para almacenar el rol del usuario
+    private lateinit var nombreUsuario: String  // Variable para almacenar el nombre del usuario
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,6 +22,7 @@ class ClientesActivity : ComponentActivity() {
         // Obtener la zona del usuario desde el Intent
         zonaUsuario = intent.getStringExtra("ZONA_USUARIO") ?: "Zona no especificada"
         rolUsuario = intent.getStringExtra("ROL_USUARIO") ?: "Rol no especificado"
+        nombreUsuario = intent.getStringExtra("NOMBRE_USUARIO") ?: "nombre no especificado"
 
         // Inicializa la referencia a la base de datos
         database = FirebaseDatabase.getInstance().reference
@@ -56,8 +58,9 @@ class ClientesActivity : ComponentActivity() {
             } else {
                 optionsLayout.visibility = View.VISIBLE
             val intent = Intent(this, ActualizarClienteActivity::class.java)
-            intent.putExtra("ZONA_USUARIO", zonaUsuario) // Pasar la zona del usuario a IngresarClienteActivity
-            intent.putExtra("ROL_USUARIO", rolUsuario) // Pasar el rol del usuario a IngresarClienteActivity
+            intent.putExtra("ZONA_USUARIO", zonaUsuario)
+            intent.putExtra("ROL_USUARIO", rolUsuario)
+            intent.putExtra("NOMBRE_USUARIO", nombreUsuario)
             startActivity(intent)
             }
         }

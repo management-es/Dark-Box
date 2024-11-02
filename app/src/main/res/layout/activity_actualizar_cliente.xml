@@ -3,95 +3,55 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- res/layout/activity_actualizar_cliente.xml -->
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/titulo_actualizar_cliente"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Editar Información de Cliente"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_gravity="center_horizontal"
-            android:paddingBottom="20dp" />
-
-        <!-- EditText para la búsqueda -->
-        <EditText
-            android:id="@+id/editText_buscar_cliente"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Buscar por ID del Cliente"
-            android:padding="10dp"
-            android:layout_marginBottom="20dp" />
+            android:orientation="vertical"
+            android:padding="16dp">
 
-        <Button
-            android:id="@+id/button_buscar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Buscar"
-            android:layout_gravity="center_horizontal"
-            android:padding="10dp" />
+            <TextView
+                android:id="@+id/titulo_actualizar_cliente"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Editar Información de Cliente"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_gravity="center_horizontal"
+                android:paddingBottom="20dp" />
 
-        <Button
-            android:id="@+id/button_datos"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Datos"
-            android:layout_gravity="center_horizontal"
-            android:padding="10dp" />
+            <!-- Botón Datos -->
+            <Button
+                android:id="@+id/button_datos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Datos"
+                android:layout_gravity="center_horizontal"
+                android:padding="10dp"
+                android:layout_marginBottom="10dp"/>
 
+            <!-- Botón Físico -->
+            <Button
+                android:id="@+id/button_fisico"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Físico"
+                android:layout_gravity="center_horizontal"
+                android:padding="10dp"
+                android:layout_marginBottom="10dp"/>
 
+            <!-- Botón Lógico -->
+            <Button
+                android:id="@+id/button_logico"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lógico"
+                android:layout_gravity="center_horizontal"
+                android:padding="10dp"/>
 
-        <!-- TextView para mostrar la información del cliente -->
-        <TextView
-            android:id="@+id/textView_datos"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:padding="10dp"
-            android:text="" />
-
-        <Button
-            android:id="@+id/button_fisico"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Físico"
-            android:layout_gravity="center_horizontal"
-            android:padding="10dp"
-            android:layout_marginTop="10dp" />
-
-        <TextView
-            android:id="@+id/textView_fisico"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Texto Prueba"
-            android:layout_gravity="center_horizontal"
-            android:padding="10dp" />
-
-        <Button
-            android:id="@+id/button_logico"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Lógico"
-            android:layout_gravity="center_horizontal"
-            android:padding="10dp"
-            android:layout_marginTop="10dp" />
-
-        <TextView
-            android:id="@+id/textView_logico"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Texto Prueba"
-            android:layout_gravity="center_horizontal"
-            android:padding="10dp" />
-
-    </LinearLayout>
-
-
+        </LinearLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

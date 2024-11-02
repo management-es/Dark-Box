@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/editText_buscar_cliente"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Buscar cliente por ID" />
+
+    <Button
+        android:id="@+id/button_buscar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Buscar" />
+
+    <TextView
+        android:id="@+id/textView_datos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Datos del cliente"
+        android:visibility="visible" />
+
+    <!-- Campos Editables -->
+    <TextView
+        android:id="@+id/textView_nombres"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nombres:"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/editText_nombres"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nombres"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/textView_apellidos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Apellidos:"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/editText_apellidos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Apellidos"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/textView_tipo_documento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tipo de documento:"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/editText_tipo_documento"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Tipo de documento"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/textView_numero_documento"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Número de documento:"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/editText_numero_documento"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Número de documento"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/textView_direccion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dirección:"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/editText_direccion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Dirección"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/textView_codigo_cliente"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Código de cliente:"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/editText_codigo_cliente"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Código de cliente"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/textView_contactos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Contactos:"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/editText_contactos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Contactos"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/textView_correo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Correo:"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/editText_correo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Correo"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/textView_coordenadas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Coordenadas:"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/editText_coordenadas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Coordenadas"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/textView_telefono"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Teléfono:"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/editText_telefono"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Teléfono"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/button_editar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Editar" />
+
+    <Button
+        android:id="@+id/button_guardar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Guardar" />
+
+</LinearLayout>
