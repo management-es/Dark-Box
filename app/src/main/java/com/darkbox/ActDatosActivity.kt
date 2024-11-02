@@ -31,6 +31,7 @@ class ActDatosActivity : ComponentActivity() {
     private lateinit var editTextCoordenadas: EditText
     private lateinit var editTextTelefono: EditText
     private lateinit var nombreUsuario: String
+    private lateinit var zonaUsuario: String
 
     private var clienteData: Client? = null
 
@@ -39,12 +40,16 @@ class ActDatosActivity : ComponentActivity() {
         setContentView(R.layout.activity_actdatos)
 
 
-        // Obtener el nombre del usuario desde el intent y asignarlo a la variable de instancia
+        // Obtener el nombre y la zona del usuario desde el intent
         nombreUsuario = intent.getStringExtra("NOMBRE_USUARIO") ?: "Usuario desconocido"
+        zonaUsuario = intent.getStringExtra("ZONA_USUARIO") ?: "Zona desconocida"
 
         // Mostrar el nombre del usuario en el TextView
         val textViewUsuarioLogueado: TextView = findViewById(R.id.textView_usuario_logueado)
         textViewUsuarioLogueado.text = "Usuario: $nombreUsuario"
+
+        // Mostrar el AlertDialog con la zona del usuario
+        mostrarDialogoZona(zonaUsuario)
 
         // Inicializar la referencia a la base de datos
         database = FirebaseDatabase.getInstance().reference.child("clientes")
@@ -87,40 +92,59 @@ class ActDatosActivity : ComponentActivity() {
 
     }
 
+    private fun mostrarDialogoZona(zona: String) {
+        val mensaje = "Solamente tienes autorizado editar los datos de la zona: $zona"
+        val alertDialog = AlertDialog.Builder(this)
+            .setTitle("Información de Zona")
+            .setMessage(mensaje)
+            .setPositiveButton("Aceptar") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .create()
+
+        alertDialog.show()
+    }
+
+
     private fun buscarCliente(clienteId: String) {
         database.child(clienteId).addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     clienteData = snapshot.getValue(Client::class.java)
                     if (clienteData != null) {
-                        // Mostrar datos en el TextView
-                        textViewDatos.text = """
-                            Nombres: ${clienteData?.nombres}
-                            Apellidos: ${clienteData?.apellidos}
-                            Tipo de documento: ${clienteData?.tipo_documento}
-                            Número de documento: ${clienteData?.numero_documento}
-                            Dirección: ${clienteData?.direccion}
-                            Código de cliente: ${clienteData?.cod_cliente}
-                            Contactos: ${clienteData?.contactos}
-                            Correo: ${clienteData?.correo}
-                            Coordenadas: ${clienteData?.coordenadas}
-                            Teléfono: ${clienteData?.telefono}
-                        """.trimIndent()
+                        // Aquí se asume que Client tiene una propiedad 'zona'
+                        if (clienteData!!.zona == zonaUsuario) { // Comparar zona
+                            // Mostrar datos en el TextView
+                            textViewDatos.text = """
+                                Nombres: ${clienteData?.nombres}
+                                Apellidos: ${clienteData?.apellidos}
+                                Tipo de documento: ${clienteData?.tipo_documento}
+                                Número de documento: ${clienteData?.numero_documento}
+                                Dirección: ${clienteData?.direccion}
+                                Código de cliente: ${clienteData?.cod_cliente}
+                                Contactos: ${clienteData?.contactos}
+                                Correo: ${clienteData?.correo}
+                                Coordenadas: ${clienteData?.coordenadas}
+                                Teléfono: ${clienteData?.telefono}
+                            """.trimIndent()
 
-                        // Cargar datos en los EditTexts
-                        editTextNombres.setText(clienteData?.nombres)
-                        editTextApellidos.setText(clienteData?.apellidos)
-                        editTextTipoDocumento.setText(clienteData?.tipo_documento)
-                        editTextNumeroDocumento.setText(clienteData?.numero_documento)
-                        editTextDireccion.setText(clienteData?.direccion)
-                        editTextCodigoCliente.setText(clienteData?.cod_cliente)
-                        editTextContactos.setText(clienteData?.contactos)
-                        editTextCorreo.setText(clienteData?.correo)
-                        editTextCoordenadas.setText(clienteData?.coordenadas)
-                        editTextTelefono.setText(clienteData?.telefono)
+                            // Cargar datos en los EditTexts
+                            editTextNombres.setText(clienteData?.nombres)
+                            editTextApellidos.setText(clienteData?.apellidos)
+                            editTextTipoDocumento.setText(clienteData?.tipo_documento)
+                            editTextNumeroDocumento.setText(clienteData?.numero_documento)
+                            editTextDireccion.setText(clienteData?.direccion)
+                            editTextCodigoCliente.setText(clienteData?.cod_cliente)
+                            editTextContactos.setText(clienteData?.contactos)
+                            editTextCorreo.setText(clienteData?.correo)
+                            editTextCoordenadas.setText(clienteData?.coordenadas)
+                            editTextTelefono.setText(clienteData?.telefono)
 
-                        // Ocultar los EditTexts inicialmente
-                        hideEditTexts()
+                            // Ocultar los EditTexts inicialmente
+                            hideEditTexts()
+                        } else {
+                            textViewDatos.text = "Este cliente no pertenece a tu zona."
+                        }
                     }
                 } else {
                     textViewDatos.text = "Cliente no encontrado."
@@ -132,6 +156,7 @@ class ActDatosActivity : ComponentActivity() {
             }
         })
     }
+
 
     private fun toggleEditMode(editing: Boolean) {
         if (editing) {
@@ -418,5 +443,6 @@ data class Client(
     var coordenadas: String? = "",
     var telefono: String? = "",
     var correo: String? = "",
-    var contactos: String? = ""
+    var contactos: String? = "",
+    var zona: String? = ""
 )

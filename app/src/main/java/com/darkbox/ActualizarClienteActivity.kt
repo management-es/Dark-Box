@@ -13,12 +13,14 @@ class ActualizarClienteActivity : ComponentActivity() {
     private lateinit var buttonLogico: Button
 
     private lateinit var nombreUsuario: String  // Variable para almacenar el nombre del usuario
+    private lateinit var zonaUsuario: String // Variable para almacenar la zona del usuario
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_actualizar_cliente)
 
         nombreUsuario = intent.getStringExtra("NOMBRE_USUARIO") ?: "nombre no especificado"
+        zonaUsuario = intent.getStringExtra("ZONA_USUARIO") ?: "Zona no especificada"
 
         // Inicializar el TextView para el título
         textViewTitulo = findViewById(R.id.titulo_actualizar_cliente)
@@ -33,6 +35,7 @@ class ActualizarClienteActivity : ComponentActivity() {
             // Iniciar ActDatosActivity
             val intent = Intent(this, ActDatosActivity::class.java)
             intent.putExtra("NOMBRE_USUARIO", nombreUsuario)
+            intent.putExtra("ZONA_USUARIO", zonaUsuario)
             startActivity(intent)
         }
 
