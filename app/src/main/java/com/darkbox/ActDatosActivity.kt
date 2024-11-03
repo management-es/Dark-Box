@@ -1,5 +1,6 @@
 package com.darkbox
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import android.widget.Button
@@ -76,6 +77,11 @@ class ActDatosActivity : ComponentActivity() {
 
         // Configurar el botón de búsqueda
         buttonBuscar.setOnClickListener {
+
+            // Mostrar pantalla de carga
+            val intent = Intent(this, LoadingActivity::class.java)
+            startActivity(intent)
+
             val clienteId = editTextBuscarCliente.text.toString().trim()
             if (clienteId.isNotEmpty()) {
                 buscarCliente(clienteId)
@@ -222,6 +228,8 @@ class ActDatosActivity : ComponentActivity() {
 
     private fun setupSaveButton() {
         buttonGuardar.setOnClickListener {
+
+
             // Tomar los valores de los EditText
             val nuevosDatos = mutableMapOf<String, String>()
             var cambios = false // Variable para verificar si hay cambios
@@ -360,6 +368,7 @@ class ActDatosActivity : ComponentActivity() {
         $newValues
     """.trimIndent()
 
+
         // Crear el AlertDialog
         val alertDialog = AlertDialog.Builder(this)
             .setTitle("Confirmar Cambios")
@@ -425,7 +434,7 @@ class ActDatosActivity : ComponentActivity() {
                         }
                     })
 
-                    // Alternativa: Puedes optar por reiniciar la actividad o simplemente ocultar los EditText
+                    // Alternativa
                     toggleEditMode(false)
                 } else {
                     // Error al actualizar los datos
