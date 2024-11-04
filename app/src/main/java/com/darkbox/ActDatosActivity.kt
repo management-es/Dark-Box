@@ -388,6 +388,8 @@ class ActDatosActivity : ComponentActivity() {
     }
 
     private fun guardarCambios(nuevosDatos: Map<String, String>, mensaje: String, fecha: String, usuario: String) {
+
+        val mensajeSeparadoPorComas = mensaje.lines().joinToString(", ")
         // Actualizar los datos del cliente en Firebase
         val clienteId = clienteData?.cod_cliente ?: return
         database.child(clienteId).updateChildren(nuevosDatos)
@@ -414,7 +416,7 @@ class ActDatosActivity : ComponentActivity() {
                             val observacionData = mapOf(
                                 "usuario" to usuario,
                                 "fecha" to fecha,
-                                "detalle" to mensaje
+                                "detalle" to mensajeSeparadoPorComas
                             )
 
                             // Guardar la observación con el ID generado
