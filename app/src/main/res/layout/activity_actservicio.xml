@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView_usuario_logueado"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Usuario:"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/editText_buscar_cliente"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Buscar cliente por Código" />
+
+        <Button
+            android:id="@+id/button_buscar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Buscar" />
+
+        <TextView
+            android:id="@+id/textView_datos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Datos del cliente"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/textView_nombre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nombre: "
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/textView_apellidos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Apellidos: "
+            android:textSize="16sp" />
+
+
+        <!-- Campos Editables -->
+
+        <TextView
+            android:id="@+id/textView_plan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Plan:"
+            android:visibility="gone" />
+
+        <EditText
+            android:id="@+id/editText_plan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Plan"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/textView_tecnologia"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tecnología:"
+            android:visibility="gone" />
+
+        <EditText
+            android:id="@+id/editText_tecnologia"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Tecnología"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/textView_serial_antena"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Serial Antena:"
+            android:visibility="gone" />
+
+        <EditText
+            android:id="@+id/editText_serial_antena"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Serial Antena"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/textView_serial_onu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Serial ONU:"
+            android:visibility="gone" />
+
+        <EditText
+            android:id="@+id/editText_serial_onu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Serial ONU"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/textView_serial_router"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Serial Router:"
+            android:visibility="gone" />
+
+        <EditText
+            android:id="@+id/editText_serial_router"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Serial Router"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/textView_equipos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Equipos:"
+            android:visibility="gone" />
+
+        <EditText
+            android:id="@+id/editText_equipos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Equipos"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/textView_ip_antena"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="IP Antena:"
+            android:visibility="gone" />
+
+        <EditText
+            android:id="@+id/editText_ip_antena"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="IP Antena"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/textView_ip_remota"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="IP Remota:"
+            android:visibility="gone" />
+
+        <EditText
+            android:id="@+id/editText_ip_remota"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="IP Remota"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/button_editar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Editar" />
+
+        <Button
+            android:id="@+id/button_guardar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Guardar" />
+
+    </LinearLayout>
+</ScrollView>

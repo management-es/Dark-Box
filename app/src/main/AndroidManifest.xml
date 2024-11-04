@@ -83,6 +83,12 @@
             android:label="Actualizar Datos de CLiente"
             android:theme="@style/Theme.DarkBox" />
 
+        <activity
+            android:name=".ActServicioActivity"
+            android:exported="true"
+            android:label="Actualizar Servicio de CLiente"
+            android:theme="@style/Theme.DarkBox" />
+
         <!-- Agregar AgendaActivity -->
         <activity
             android:name=".AgendaActivity"

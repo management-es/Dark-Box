@@ -35,22 +35,14 @@
 
             <!-- Botón Físico -->
             <Button
-                android:id="@+id/button_fisico"
+                android:id="@+id/button_servicio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Físico"
+                android:text="Servicio"
                 android:layout_gravity="center_horizontal"
                 android:padding="10dp"
                 android:layout_marginBottom="10dp"/>
 
-            <!-- Botón Lógico -->
-            <Button
-                android:id="@+id/button_logico"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Lógico"
-                android:layout_gravity="center_horizontal"
-                android:padding="10dp"/>
 
         </LinearLayout>
     </ScrollView>
