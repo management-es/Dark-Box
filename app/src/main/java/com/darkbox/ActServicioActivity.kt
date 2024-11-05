@@ -11,6 +11,8 @@ import androidx.activity.ComponentActivity
 import com.google.firebase.database.*
 import java.text.SimpleDateFormat
 import java.util.*
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 
 class ActServicioActivity : ComponentActivity() {
     private lateinit var database: DatabaseReference
@@ -20,8 +22,10 @@ class ActServicioActivity : ComponentActivity() {
     private lateinit var buttonEditar: Button
     private lateinit var buttonGuardar: Button
 
-    private lateinit var editTextPlan: EditText
-    private lateinit var editTextTecnologia: EditText
+
+    private lateinit var spinnerPlan: Spinner
+    private lateinit var spinnerTecnologia: Spinner
+
     private lateinit var editTextSerialAntena: EditText
     private lateinit var editTextSerialOnu: EditText
     private lateinit var editTextSerialRouter: EditText
@@ -59,14 +63,35 @@ class ActServicioActivity : ComponentActivity() {
         buttonGuardar = findViewById(R.id.button_guardar)
 
         // Inicializar EditTexts
-        editTextPlan = findViewById(R.id.editText_plan)
-        editTextTecnologia = findViewById(R.id.editText_tecnologia)
+
+
         editTextSerialAntena = findViewById(R.id.editText_serial_antena)
         editTextSerialOnu = findViewById(R.id.editText_serial_onu)
         editTextSerialRouter = findViewById(R.id.editText_serial_router)
         editTextEquipos = findViewById(R.id.editText_equipos)
         editTextIpAntena = findViewById(R.id.editText_ip_antena)
         editTextIpRemota = findViewById(R.id.editText_ip_remota)
+
+        // Configurar el adaptador para el Spinner plan
+        spinnerPlan = findViewById(R.id.spinner_plan)
+        val planAdapter: ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(
+            this,
+            R.array.plan_options,
+            android.R.layout.simple_spinner_item
+        )
+        planAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerPlan.adapter = planAdapter
+
+        // Configurar el adaptador para el Spinner tecnologia
+        spinnerTecnologia = findViewById(R.id.spinner_tecnologia)
+        val tecnologiaAdapter: ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(
+            this,
+            R.array.tecnologia_options,
+            android.R.layout.simple_spinner_item
+        )
+        tecnologiaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerTecnologia.adapter = tecnologiaAdapter
+
 
         // Configurar el botón de búsqueda
         buttonBuscar.setOnClickListener {
@@ -122,14 +147,29 @@ class ActServicioActivity : ComponentActivity() {
                             IP Remota: ${clienteData?.ip_remota}
                         """.trimIndent()
 
-                            editTextPlan.setText(clienteData?.plan)
-                            editTextTecnologia.setText(clienteData?.tecnologia)
+
+
                             editTextSerialAntena.setText(clienteData?.serial_antena)
                             editTextSerialOnu.setText(clienteData?.serial_onu)
                             editTextSerialRouter.setText(clienteData?.serial_router)
                             editTextEquipos.setText(clienteData?.equipos)
                             editTextIpAntena.setText(clienteData?.ip_antena)
                             editTextIpRemota.setText(clienteData?.ip_remota)
+
+                            // Configurar el adaptador para cargar el plan
+                            val PlanIndex = resources.getStringArray(R.array.plan_options)
+                                .indexOf(clienteData?.plan)
+                            if (PlanIndex >= 0) {
+                                spinnerPlan.setSelection(PlanIndex)
+                            }
+
+                            // Configurar el adaptador para cargar tecnologia
+                            val TecnologiaIndex = resources.getStringArray(R.array.tecnologia_options)
+                                .indexOf(clienteData?.tecnologia)
+                            if (TecnologiaIndex >= 0) {
+                                spinnerTecnologia.setSelection(TecnologiaIndex)
+                            }
+
 
                             hideEditTexts()
                         } else {
@@ -161,8 +201,9 @@ class ActServicioActivity : ComponentActivity() {
             findViewById<TextView>(R.id.textView_ip_antena).visibility = TextView.VISIBLE
             findViewById<TextView>(R.id.textView_ip_remota).visibility = TextView.VISIBLE
 
-            editTextPlan.visibility = EditText.VISIBLE
-            editTextTecnologia.visibility = EditText.VISIBLE
+
+            spinnerPlan.visibility = Spinner.VISIBLE
+            spinnerTecnologia.visibility = Spinner.VISIBLE
             editTextSerialAntena.visibility = EditText.VISIBLE
             editTextSerialOnu.visibility = EditText.VISIBLE
             editTextSerialRouter.visibility = EditText.VISIBLE
@@ -188,8 +229,9 @@ class ActServicioActivity : ComponentActivity() {
     }
 
     private fun hideEditTexts() {
-        editTextPlan.visibility = EditText.GONE
-        editTextTecnologia.visibility = EditText.GONE
+
+        spinnerPlan.visibility = Spinner.GONE
+        spinnerTecnologia.visibility = Spinner.GONE
         editTextSerialAntena.visibility = EditText.GONE
         editTextSerialOnu.visibility = EditText.GONE
         editTextSerialRouter.visibility = EditText.GONE
@@ -203,13 +245,13 @@ class ActServicioActivity : ComponentActivity() {
             val nuevosDatos = mutableMapOf<String, String>()
             var cambios = false
 
-            val planNuevo = editTextPlan.text.toString().trim()
+            val planNuevo = spinnerPlan.selectedItem.toString()
             if (planNuevo != clienteData?.plan) {
                 nuevosDatos["plan"] = planNuevo
                 cambios = true
             }
 
-            val tecnologiaNueva = editTextTecnologia.text.toString().trim()
+            val tecnologiaNueva = spinnerTecnologia.selectedItem.toString()
             if (tecnologiaNueva != clienteData?.tecnologia) {
                 nuevosDatos["tecnologia"] = tecnologiaNueva
                 cambios = true
@@ -252,7 +294,7 @@ class ActServicioActivity : ComponentActivity() {
             }
 
             if (cambios) {
-                // Show confirmation dialog instead of saving directly
+                // Show confirmation dialog datos
                 showConfirmationDialog(nuevosDatos)
             } else {
                 Toast.makeText(this, "No se detectaron cambios", Toast.LENGTH_SHORT).show()

@@ -5,12 +5,15 @@ import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.google.firebase.database.*
 import java.text.SimpleDateFormat
 import java.util.*
+import android.widget.ArrayAdapter
+
 
 
 class ActDatosActivity : ComponentActivity() {
@@ -23,7 +26,7 @@ class ActDatosActivity : ComponentActivity() {
 
     private lateinit var editTextNombres: EditText
     private lateinit var editTextApellidos: EditText
-    private lateinit var editTextTipoDocumento: EditText
+    private lateinit var spinnerTipoDocumento: Spinner
     private lateinit var editTextNumeroDocumento: EditText
     private lateinit var editTextDireccion: EditText
     private lateinit var editTextCodigoCliente: EditText
@@ -66,7 +69,7 @@ class ActDatosActivity : ComponentActivity() {
         // Inicializar EditTexts
         editTextNombres = findViewById(R.id.editText_nombres)
         editTextApellidos = findViewById(R.id.editText_apellidos)
-        editTextTipoDocumento = findViewById(R.id.editText_tipo_documento)
+
         editTextNumeroDocumento = findViewById(R.id.editText_numero_documento)
         editTextDireccion = findViewById(R.id.editText_direccion)
         editTextCodigoCliente = findViewById(R.id.editText_codigo_cliente)
@@ -74,6 +77,20 @@ class ActDatosActivity : ComponentActivity() {
         editTextCorreo = findViewById(R.id.editText_correo)
         editTextCoordenadas = findViewById(R.id.editText_coordenadas)
         editTextTelefono = findViewById(R.id.editText_telefono)
+
+        spinnerTipoDocumento = findViewById(R.id.spinner_tipo_documento)
+
+        // Configurar el adaptador para el Spinner
+        val adapter: ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(
+            this,
+            R.array.tipo_documento_options,
+            android.R.layout.simple_spinner_item
+        )
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerTipoDocumento.adapter = adapter
+
+
+
 
         // Configurar el botón de búsqueda
         buttonBuscar.setOnClickListener {
@@ -137,7 +154,7 @@ class ActDatosActivity : ComponentActivity() {
                             // Cargar datos en los EditTexts
                             editTextNombres.setText(clienteData?.nombres)
                             editTextApellidos.setText(clienteData?.apellidos)
-                            editTextTipoDocumento.setText(clienteData?.tipo_documento)
+
                             editTextNumeroDocumento.setText(clienteData?.numero_documento)
                             editTextDireccion.setText(clienteData?.direccion)
                             editTextCodigoCliente.setText(clienteData?.cod_cliente)
@@ -145,6 +162,14 @@ class ActDatosActivity : ComponentActivity() {
                             editTextCorreo.setText(clienteData?.correo)
                             editTextCoordenadas.setText(clienteData?.coordenadas)
                             editTextTelefono.setText(clienteData?.telefono)
+
+                            // Configurar el adaptador para cargar el tipo documento del cliente
+                            val tipoDocumentoIndex = resources.getStringArray(R.array.tipo_documento_options)
+                                .indexOf(clienteData?.tipo_documento)
+                            if (tipoDocumentoIndex >= 0) {
+                                spinnerTipoDocumento.setSelection(tipoDocumentoIndex)
+                            }
+
 
                             // Ocultar los EditTexts inicialmente
                             hideEditTexts()
@@ -184,7 +209,8 @@ class ActDatosActivity : ComponentActivity() {
             // Muestra los EditTexts
             editTextNombres.visibility = EditText.VISIBLE
             editTextApellidos.visibility = EditText.VISIBLE
-            editTextTipoDocumento.visibility = EditText.VISIBLE
+
+            spinnerTipoDocumento.visibility = Spinner.VISIBLE
             editTextNumeroDocumento.visibility = EditText.VISIBLE
             editTextDireccion.visibility = EditText.VISIBLE
             editTextCodigoCliente.visibility = EditText.VISIBLE
@@ -216,7 +242,7 @@ class ActDatosActivity : ComponentActivity() {
     private fun hideEditTexts() {
         editTextNombres.visibility = EditText.GONE
         editTextApellidos.visibility = EditText.GONE
-        editTextTipoDocumento.visibility = EditText.GONE
+        spinnerTipoDocumento.visibility = Spinner.GONE
         editTextNumeroDocumento.visibility = EditText.GONE
         editTextDireccion.visibility = EditText.GONE
         editTextCodigoCliente.visibility = EditText.GONE
@@ -246,7 +272,7 @@ class ActDatosActivity : ComponentActivity() {
                 cambios = true
             }
 
-            val tipoDocumentoNuevo = editTextTipoDocumento.text.toString().trim()
+            val tipoDocumentoNuevo = spinnerTipoDocumento.selectedItem.toString()
             if (tipoDocumentoNuevo != clienteData?.tipo_documento) {
                 nuevosDatos["tipo_documento"] = tipoDocumentoNuevo
                 cambios = true

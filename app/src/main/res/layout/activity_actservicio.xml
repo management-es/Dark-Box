@@ -60,8 +60,8 @@
             android:text="Plan:"
             android:visibility="gone" />
 
-        <EditText
-            android:id="@+id/editText_plan"
+        <Spinner
+            android:id="@+id/spinner_plan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Plan"
@@ -74,11 +74,11 @@
             android:text="Tecnología:"
             android:visibility="gone" />
 
-        <EditText
-            android:id="@+id/editText_tecnologia"
+        <Spinner
+            android:id="@+id/spinner_tecnologia"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Tecnología"
+            android:hint="Plan"
             android:visibility="gone" />
 
         <TextView
