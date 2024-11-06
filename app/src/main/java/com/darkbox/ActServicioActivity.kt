@@ -2,6 +2,7 @@ package com.darkbox
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.AdapterView
 import androidx.appcompat.app.AlertDialog
 import android.widget.Button
 import android.widget.EditText
@@ -11,6 +12,7 @@ import androidx.activity.ComponentActivity
 import com.google.firebase.database.*
 import java.text.SimpleDateFormat
 import java.util.*
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 
@@ -22,10 +24,8 @@ class ActServicioActivity : ComponentActivity() {
     private lateinit var buttonEditar: Button
     private lateinit var buttonGuardar: Button
 
-
     private lateinit var spinnerPlan: Spinner
     private lateinit var spinnerTecnologia: Spinner
-
     private lateinit var editTextSerialAntena: EditText
     private lateinit var editTextSerialOnu: EditText
     private lateinit var editTextSerialRouter: EditText
@@ -36,6 +36,7 @@ class ActServicioActivity : ComponentActivity() {
     private lateinit var zonaUsuario: String
 
     private var clienteData: ClientServicio? = null
+    private var tecnologiaInicializada = false // Variable para controlar la inicialización del Spinner
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,8 +64,6 @@ class ActServicioActivity : ComponentActivity() {
         buttonGuardar = findViewById(R.id.button_guardar)
 
         // Inicializar EditTexts
-
-
         editTextSerialAntena = findViewById(R.id.editText_serial_antena)
         editTextSerialOnu = findViewById(R.id.editText_serial_onu)
         editTextSerialRouter = findViewById(R.id.editText_serial_router)
@@ -82,7 +81,7 @@ class ActServicioActivity : ComponentActivity() {
         planAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerPlan.adapter = planAdapter
 
-        // Configurar el adaptador para el Spinner tecnologia
+        // Configurar el adaptador y el listener para el Spinner de tecnología
         spinnerTecnologia = findViewById(R.id.spinner_tecnologia)
         val tecnologiaAdapter: ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(
             this,
@@ -92,10 +91,37 @@ class ActServicioActivity : ComponentActivity() {
         tecnologiaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerTecnologia.adapter = tecnologiaAdapter
 
+        // Listener para detectar cambios en la tecnología seleccionada
+        spinnerTecnologia.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                if (tecnologiaInicializada) {
+                    val tecnologiaSeleccionada = parent.getItemAtPosition(position).toString()
+
+                    when (tecnologiaSeleccionada) {
+                        "Radio Enlace" -> {
+                            // Limpiar el campo de serial de la ONU si se selecciona Radio Enlace
+                            editTextSerialOnu.setText("")
+                        }
+                        "Fibra Óptica" -> {
+                            // Limpiar los campos de serial de Antena y Router si se selecciona Fibra Óptica
+                            editTextSerialAntena.setText("")
+                            editTextSerialRouter.setText("")
+                        }
+                    }
+
+                    // Cargar los equipos disponibles según la tecnología seleccionada
+                    cargarEquiposDisponibles(tecnologiaSeleccionada)
+                } else {
+                    tecnologiaInicializada = true // Activar solo después de la selección inicial
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+
 
         // Configurar el botón de búsqueda
         buttonBuscar.setOnClickListener {
-            // Mostrar pantalla de carga
             val intent = Intent(this, LoadingActivity::class.java)
             startActivity(intent)
 
@@ -112,6 +138,78 @@ class ActServicioActivity : ComponentActivity() {
 
         setupSaveButton()
     }
+
+    private fun cargarEquiposDisponibles(tecnologia: String) {
+        val inventarioRef = FirebaseDatabase.getInstance().reference.child("inventario")
+
+        inventarioRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val antenasDisponibles = mutableListOf<String>()
+                val routersDisponibles = mutableListOf<String>()
+                val onusDisponibles = mutableListOf<String>()
+
+                for (equipoSnapshot in snapshot.children) {
+                    val estado = equipoSnapshot.child("estado").getValue(String::class.java)
+                    val tipoEquipo = equipoSnapshot.child("equipo").getValue(String::class.java)
+                    val serialEquipo = equipoSnapshot.key
+
+                    if (estado == "Bodega") {
+                        when (tipoEquipo) {
+                            "Antena Cliente" -> serialEquipo?.let { antenasDisponibles.add(it) }
+                            "Router" -> serialEquipo?.let { routersDisponibles.add(it) }
+                            "Onu" -> serialEquipo?.let { onusDisponibles.add(it) }
+                        }
+                    }
+                }
+
+                when (tecnologia) {
+                    "Radio Enlace" -> mostrarDialogoSeleccion("Antena Cliente", antenasDisponibles) { serialSeleccionado ->
+                        editTextSerialAntena.setText(serialSeleccionado)
+                        mostrarDialogoSeleccion("Router", routersDisponibles) { routerSeleccionado ->
+                            editTextSerialRouter.setText(routerSeleccionado)
+                        }
+                    }
+                    "Fibra Óptica" -> mostrarDialogoSeleccion("Onu", onusDisponibles) { serialSeleccionado ->
+                        editTextSerialOnu.setText(serialSeleccionado)
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@ActServicioActivity, "Error al cargar equipos: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun mostrarDialogoSeleccion(titulo: String, equiposDisponibles: List<String>, onEquipoSeleccionado: (String) -> Unit) {
+        val builder = AlertDialog.Builder(this)
+
+        if (equiposDisponibles.isEmpty()) {
+            builder.setTitle("$titulo no disponible")
+                .setMessage("No se encontraron equipos $titulo disponibles en bodega.")
+                .setPositiveButton("Aceptar") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
+        } else {
+            builder.setTitle("Selecciona un $titulo")
+            val equiposArray = equiposDisponibles.toTypedArray()
+
+            builder.setItems(equiposArray) { dialog, which ->
+                val equipoSeleccionado = equiposArray[which]
+                onEquipoSeleccionado(equipoSeleccionado)
+                dialog.dismiss()
+            }
+
+            builder.setNegativeButton("Cancelar") { dialog, _ ->
+                dialog.dismiss()
+            }
+
+            builder.show()
+        }
+    }
+
+
 
     private fun mostrarDialogoZona(zona: String) {
         val mensaje = "Solamente tienes autorizado editar los datos de la zona: $zona"
