@@ -482,9 +482,15 @@ class ActServicioActivity : ComponentActivity() {
         val mensajeSeparadoPorComas = mensaje.lines().joinToString(", ")
         // Actualizar los datos del cliente en Firebase
         val clienteId = clienteData?.cod_cliente ?: return
+
+
         database.child(clienteId).updateChildren(nuevosDatos)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
+
+                    // Actualizar estados de los equipos según la tecnología seleccionada
+                    actualizarEstadosEquipos(nuevosDatos)
+
                     // Referencia para "observacion-editado"
                     val observacionRef = database.child(clienteId).child("observacion-editado")
 
@@ -534,6 +540,36 @@ class ActServicioActivity : ComponentActivity() {
                 }
             }
     }
+
+    // Nueva función para actualizar los estados de los equipos
+    private fun actualizarEstadosEquipos(nuevosDatos: Map<String, String>) {
+        val inventarioRef = FirebaseDatabase.getInstance().reference.child("inventario")
+
+        if (nuevosDatos["tecnologia"] == "Radio Enlace") {
+            // ONUs se ponen en "Bodega", Antena y Router en "Activo"
+            clienteData?.serial_onu?.let {
+                inventarioRef.child(it).child("estado").setValue("Bodega")
+            }
+            nuevosDatos["serial_antena"]?.let {
+                inventarioRef.child(it).child("estado").setValue("Activo")
+            }
+            nuevosDatos["serial_router"]?.let {
+                inventarioRef.child(it).child("estado").setValue("Activo")
+            }
+        } else if (nuevosDatos["tecnologia"] == "Fibra Óptica") {
+            // Antena y Router en "Bodega", ONU en "Activo"
+            clienteData?.serial_antena?.let {
+                inventarioRef.child(it).child("estado").setValue("Bodega")
+            }
+            clienteData?.serial_router?.let {
+                inventarioRef.child(it).child("estado").setValue("Bodega")
+            }
+            nuevosDatos["serial_onu"]?.let {
+                inventarioRef.child(it).child("estado").setValue("Activo")
+            }
+        }
+    }
+
 
 }
 
