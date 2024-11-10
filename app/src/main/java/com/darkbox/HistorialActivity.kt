@@ -94,16 +94,21 @@ class HistorialActivity : ComponentActivity() {
                 buscarEnRespuestas(codCliente) { respuestasHistorialList ->
                     historialList.addAll(respuestasHistorialList)
 
-                    // Ordena la lista por fecha en orden descendente
-                    historialList.sortByDescending { it.first }
+                    // Realiza la búsqueda en "clientes" para obtener "observacion-editado"
+                    buscarObservacionEditado(codCliente) { observacionHistorialList ->
+                        historialList.addAll(observacionHistorialList)
 
-                    // Combina todos los registros en una sola cadena de texto
-                    val historial = historialList.joinToString("\n") { it.second }
+                        // Ordena la lista por fecha en orden descendente
+                        historialList.sortByDescending { it.first }
 
-                    if (historial.isEmpty()) {
-                        onResult("No se encontraron registros para el cliente $codCliente.")
-                    } else {
-                        onResult(historial)
+                        // Combina todos los registros en una sola cadena de texto
+                        val historial = historialList.joinToString("\n") { it.second }
+
+                        if (historial.isEmpty()) {
+                            onResult("No se encontraron registros para el cliente $codCliente.")
+                        } else {
+                            onResult(historial)
+                        }
                     }
                 }
             }
@@ -113,6 +118,44 @@ class HistorialActivity : ComponentActivity() {
             }
         })
     }
+
+    private fun buscarObservacionEditado(codCliente: String, onResult: (List<Pair<String, String>>) -> Unit) {
+        val observacionList = mutableListOf<Pair<String, String>>()
+
+        database.child("clientes").child(codCliente).child("observacion-editado").addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                snapshot.children.forEach { dataSnapshot ->
+                    // Obtener fecha + número como clave del subnodo
+                    val observacionId = dataSnapshot.key ?: ""
+                    val fecha = observacionId.take(8) // Extrae la fecha
+                    val numero = observacionId.drop(8) // El número auto incrementable
+
+                    // Obtener los valores de los subnodos dentro de cada observación
+                    val detalle = dataSnapshot.child("detalle").getValue(String::class.java) ?: "N/A"
+                    val usuario = dataSnapshot.child("usuario").getValue(String::class.java) ?: "N/A"
+
+                    // Formatear el texto para incluir en el historial, añadiendo dos saltos de línea después de cada bloque
+                    val observacionInfo = """
+                    Observación Editada (Fecha: $fecha, ID: $observacionId):
+                    Detalle: $detalle
+                    Usuario: $usuario
+                    
+                """.trimIndent()
+
+                    observacionList.add(fecha to observacionInfo)
+                }
+
+                // Devuelve la lista de observaciones para agregarse al historial
+                onResult(observacionList)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@HistorialActivity, "Error en la búsqueda de observaciones: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+
 
     private fun formatearAgendaInfo(dataSnapshot: DataSnapshot): String {
         val cliente = dataSnapshot.child("cliente").getValue(String::class.java) ?: "N/A"
