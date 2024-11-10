@@ -322,9 +322,28 @@ class ActDatosActivity : ComponentActivity() {
 
             // Verificar si hay cambios
             if (cambios) {
-                showConfirmationDialog(nuevosDatos)
+                if (codigoClienteNuevo != clienteData?.cod_cliente) {
+                    // Verificar si el código de cliente ya existe en la base de datos
+                    database.child(codigoClienteNuevo).addListenerForSingleValueEvent(object : ValueEventListener {
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            if (snapshot.exists()) {
+                                // Mostrar mensaje si el código ya existe
+                                Toast.makeText(this@ActDatosActivity, "El código de cliente ya existe.", Toast.LENGTH_SHORT).show()
+                            } else {
+                                // Si no existe, proceder con los cambios
+                                showConfirmationDialog(nuevosDatos)
+                            }
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+                            Toast.makeText(this@ActDatosActivity, "Error al verificar el código de cliente: ${error.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    })
+                } else {
+                    // Si el código de cliente no ha cambiado, procede con los cambios
+                    showConfirmationDialog(nuevosDatos)
+                }
             } else {
-                // Si no hay cambios, mostrar un Toast
                 Toast.makeText(this, "No hay datos editados.", Toast.LENGTH_SHORT).show()
             }
         }
