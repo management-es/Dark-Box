@@ -152,8 +152,10 @@ class ActServicioActivity : ComponentActivity() {
                     val estado = equipoSnapshot.child("estado").getValue(String::class.java)
                     val tipoEquipo = equipoSnapshot.child("equipo").getValue(String::class.java)
                     val serialEquipo = equipoSnapshot.key
+                    val zonaEquipo = equipoSnapshot.child("zona").getValue(String::class.java)
 
-                    if (estado == "Bodega") {
+                    // Filtrar por equipos en "Bodega" y que correspondan a la zona del usuario logueado
+                    if (estado == "Bodega" && zonaEquipo == zonaUsuario) {
                         when (tipoEquipo) {
                             "Antena Cliente" -> serialEquipo?.let { antenasDisponibles.add(it) }
                             "Router" -> serialEquipo?.let { routersDisponibles.add(it) }
