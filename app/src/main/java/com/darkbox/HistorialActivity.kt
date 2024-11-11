@@ -156,7 +156,6 @@ class HistorialActivity : ComponentActivity() {
     }
 
 
-
     private fun formatearAgendaInfo(dataSnapshot: DataSnapshot): String {
         val cliente = dataSnapshot.child("cliente").getValue(String::class.java) ?: "N/A"
         val nombre = dataSnapshot.child("nombre").getValue(String::class.java) ?: "N/A"

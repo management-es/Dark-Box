@@ -58,7 +58,7 @@ class MainActivity : ComponentActivity() {
                     onCredencialesClick = { navigateToCredenciales() },
                     onLogoutClick = { showLogoutConfirmationDialog() },
                     onSecondMenuClick = { navigateToTikets(rolUsuario) },
-                    onHistorialClick = { navigateToHistorial(rolUsuario) },
+                    onHistorialClick = { navigateToHistorial(rolUsuario, zonaUsuario) },
                     onSoporteClick = { navigateToSoporteDev(rolUsuario, zonaUsuario) }
                 )
             }
@@ -135,13 +135,14 @@ class MainActivity : ComponentActivity() {
         startActivity(intent)
     }
 
-    private fun navigateToHistorial(rol: String) {
+    private fun navigateToHistorial(rol: String, zona: String,) {
         // Verificar el rol del usuario
         if (rolUsuario == "Tecnico") {
             showAccessDeniedDialog()
             return // Termina la ejecución si es Tecnico
         }
         val intent = Intent(this, HistorialActivity::class.java)
+        intent.putExtra("ZONA_USUARIO", zona)
         intent.putExtra("NOMBRE_USUARIO", nombreUsuario)
         intent.putExtra("ROL_USUARIO", rol)
         startActivity(intent)

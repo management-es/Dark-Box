@@ -35,6 +35,10 @@ class ActServicioActivity : ComponentActivity() {
     private lateinit var nombreUsuario: String
     private lateinit var zonaUsuario: String
 
+    private var serialAntenaActual: String? = null
+    private var serialOnuActual: String? = null
+    private var serialRouterActual: String? = null
+
     private var clienteData: ClientServicio? = null
     private var tecnologiaInicializada = false // Variable para controlar la inicialización del Spinner
 
@@ -136,8 +140,211 @@ class ActServicioActivity : ComponentActivity() {
             toggleEditMode(true)
         }
 
+
+
+        // Configurar los EditTexts para mostrar el AlertDialog en lugar de permitir edición directa
+        editTextSerialAntena.apply {
+            isFocusable = false
+            isClickable = true
+            setOnClickListener { mostrarSerialAntenasDisponibles() }
+        }
+
+        editTextSerialOnu.apply {
+            isFocusable = false
+            isClickable = true
+            setOnClickListener { mostrarSerialOnusDisponibles() }
+        }
+
+        editTextSerialRouter.apply {
+            isFocusable = false
+            isClickable = true
+            setOnClickListener { mostrarSerialRoutersDisponibles() }
+        }
+
+
+
+
+
         setupSaveButton()
     }
+
+
+    private fun mostrarSerialAntenasDisponibles() {
+        val antenasDisponibles = mutableListOf<String>()
+        val inventarioRef = FirebaseDatabase.getInstance().reference.child("inventario")
+
+        inventarioRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (equipoSnapshot in snapshot.children) {
+                    val estado = equipoSnapshot.child("estado").getValue(String::class.java)
+                    val tipoEquipo = equipoSnapshot.child("equipo").getValue(String::class.java)
+                    val serialEquipo = equipoSnapshot.key
+                    val zonaEquipo = equipoSnapshot.child("zona").getValue(String::class.java)
+
+                    if (estado == "Bodega" && tipoEquipo == "Antena Cliente" &&
+                        (zonaUsuario == "Set-Admin" || zonaEquipo == zonaUsuario)
+                    ) {
+                        serialEquipo?.let { antenasDisponibles.add(it) }
+                    }
+                }
+                // Guardamos el serial actual antes de realizar el cambio
+                serialAntenaActual = editTextSerialAntena.text.toString()
+
+                mostrarDialogoSeleccionIndividual("Antena Cliente", antenasDisponibles) { nuevoSerial ->
+                    editTextSerialAntena.setText(nuevoSerial)
+                    mostrarDialogoCambioEstadoAnterior(serialAntenaActual, "Antena Cliente")
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@ActServicioActivity, "Error al cargar antenas: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun mostrarSerialOnusDisponibles() {
+        val onusDisponibles = mutableListOf<String>()
+        val inventarioRef = FirebaseDatabase.getInstance().reference.child("inventario")
+
+        inventarioRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (equipoSnapshot in snapshot.children) {
+                    val estado = equipoSnapshot.child("estado").getValue(String::class.java)
+                    val tipoEquipo = equipoSnapshot.child("equipo").getValue(String::class.java)
+                    val serialEquipo = equipoSnapshot.key
+                    val zonaEquipo = equipoSnapshot.child("zona").getValue(String::class.java)
+
+                    if (estado == "Bodega" && tipoEquipo == "Onu" &&
+                        (zonaUsuario == "Set-Admin" || zonaEquipo == zonaUsuario)
+                    ) {
+                        serialEquipo?.let { onusDisponibles.add(it) }
+                    }
+                }
+                // Guardamos el serial actual antes de realizar el cambio
+                serialOnuActual = editTextSerialOnu.text.toString()
+
+                mostrarDialogoSeleccionIndividual("Onu", onusDisponibles) { nuevoSerial ->
+                    editTextSerialOnu.setText(nuevoSerial)
+                    mostrarDialogoCambioEstadoAnterior(serialOnuActual, "Onu")
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@ActServicioActivity, "Error al cargar Onus: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun mostrarSerialRoutersDisponibles() {
+        val routersDisponibles = mutableListOf<String>()
+        val inventarioRef = FirebaseDatabase.getInstance().reference.child("inventario")
+
+        inventarioRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                for (equipoSnapshot in snapshot.children) {
+                    val estado = equipoSnapshot.child("estado").getValue(String::class.java)
+                    val tipoEquipo = equipoSnapshot.child("equipo").getValue(String::class.java)
+                    val serialEquipo = equipoSnapshot.key
+                    val zonaEquipo = equipoSnapshot.child("zona").getValue(String::class.java)
+
+                    if (estado == "Bodega" && tipoEquipo == "Router" &&
+                        (zonaUsuario == "Set-Admin" || zonaEquipo == zonaUsuario)
+                    ) {
+                        serialEquipo?.let { routersDisponibles.add(it) }
+                    }
+                }
+                // Guardamos el serial actual antes de realizar el cambio
+                serialRouterActual = editTextSerialRouter.text.toString()
+
+                mostrarDialogoSeleccionIndividual("Router", routersDisponibles) { nuevoSerial ->
+                    editTextSerialRouter.setText(nuevoSerial)
+                    mostrarDialogoCambioEstadoAnterior(serialRouterActual, "Router")
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@ActServicioActivity, "Error al cargar routers: ${error.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    // Función para mostrar el dialogo de selección de estado del equipo anterior
+    private fun mostrarDialogoCambioEstadoAnterior(serialAnterior: String?, tipoEquipo: String) {
+        if (serialAnterior == null || serialAnterior.isEmpty()) return
+
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Cambiar estado del $tipoEquipo anterior")
+
+        val estadosDisponibles = arrayOf("Dañado", "Bodega", "Revisión")
+        builder.setItems(estadosDisponibles) { dialog, which ->
+            val estadoSeleccionado = estadosDisponibles[which]
+
+            // Actualizamos el estado en la base de datos
+            val inventarioRef = FirebaseDatabase.getInstance().reference.child("inventario").child(serialAnterior)
+            inventarioRef.child("estado").setValue(estadoSeleccionado)
+                .addOnSuccessListener {
+                    Toast.makeText(this, "Estado del equipo anterior actualizado a $estadoSeleccionado", Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener { error ->
+                    Toast.makeText(this, "Error al actualizar el estado: ${error.message}", Toast.LENGTH_SHORT).show()
+                }
+
+            dialog.dismiss()
+        }
+
+        builder.setNegativeButton("Cancelar") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        builder.show()
+    }
+
+    private fun mostrarDialogoSeleccionIndividual(titulo: String, equiposDisponibles: List<String>, onEquipoSeleccionado: (String) -> Unit) {
+        val builder = AlertDialog.Builder(this)
+
+        if (equiposDisponibles.isEmpty()) {
+            builder.setTitle("$titulo no disponible")
+                .setMessage("No se encontraron equipos $titulo disponibles en bodega.")
+                .setPositiveButton("Aceptar") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
+        } else {
+            builder.setTitle("Selecciona un $titulo")
+            val equiposArray = equiposDisponibles.toTypedArray()
+
+            builder.setItems(equiposArray) { dialog, which ->
+                val equipoSeleccionado = equiposArray[which]
+                onEquipoSeleccionado(equipoSeleccionado)
+
+                // Cambiar el estado del nuevo equipo a "Activo"
+                val inventarioRefNuevo = FirebaseDatabase.getInstance().reference.child("inventario").child(equipoSeleccionado)
+                inventarioRefNuevo.child("estado").setValue("Activo")
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "$titulo actualizado a Activo", Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnFailureListener { error ->
+                        Toast.makeText(this, "Error al actualizar el estado: ${error.message}", Toast.LENGTH_SHORT).show()
+                    }
+
+                // Cambiar el estado del equipo anterior (si existe)
+                dialog.dismiss()
+            }
+
+            builder.setNegativeButton("Cancelar") { dialog, _ ->
+                dialog.dismiss()
+            }
+
+            builder.show()
+        }
+    }
+
+
+
+
+
+
+
 
     private fun cargarEquiposDisponibles(tecnologia: String) {
         val inventarioRef = FirebaseDatabase.getInstance().reference.child("inventario")
