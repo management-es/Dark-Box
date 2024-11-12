@@ -124,6 +124,11 @@ class ActServicioActivity : ComponentActivity() {
         }
 
 
+        // Deshabilitar los botones al inicio
+        buttonEditar.isEnabled = false
+        buttonGuardar.isEnabled = false
+
+
         // Configurar el botón de búsqueda
         buttonBuscar.setOnClickListener {
             val intent = Intent(this, LoadingActivity::class.java)
@@ -160,11 +165,6 @@ class ActServicioActivity : ComponentActivity() {
             isClickable = true
             setOnClickListener { mostrarSerialRoutersDisponibles() }
         }
-
-
-
-
-
         setupSaveButton()
     }
 
@@ -340,12 +340,6 @@ class ActServicioActivity : ComponentActivity() {
     }
 
 
-
-
-
-
-
-
     private fun cargarEquiposDisponibles(tecnologia: String) {
         val inventarioRef = FirebaseDatabase.getInstance().reference.child("inventario")
 
@@ -454,8 +448,6 @@ class ActServicioActivity : ComponentActivity() {
                             IP Remota: ${clienteData?.ip_remota}
                         """.trimIndent()
 
-
-
                             editTextSerialAntena.setText(clienteData?.serial_antena)
                             editTextSerialOnu.setText(clienteData?.serial_onu)
                             editTextSerialRouter.setText(clienteData?.serial_router)
@@ -470,29 +462,43 @@ class ActServicioActivity : ComponentActivity() {
                                 spinnerPlan.setSelection(PlanIndex)
                             }
 
-                            // Configurar el adaptador para cargar tecnologia
+                            // Configurar el adaptador para cargar tecnología
                             val TecnologiaIndex = resources.getStringArray(R.array.tecnologia_options)
                                 .indexOf(clienteData?.tecnologia)
                             if (TecnologiaIndex >= 0) {
                                 spinnerTecnologia.setSelection(TecnologiaIndex)
                             }
 
+                            // Habilitar los botones de editar y guardar
+                            buttonEditar.isEnabled = true
+                            buttonGuardar.isEnabled = true
 
                             hideEditTexts()
                         } else {
                             textViewDatos.text = "Este cliente no pertenece a tu zona."
+                            buttonEditar.isEnabled = false
+                            buttonGuardar.isEnabled = false
                         }
+                    } else {
+                        textViewDatos.text = "Datos del cliente no válidos."
+                        buttonEditar.isEnabled = false
+                        buttonGuardar.isEnabled = false
                     }
                 } else {
                     textViewDatos.text = "Cliente no encontrado."
+                    buttonEditar.isEnabled = false
+                    buttonGuardar.isEnabled = false
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
                 textViewDatos.text = "Error al buscar cliente: ${error.message}"
+                buttonEditar.isEnabled = false
+                buttonGuardar.isEnabled = false
             }
         })
     }
+
 
 
     private fun toggleEditMode(editing: Boolean) {

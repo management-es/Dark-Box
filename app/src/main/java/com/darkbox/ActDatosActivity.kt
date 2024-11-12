@@ -14,8 +14,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import android.widget.ArrayAdapter
 
-
-
 class ActDatosActivity : ComponentActivity() {
     private lateinit var database: DatabaseReference
     private lateinit var editTextBuscarCliente: EditText
@@ -80,6 +78,10 @@ class ActDatosActivity : ComponentActivity() {
 
         spinnerTipoDocumento = findViewById(R.id.spinner_tipo_documento)
 
+        // Deshabilitar los botones inicialmente
+        buttonEditar.isEnabled = false
+        buttonGuardar.isEnabled = false
+
         // Configurar el adaptador para el Spinner
         val adapter: ArrayAdapter<CharSequence> = ArrayAdapter.createFromResource(
             this,
@@ -88,9 +90,6 @@ class ActDatosActivity : ComponentActivity() {
         )
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerTipoDocumento.adapter = adapter
-
-
-
 
         // Configurar el botón de búsqueda
         buttonBuscar.setOnClickListener {
@@ -135,8 +134,8 @@ class ActDatosActivity : ComponentActivity() {
                 if (snapshot.exists()) {
                     clienteData = snapshot.getValue(Client::class.java)
                     if (clienteData != null) {
-                        // Comprobar si el usuario es un administrador
-                        if (zonaUsuario == "Set-Admin" || clienteData!!.zona == zonaUsuario) { // Permitir ver todos si es Set-Admin
+                        // Comprobar si el usuario es un administrador o si el cliente pertenece a la zona
+                        if (zonaUsuario == "Set-Admin" || clienteData!!.zona == zonaUsuario) {
                             // Mostrar datos en el TextView
                             textViewDatos.text = """
                             Nombres: ${clienteData?.nombres}
@@ -154,7 +153,6 @@ class ActDatosActivity : ComponentActivity() {
                             // Cargar datos en los EditTexts
                             editTextNombres.setText(clienteData?.nombres)
                             editTextApellidos.setText(clienteData?.apellidos)
-
                             editTextNumeroDocumento.setText(clienteData?.numero_documento)
                             editTextDireccion.setText(clienteData?.direccion)
                             editTextCodigoCliente.setText(clienteData?.cod_cliente)
@@ -170,23 +168,37 @@ class ActDatosActivity : ComponentActivity() {
                                 spinnerTipoDocumento.setSelection(tipoDocumentoIndex)
                             }
 
+                            // Habilitar los botones de editar y guardar
+                            buttonEditar.isEnabled = true
+                            buttonGuardar.isEnabled = true
 
                             // Ocultar los EditTexts inicialmente
                             hideEditTexts()
                         } else {
                             textViewDatos.text = "Este cliente no pertenece a tu zona."
+                            buttonEditar.isEnabled = false
+                            buttonGuardar.isEnabled = false
                         }
+                    } else {
+                        textViewDatos.text = "Datos del cliente no válidos."
+                        buttonEditar.isEnabled = false
+                        buttonGuardar.isEnabled = false
                     }
                 } else {
                     textViewDatos.text = "Cliente no encontrado."
+                    buttonEditar.isEnabled = false
+                    buttonGuardar.isEnabled = false
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
                 textViewDatos.text = "Error al buscar cliente: ${error.message}"
+                buttonEditar.isEnabled = false
+                buttonGuardar.isEnabled = false
             }
         })
     }
+
 
 
     private fun toggleEditMode(editing: Boolean) {
