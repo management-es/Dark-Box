@@ -219,8 +219,11 @@ class IngresarClienteActivity : ComponentActivity() {
             if (snapshot.exists()) {
                 for (child in snapshot.children) {
                     val equipo = child.child("equipo").getValue(String::class.java)
+                    val zona = child.child("zona").getValue(String::class.java) // Obtener la zona del equipo
                     val serial = child.key // Obtener el serial desde la clave del nodo
-                    if (equipo == "Onu" && serial != null) {
+
+                    // Mostrar todos los seriales si la zona es "Set-Admin", de lo contrario filtrar por zona
+                    if ((zonaUsuario == "Set-Admin" || zona == zonaUsuario) && equipo == "Onu" && serial != null) {
                         serialOnuList.add(serial)
                     }
                 }
@@ -253,8 +256,11 @@ class IngresarClienteActivity : ComponentActivity() {
             if (snapshot.exists()) {
                 for (child in snapshot.children) {
                     val equipo = child.child("equipo").getValue(String::class.java)
+                    val zona = child.child("zona").getValue(String::class.java) // Obtener la zona del equipo
                     val serial = child.key // Obtener el serial desde la clave del nodo
-                    if (equipo == "Antena Cliente" && serial != null) {
+
+                    // Mostrar todos los seriales si la zona es "Set-Admin", de lo contrario filtrar por zona
+                    if ((zonaUsuario == "Set-Admin" || zona == zonaUsuario) && equipo == "Antena Cliente" && serial != null) {
                         serialAntenaList.add(serial)
                     }
                 }
@@ -287,8 +293,11 @@ class IngresarClienteActivity : ComponentActivity() {
             if (snapshot.exists()) {
                 for (child in snapshot.children) {
                     val equipo = child.child("equipo").getValue(String::class.java)
+                    val zona = child.child("zona").getValue(String::class.java) // Obtener la zona del equipo
                     val serial = child.key // Obtener el serial desde la clave del nodo
-                    if (equipo == "Router" && serial != null) {
+
+                    // Mostrar todos los seriales si la zona es "Set-Admin", de lo contrario filtrar por zona
+                    if ((zonaUsuario == "Set-Admin" || zona == zonaUsuario) && equipo == "Router" && serial != null) {
                         serialRouterList.add(serial)
                     }
                 }
@@ -313,6 +322,8 @@ class IngresarClienteActivity : ComponentActivity() {
             Toast.makeText(this, "Error al cargar los seriales de Routers", Toast.LENGTH_SHORT).show()
         }
     }
+
+
 
     private fun validateClientData(): Boolean {
         val nombres = findViewById<EditText>(R.id.input_nombres).text.toString()
