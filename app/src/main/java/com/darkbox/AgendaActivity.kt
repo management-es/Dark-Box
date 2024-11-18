@@ -26,6 +26,7 @@ class AgendaActivity : ComponentActivity() {
         val buttonVerAgenda = findViewById<Button>(R.id.button_ver_agenda)
         val buttonDescargarAgenda: Button = findViewById(R.id.button_descargar_agenda)
         val dateInputLayout: View = findViewById(R.id.date_input_layout)
+        val buttonFiltrarAgenda = findViewById<Button>(R.id.button_filtrar_agenda)
         val dateEditText: EditText = findViewById(R.id.input_date)
 
 
@@ -59,6 +60,20 @@ class AgendaActivity : ComponentActivity() {
             intent.putExtra("ZONA_USUARIO", zonaUsuario) // Pasar la zona del usuario a VerAgendaActivity
             startActivity(intent)
         }
+
+
+        buttonFiltrarAgenda.setOnClickListener {
+            if (rolUsuario == "Tecnico") {
+                showAccessDeniedDialog() // Mostrar alerta si es técnico
+            } else {
+                // Intent para abrir la actividad FiltrarAgendaActivity
+                val intent = Intent(this, FiltrarAgendaActivity::class.java)
+                intent.putExtra("ZONA_USUARIO", zonaUsuario)
+                intent.putExtra("ROL_USUARIO", rolUsuario)
+                startActivity(intent)
+            }
+        }
+
 
         // Listener para el botón Descargar Agenda
         buttonDescargarAgenda.setOnClickListener {

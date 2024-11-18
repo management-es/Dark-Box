@@ -125,6 +125,12 @@
             android:theme="@style/Theme.DarkBox" />
 
         <activity
+            android:name=".FiltrarAgendaActivity"
+            android:exported="true"
+            android:label="Filtrar Agenda"
+            android:theme="@style/Theme.DarkBox" />
+
+        <activity
             android:name=".DescargaAgendaActivity"
             android:exported="true"
             android:label="Descargar Agenda"
