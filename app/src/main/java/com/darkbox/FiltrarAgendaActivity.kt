@@ -1,18 +1,27 @@
 package com.darkbox
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.*
 import androidx.activity.ComponentActivity
 import com.google.firebase.database.*
+import androidx.appcompat.app.AlertDialog
+
 
 class FiltrarAgendaActivity : ComponentActivity() {
 
     private lateinit var database: DatabaseReference // Referencia a Firebase
+    private lateinit var zonaUsuario: String
+    private lateinit var rolUsuario: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_filtrar_agenda)
+
+        // Obtener los datos del Intent
+        zonaUsuario = intent.getStringExtra("ZONA_USUARIO") ?: ""
+        rolUsuario = intent.getStringExtra("ROL_USUARIO") ?: ""
 
         // Inicializar referencia a Firebase
         database = FirebaseDatabase.getInstance().reference
@@ -22,6 +31,17 @@ class FiltrarAgendaActivity : ComponentActivity() {
         val inputAnio: EditText = findViewById(R.id.input_anio)
         val buttonAplicarFiltro: Button = findViewById(R.id.button_aplicar_filtro)
         val resultadosTextView: TextView = findViewById(R.id.resultados_text_view)
+        val zonaUsuario = intent.getStringExtra("ZONA_USUARIO") ?: "Desconocida"
+
+
+        // Mostrar el AlertDialog con la zona
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Información de Zona")
+        builder.setMessage("Solamente puedes ver la información filtrada para la zona: $zonaUsuario")
+        builder.setPositiveButton("Aceptar") { dialog, _ ->
+            dialog.dismiss() // Cerrar el diálogo cuando se presiona "Aceptar"
+        }
+        builder.show()
 
         // Lista de meses con su formato numérico
         val meses = listOf(
@@ -155,79 +175,59 @@ class FiltrarAgendaActivity : ComponentActivity() {
                         val observacionCancelacion =
                             child.child("observacion-cancelacion").getValue(String::class.java) ?: "N/A"
                         val estado = child.child("estado").getValue(String::class.java) ?: "Pendiente"
+                        val zona = child.child("zona").getValue(String::class.java) ?: ""
 
-                        // Contar solicitudes según el estado en Solicitud Instalación
-                        if (id.contains("sol_inst")) {
-                            when (estado.lowercase()) {
-                                "pendiente" -> contadorPendiente++
-                                "realizado" -> contadorRealizado++
-                                "cancelado" -> contadorCancelado++
+                        // Filtrar por zona si el usuario no es técnico
+                        if (rolUsuario != "Tecnico" && zona == zonaUsuario) {
+                            // Contar solicitudes según el estado en Solicitud Instalación
+                            if (id.contains("sol_inst")) {
+                                when (estado.lowercase()) {
+                                    "pendiente" -> contadorPendiente++
+                                    "realizado" -> contadorRealizado++
+                                    "cancelado" -> contadorCancelado++
+                                }
                             }
-                        }
 
-                        // Contar solicitudes sobre cliente (ID contiene "C" después del guion)
-                        if (id.split("-").getOrNull(1)?.contains("C") == true) {
-                            when (estado.lowercase()) {
-                                "pendiente" -> contadorPendienteCliente++
-                                "realizado" -> contadorRealizadoCliente++
-                                "cancelado" -> contadorCanceladoCliente++
+                            // Contar solicitudes sobre cliente (ID contiene "C" después del guion)
+                            if (id.split("-").getOrNull(1)?.contains("C") == true) {
+                                when (estado.lowercase()) {
+                                    "pendiente" -> contadorPendienteCliente++
+                                    "realizado" -> contadorRealizadoCliente++
+                                    "cancelado" -> contadorCanceladoCliente++
+                                }
                             }
-                        }
 
-                        // Contar "Otras Gestiones" (ID contiene "ot-gestion")
-                        if (id.contains("ot-gestion")) {
-                            when (estado.lowercase()) {
-                                "pendiente" -> contadorPendienteGestion++
-                                "realizado" -> contadorRealizadoGestion++
-                                "cancelado" -> contadorCanceladoGestion++
+                            // Contar "Otras Gestiones" (ID contiene "ot-gestion")
+                            if (id.contains("ot-gestion")) {
+                                when (estado.lowercase()) {
+                                    "pendiente" -> contadorPendienteGestion++
+                                    "realizado" -> contadorRealizadoGestion++
+                                    "cancelado" -> contadorCanceladoGestion++
+                                }
                             }
+
+                            // Mostrar los resultados con el formato actual
+                            resultados.append(
+                                """
+                                ___________________________________________
+                                ID: $id
+                                Fecha: $fecha
+                                Tipo de Gestión: $tipoGestion
+                                Gestión: $gestion
+                                Observación/Cancelación: $observacionCancelacion
+                                Estado: $estado
+
+                                """.trimIndent()  // Espacio adicional entre cada ID y sus datos
+                            )
                         }
-
-                        // Mostrar los resultados con el formato actual
-                        resultados.append(
-                            """
-                            ___________________________________________
-                            ID: $id
-                            Fecha: $fecha
-                            Tipo de Gestión: $tipoGestion
-                            Gestión: $gestion
-                            Observación/Cancelación: $observacionCancelacion
-                            Estado: $estado
-
-                            """.trimIndent()
-                        )
                     }
 
-                    // Actualizar las celdas de "Pendiente", "Realizado", "Cancelado" en la columna "Solicitud Instalación"
-                    val filaPendiente =
-                        tableLayout.findViewWithTag<TextView>("solicitud_instalacion_Pendiente")
-                    filaPendiente?.text = "Pendiente: $contadorPendiente"
+                    // Actualizar el conteo en la interfaz
+                    actualizarConteo(tableLayout, contadorPendiente, contadorRealizado, contadorCancelado,
+                        contadorPendienteCliente, contadorRealizadoCliente, contadorCanceladoCliente,
+                        contadorPendienteGestion, contadorRealizadoGestion, contadorCanceladoGestion)
 
-                    val filaRealizado =
-                        tableLayout.findViewWithTag<TextView>("solicitud_instalacion_Realizado")
-                    filaRealizado?.text = "Realizado: $contadorRealizado"
-
-                    val filaCancelado =
-                        tableLayout.findViewWithTag<TextView>("solicitud_instalacion_Cancelado")
-                    filaCancelado?.text = "Cancelado: $contadorCancelado"
-
-                    // Actualizar las celdas de "Pendiente", "Realizado", "Cancelado" en la columna "Solicitud Sobre Cliente"
-                    tableLayout.findViewWithTag<TextView>("solicitud_sobre_cliente_Pendiente")
-                        ?.text = "Pendiente: $contadorPendienteCliente"
-                    tableLayout.findViewWithTag<TextView>("solicitud_sobre_cliente_Realizado")
-                        ?.text = "Realizado: $contadorRealizadoCliente"
-                    tableLayout.findViewWithTag<TextView>("solicitud_sobre_cliente_Cancelado")
-                        ?.text = "Cancelado: $contadorCanceladoCliente"
-
-                    // Actualizar las celdas de "Pendiente", "Realizado", "Cancelado" en la columna "Otras Gestiones"
-                    tableLayout.findViewWithTag<TextView>("otras_gestiones_Pendiente")
-                        ?.text = "Pendiente: $contadorPendienteGestion"
-                    tableLayout.findViewWithTag<TextView>("otras_gestiones_Realizado")
-                        ?.text = "Realizado: $contadorRealizadoGestion"
-                    tableLayout.findViewWithTag<TextView>("otras_gestiones_Cancelado")
-                        ?.text = "Cancelado: $contadorCanceladoGestion"
-
-                    // Actualizar los resultados generales en el TextView
+                    // Actualizar el TextView de resultados
                     resultadosTextView.text = resultados.toString()
                 } else {
                     resultadosTextView.text = "No se encontraron resultados para el mes y año seleccionados."
@@ -237,5 +237,42 @@ class FiltrarAgendaActivity : ComponentActivity() {
                 Log.e("FiltrarAgendaActivity", "Error al buscar en Firebase", exception)
                 Toast.makeText(this, "Error al realizar la búsqueda", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    private fun actualizarConteo(
+        tableLayout: TableLayout,
+        contadorPendiente: Int,
+        contadorRealizado: Int,
+        contadorCancelado: Int,
+        contadorPendienteCliente: Int,
+        contadorRealizadoCliente: Int,
+        contadorCanceladoCliente: Int,
+        contadorPendienteGestion: Int,
+        contadorRealizadoGestion: Int,
+        contadorCanceladoGestion: Int
+    ) {
+        // Actualizar las celdas de "Pendiente", "Realizado", "Cancelado" en la columna "Solicitud Instalación"
+        tableLayout.findViewWithTag<TextView>("solicitud_instalacion_Pendiente")
+            ?.text = "Pendiente: $contadorPendiente"
+        tableLayout.findViewWithTag<TextView>("solicitud_instalacion_Realizado")
+            ?.text = "Realizado: $contadorRealizado"
+        tableLayout.findViewWithTag<TextView>("solicitud_instalacion_Cancelado")
+            ?.text = "Cancelado: $contadorCancelado"
+
+        // Actualizar las celdas de "Pendiente", "Realizado", "Cancelado" en la columna "Solicitud Sobre Cliente"
+        tableLayout.findViewWithTag<TextView>("solicitud_sobre_cliente_Pendiente")
+            ?.text = "Pendiente: $contadorPendienteCliente"
+        tableLayout.findViewWithTag<TextView>("solicitud_sobre_cliente_Realizado")
+            ?.text = "Realizado: $contadorRealizadoCliente"
+        tableLayout.findViewWithTag<TextView>("solicitud_sobre_cliente_Cancelado")
+            ?.text = "Cancelado: $contadorCanceladoCliente"
+
+        // Actualizar las celdas de "Pendiente", "Realizado", "Cancelado" en la columna "Otras Gestiones"
+        tableLayout.findViewWithTag<TextView>("otras_gestiones_Pendiente")
+            ?.text = "Pendiente: $contadorPendienteGestion"
+        tableLayout.findViewWithTag<TextView>("otras_gestiones_Realizado")
+            ?.text = "Realizado: $contadorRealizadoGestion"
+        tableLayout.findViewWithTag<TextView>("otras_gestiones_Cancelado")
+            ?.text = "Cancelado: $contadorCanceladoGestion"
     }
 }
