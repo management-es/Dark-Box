@@ -23,6 +23,19 @@ class FiltrarAgendaActivity : ComponentActivity() {
         zonaUsuario = intent.getStringExtra("ZONA_USUARIO") ?: ""
         rolUsuario = intent.getStringExtra("ROL_USUARIO") ?: ""
 
+        // Obtener los datos del Intent
+        zonaUsuario = intent.getStringExtra("ZONA_USUARIO") ?: ""
+        rolUsuario = intent.getStringExtra("ROL_USUARIO") ?: ""
+
+// Mostrar el AlertDialog con la zona si es Set-Admin
+        if (zonaUsuario == "Set-Admin") {
+            mostrarDialogoZona()
+        } else {
+            // Mostrar el AlertDialog con la zona para otros roles
+            mostrarDialogoZonaUsuario()
+        }
+
+
         // Inicializar referencia a Firebase
         database = FirebaseDatabase.getInstance().reference
 
@@ -78,6 +91,44 @@ class FiltrarAgendaActivity : ComponentActivity() {
         // Configuración inicial de la tabla
         configurarTabla(tableLayout)
     }
+
+    private fun mostrarDialogoZona() {
+        val zonasDisponibles = resources.getStringArray(R.array.zona_credenciales).toMutableList()
+        zonasDisponibles.remove("Seleccionar")  // Excluir la opción "Seleccionar"
+
+        val zonaSpinner = Spinner(this)
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, zonasDisponibles)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        zonaSpinner.adapter = adapter
+
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Selecciona una zona")
+        builder.setView(zonaSpinner)
+        builder.setPositiveButton("Aceptar") { dialog, _ ->
+            zonaUsuario = zonaSpinner.selectedItem.toString() // Actualizar la zona seleccionada
+            dialog.dismiss()
+        }
+        builder.setNegativeButton("Cancelar") { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.show()
+    }
+
+
+
+
+    private fun mostrarDialogoZonaUsuario() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Información de Zona")
+        builder.setMessage("Solamente puedes ver la información filtrada para la zona: $zonaUsuario")
+        builder.setPositiveButton("Aceptar") { dialog, _ ->
+            dialog.dismiss()
+        }
+        builder.show()
+    }
+
+
+
 
     private fun configurarTabla(tableLayout: TableLayout) {
         // Agregar las tres columnas al TableLayout
