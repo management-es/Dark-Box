@@ -445,62 +445,128 @@ class ActDatosActivity : ComponentActivity() {
     }
 
     private fun guardarCambios(nuevosDatos: Map<String, String>, mensaje: String, fecha: String, usuario: String) {
-
         val mensajeSeparadoPorComas = mensaje.lines().joinToString(", ")
-        // Actualizar los datos del cliente en Firebase
-        val clienteId = clienteData?.cod_cliente ?: return
-        database.child(clienteId).updateChildren(nuevosDatos)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    // Referencia para "observacion-editado"
-                    val observacionRef = database.child(clienteId).child("observacion-editado")
+        val clienteIdAnterior = clienteData?.cod_cliente ?: return
+        val clienteIdNuevo = nuevosDatos["cod_cliente"] ?: clienteIdAnterior
 
-                    // Obtener la lista de observaciones para contar las existentes en la misma fecha
-                    observacionRef.orderByKey().addListenerForSingleValueEvent(object : ValueEventListener {
-                        override fun onDataChange(dataSnapshot: DataSnapshot) {
-                            // Contar cuántas observaciones existen con la misma fecha
-                            var contador = 1
-                            dataSnapshot.children.forEach { child ->
-                                if (child.key?.startsWith(fecha) == true) {
-                                    contador++
-                                }
-                            }
+        if (clienteIdNuevo != clienteIdAnterior) {
+            // Si el `cod_cliente` cambió, necesitamos actualizar el ID del nodo en Firebase
+            database.child(clienteIdNuevo).addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        // Si el nuevo `cod_cliente` ya existe, no permitimos el cambio
+                        Toast.makeText(this@ActDatosActivity, "El código de cliente ya existe.", Toast.LENGTH_SHORT).show()
+                    } else {
+                        // Copiar los datos del nodo actual
+                        database.child(clienteIdAnterior).get().addOnSuccessListener { dataSnapshot ->
+                            if (dataSnapshot.exists()) {
+                                // Obtener los datos actuales del cliente
+                                val clienteDataMap = dataSnapshot.value as Map<String, Any>
 
-                            // Crear el ID en el formato "fecha+contador"
-                            val observacionId = "$fecha$contador"
-
-                            // Crear un objeto con los detalles de la edición
-                            val observacionData = mapOf(
-                                "usuario" to usuario,
-                                "fecha" to fecha,
-                                "detalle" to mensajeSeparadoPorComas
-                            )
-
-                            // Guardar la observación con el ID generado
-                            observacionRef.child(observacionId).setValue(observacionData)
-                                .addOnCompleteListener { observacionTask ->
-                                    if (observacionTask.isSuccessful) {
-                                        Toast.makeText(this@ActDatosActivity, "Datos y observación actualizados correctamente.", Toast.LENGTH_SHORT).show()
-                                    } else {
-                                        Toast.makeText(this@ActDatosActivity, "Error al guardar observación: ${observacionTask.exception?.message}", Toast.LENGTH_SHORT).show()
+                                // Crear el nuevo nodo con el ID actualizado
+                                database.child(clienteIdNuevo).setValue(clienteDataMap)
+                                    .addOnCompleteListener { createTask ->
+                                        if (createTask.isSuccessful) {
+                                            // Actualizar los datos restantes en el nuevo nodo
+                                            database.child(clienteIdNuevo).updateChildren(nuevosDatos)
+                                                .addOnCompleteListener { updateTask ->
+                                                    if (updateTask.isSuccessful) {
+                                                        // Eliminar el nodo anterior
+                                                        database.child(clienteIdAnterior).removeValue()
+                                                            .addOnCompleteListener { deleteTask ->
+                                                                if (deleteTask.isSuccessful) {
+                                                                    registrarObservacion(clienteIdNuevo, mensajeSeparadoPorComas, fecha, usuario)
+                                                                } else {
+                                                                    Toast.makeText(
+                                                                        this@ActDatosActivity,
+                                                                        "Error al eliminar el nodo anterior: ${deleteTask.exception?.message}",
+                                                                        Toast.LENGTH_SHORT
+                                                                    ).show()
+                                                                }
+                                                            }
+                                                    } else {
+                                                        Toast.makeText(
+                                                            this@ActDatosActivity,
+                                                            "Error al actualizar datos: ${updateTask.exception?.message}",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+                                                    }
+                                                }
+                                        } else {
+                                            Toast.makeText(
+                                                this@ActDatosActivity,
+                                                "Error al crear nuevo nodo: ${createTask.exception?.message}",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
                                     }
-                                }
+                            } else {
+                                Toast.makeText(
+                                    this@ActDatosActivity,
+                                    "Error: No se encontraron datos del cliente actual.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }.addOnFailureListener { error ->
+                            Toast.makeText(
+                                this@ActDatosActivity,
+                                "Error al obtener datos del cliente actual: ${error.message}",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
-
-                        override fun onCancelled(databaseError: DatabaseError) {
-                            // Manejar error en la consulta
-                            Toast.makeText(this@ActDatosActivity, "Error al contar observaciones: ${databaseError.message}", Toast.LENGTH_SHORT).show()
-                        }
-                    })
-
-                    // Alternativa
-                    toggleEditMode(false)
-                } else {
-                    // Error al actualizar los datos
-                    Toast.makeText(this@ActDatosActivity, "Error al actualizar datos: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                    }
                 }
-            }
+
+                override fun onCancelled(databaseError: DatabaseError) {
+                    Toast.makeText(this@ActDatosActivity, "Error al verificar nuevo código: ${databaseError.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
+        } else {
+            // Si el `cod_cliente` no cambió, actualizamos normalmente
+            database.child(clienteIdAnterior).updateChildren(nuevosDatos)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        registrarObservacion(clienteIdAnterior, mensajeSeparadoPorComas, fecha, usuario)
+                    } else {
+                        Toast.makeText(this@ActDatosActivity, "Error al actualizar datos: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+        }
     }
+
+    // Función para registrar observaciones en el nodo correspondiente
+    private fun registrarObservacion(clienteId: String, detalle: String, fecha: String, usuario: String) {
+        val observacionRef = database.child(clienteId).child("observacion-editado")
+        observacionRef.orderByKey().addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                var contador = 1
+                dataSnapshot.children.forEach { child ->
+                    if (child.key?.startsWith(fecha) == true) {
+                        contador++
+                    }
+                }
+                val observacionId = "$fecha$contador"
+                val observacionData = mapOf(
+                    "usuario" to usuario,
+                    "fecha" to fecha,
+                    "detalle" to detalle
+                )
+                observacionRef.child(observacionId).setValue(observacionData)
+                    .addOnCompleteListener { observacionTask ->
+                        if (observacionTask.isSuccessful) {
+                            Toast.makeText(this@ActDatosActivity, "Datos y observación actualizados correctamente.", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(this@ActDatosActivity, "Error al guardar observación: ${observacionTask.exception?.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                Toast.makeText(this@ActDatosActivity, "Error al contar observaciones: ${databaseError.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
 }
 
 // Modelo de datos para el cliente
