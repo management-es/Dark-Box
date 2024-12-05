@@ -111,7 +111,6 @@ class ActDatosActivity : ComponentActivity() {
 
         setupSaveButton()
 
-
     }
 
     private fun mostrarDialogoZona(zona: String) {
@@ -273,16 +272,17 @@ class ActDatosActivity : ComponentActivity() {
             var cambios = false // Variable para verificar si hay cambios
 
             val nombresNuevo = editTextNombres.text.toString().trim()
-            if (nombresNuevo != clienteData?.nombres) {
+            if (nombresNuevo != clienteData?.nombres?.trim()) {
                 nuevosDatos["nombres"] = nombresNuevo
                 cambios = true
             }
 
             val apellidosNuevo = editTextApellidos.text.toString().trim()
-            if (apellidosNuevo != clienteData?.apellidos) {
+            if (apellidosNuevo != clienteData?.apellidos?.trim()) {
                 nuevosDatos["apellidos"] = apellidosNuevo
                 cambios = true
             }
+
 
             val tipoDocumentoNuevo = spinnerTipoDocumento.selectedItem.toString()
             if (tipoDocumentoNuevo != clienteData?.tipo_documento) {
