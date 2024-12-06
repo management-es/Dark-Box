@@ -183,7 +183,7 @@ class CrearAgendaActivity : ComponentActivity() {
                 Apellidos: ${apellidosCliente ?: "Apellidos no encontrados"}
                 Documento: ${numeroDocumento ?: "Documento no encontrado"}
                 Dirección: ${direccion ?: "Dirección no encontrada"}
-                Coordenadas: ${coordenadas ?: "Coordenadas no encontradas"}
+                Municipio/Coordenadas: ${coordenadas ?: "Coordenadas no encontradas"}
                 Teléfono: ${telefono ?: "Teléfono no encontrado"}
                 Contactos: ${contactos ?: "Contactos no encontrados"}
                 Zona: ${zona ?: "Zona no encontrada"}
@@ -256,7 +256,7 @@ class CrearAgendaActivity : ComponentActivity() {
                         Apellidos: ${apellidosCliente ?: "Apellidos no encontrados"}
                         Documento: ${numeroDocumento ?: "Documento no encontrado"}
                         Dirección: ${direccion ?: "Dirección no encontrada"}
-                        Coordenadas: ${coordenadas ?: "Coordenadas no encontradas"}
+                        Municipio/Coordenadas: ${coordenadas ?: "Coordenadas no encontradas"}
                         Teléfono: ${telefono ?: "Teléfono no encontrado"}
                         Contactos: ${contactos ?: "Contactos no encontrados"}
                         Zona: ${zona ?: "Zona no encontrada"}
