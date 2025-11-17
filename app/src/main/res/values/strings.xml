@@ -10,6 +10,7 @@
 
     <string-array name="zona_options">
         <item>Seleccionar</item>
+        <item>Eje Cafetero</item>
         <item>Medellín</item>
         <item>Salgar</item>
         <item>Amagá</item>
@@ -82,6 +83,7 @@
 
     <string-array name="zona_credenciales">
         <item>Seleccionar</item>
+        <item>Eje Cafetero</item>
         <item>Medellín</item>
         <item>Salgar</item>
         <item>Amagá</item>
